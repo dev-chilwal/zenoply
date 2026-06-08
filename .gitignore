@@ -1,0 +1,15 @@
+# dependencies
+node_modules/
+.npm-cache/
+
+# next.js build output
+.next/
+out/
+
+# misc
+.DS_Store
+*.log
+.env*
+
+# editor / scratch
+design-audit/
