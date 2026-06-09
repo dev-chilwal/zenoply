@@ -1,23 +1,26 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 9 June 2026 (Phase 1 complete)._
+_Goal: grow organic search traffic. Last updated: 9 June 2026 (Phase 1 complete; Phase 2 underway — 21 tools live)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
 ---
 
-## Done in this session
+## Current state (updated 9 Jun 2026)
 
-Four new tools were built, wired in, and verified (formulas checked numerically; code parses clean):
+**21 tools now built and live in code, across 5 categories** (up from 9 at launch). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically.
 
-- **Percentage Calculator** (`/finance/percentage-calculator`) — three modes: X% of Y, X is what % of Y, % increase/decrease. Very high global search volume.
-- **Mortgage Calculator** (`/finance/mortgage-calculator`) — monthly payment, total interest, total paid. Verified at $1,896.20/mo for the standard $300k / 6.5% / 30yr case.
-- **Base64 Encoder / Decoder** (`/dev/base64-encoder`) — UTF-8 safe, evergreen developer query.
-- **Remove Line Breaks** (`/text/remove-line-breaks`) — evergreen text utility.
+- **Text (3):** Word Counter, Case Converter, Remove Line Breaks
+- **Dev (5):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512)
+- **Convert (2):** Hex to RGB, Unix Timestamp Converter
+- **Finance (7):** SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage
+- **Image (4) — NEW category:** Image Resizer, Image Converter (PNG/JPG/WebP), Image Compressor, Passport Photo Maker
 
-Each has an h1, meta description, FAQ block (which feeds FAQ structured data), and is in the sitemap automatically. **Live tool count: 9 → 13.**
+Notable build notes:
+- **Image tools** run entirely in-browser via the Canvas API — no uploads, no new npm dependencies, so the 99 PageSpeed score is preserved. Passport Photo Maker has 36 country presets (grouped dropdown) at 300 DPI and **drag-to-position** (mouse + touch) plus zoom.
+- All formulas/crop math verified numerically; all components parse clean.
 
-> Note: the production build couldn't be run in the sandbox because the local dev server locks `.next`/`out`. Run `npm run build` locally (or just let the Cloudflare push build it) to confirm, then commit and push.
+> **Deployment note:** changes are committed via `git push` to `dev-chilwal/zenoply`; Cloudflare auto-rebuilds. The production build can't run in the sandbox (the local dev server locks `.next`/`out`, and the file mount serves stale copies of recently-edited files) — verify via the Read tool + `npm run dev` locally, then push and let Cloudflare build. Confirm the live tool count after each push.
 
 ---
 
@@ -43,21 +46,21 @@ PageSpeed flagged these minor "insights" at score 99; none worth acting on now, 
 
 The catalog already has ~35 stubbed tools marked `coming soon`. Each one you make live is a new indexable page. **Target: 2–4 new tools per week.** Prioritize by search volume and ease (most are pure client-side JS, fast to build):
 
-**Highest-value next batch (broad, non-region-specific — widest reach):**
-- Percentage of total / fraction-to-percent variations
-- URL Encoder / Decoder (`/dev/url-encoder`)
-- UUID Generator (`/dev/uuid-generator`)
-- Hash Generator — MD5/SHA (`/dev/hash-generator`)
-- Unix Timestamp Converter (`/convert/epoch-converter`)
-- Lorem Ipsum Generator (`/text/lorem-ipsum-generator`)
-- Remove Duplicate Lines, Find & Replace, Slug Generator (text — trivial to build)
-- RGB to Hex, Color Converter (`/convert`)
+**✅ Shipped since launch (9 → 21 tools):** Percentage, Mortgage, URL Encoder, UUID Generator, Hash Generator, Unix Timestamp Converter, Base64, Remove Line Breaks, and the whole **Image Tools** category (Resizer, Converter, Compressor, Passport Photo Maker).
 
-**High-value India batch (your finance suite is already strong here):**
+**Next batch — still stubbed as `coming soon` (broad, easy, high-value):**
+- Lorem Ipsum Generator (`/text/lorem-ipsum-generator`)
+- Remove Duplicate Lines, Find & Replace, Slug Generator, Text Reverser (text — trivial)
+- RGB to Hex, Color Converter (HEX/RGB/HSL/CMYK) (`/convert`)
+- JSON to CSV / CSV to JSON / YAML to JSON, Number to Words (`/convert`)
+- JWT Decoder, SQL Formatter, HTML Minifier (`/dev`)
+
+**High-value India batch (finance suite is already strong here):**
 - Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — high volume, but tax logic changes yearly so they need maintenance.
 
 **Higher-effort, higher-payoff later:**
-- PDF tools (merge/split/compress) — these have huge search volume but need a client-side PDF library (pdf-lib). Worth a dedicated push once the easy wins are done.
+- PDF tools (merge/split/compress) — huge search volume but need a client-side PDF library (pdf-lib). Worth a dedicated push once the easy wins are done.
+- Image: background remover (the old `E:\utilio` app used `@imgly/background-removal` + onnxruntime — heavy; only add if worth the bundle cost) and image cropper.
 
 ## Phase 3 — Content / guides for long-tail and authority (ongoing)
 

@@ -7,6 +7,20 @@ export const metadata = {
   metadataBase: new URL(SITE.domain),
   title: { default: `${SITE.name} — ${SITE.tagline}`, template: `%s` },
   description: SITE.description,
+  openGraph: {
+    title: `${SITE.name} — ${SITE.tagline}`,
+    description: SITE.description,
+    url: SITE.domain,
+    siteName: SITE.name,
+    type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE.name} — ${SITE.tagline}`,
+    description: SITE.description,
+    images: ["/og.png"],
+  },
 };
 
 // Runs before first paint to set the theme — prevents a flash of the wrong theme.
