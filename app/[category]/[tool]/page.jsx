@@ -12,6 +12,18 @@ import EmiCalculator from "@/components/tools/EmiCalculator";
 import GstCalculator from "@/components/tools/GstCalculator";
 import CompoundInterest from "@/components/tools/CompoundInterest";
 import FdCalculator from "@/components/tools/FdCalculator";
+import PercentageCalculator from "@/components/tools/PercentageCalculator";
+import MortgageCalculator from "@/components/tools/MortgageCalculator";
+import Base64Encoder from "@/components/tools/Base64Encoder";
+import UrlEncoder from "@/components/tools/UrlEncoder";
+import UuidGenerator from "@/components/tools/UuidGenerator";
+import HashGenerator from "@/components/tools/HashGenerator";
+import EpochConverter from "@/components/tools/EpochConverter";
+import RemoveLineBreaks from "@/components/tools/RemoveLineBreaks";
+import ImageResizer from "@/components/tools/ImageResizer";
+import ImageConverter from "@/components/tools/ImageConverter";
+import ImageCompressor from "@/components/tools/ImageCompressor";
+import PassportPhotoMaker from "@/components/tools/PassportPhotoMaker";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -23,6 +35,18 @@ const REGISTRY = {
   "gst-calculator": GstCalculator,
   "compound-interest-calculator": CompoundInterest,
   "fd-calculator": FdCalculator,
+  "percentage-calculator": PercentageCalculator,
+  "mortgage-calculator": MortgageCalculator,
+  "base64-encoder": Base64Encoder,
+  "url-encoder": UrlEncoder,
+  "uuid-generator": UuidGenerator,
+  "hash-generator": HashGenerator,
+  "epoch-converter": EpochConverter,
+  "remove-line-breaks": RemoveLineBreaks,
+  "image-resizer": ImageResizer,
+  "image-converter": ImageConverter,
+  "image-compressor": ImageCompressor,
+  "passport-photo-maker": PassportPhotoMaker,
 };
 
 export function generateStaticParams() {

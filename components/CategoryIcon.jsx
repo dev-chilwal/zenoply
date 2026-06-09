@@ -35,6 +35,13 @@ const ICONS = {
       <path d="M20 15H7l3 3" />
     </>
   ),
+  image: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <circle cx="8.5" cy="9.5" r="1.5" />
+      <path d="M21 16l-5-5L5 20" />
+    </>
+  ),
 };
 
 export default function CategoryIcon({ name, className = "cat-icon" }) {
