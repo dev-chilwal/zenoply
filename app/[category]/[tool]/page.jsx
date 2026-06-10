@@ -20,6 +20,8 @@ import UuidGenerator from "@/components/tools/UuidGenerator";
 import HashGenerator from "@/components/tools/HashGenerator";
 import EpochConverter from "@/components/tools/EpochConverter";
 import RemoveLineBreaks from "@/components/tools/RemoveLineBreaks";
+import RemoveDuplicateLines from "@/components/tools/RemoveDuplicateLines";
+import LoremIpsumGenerator from "@/components/tools/LoremIpsumGenerator";
 import ImageResizer from "@/components/tools/ImageResizer";
 import ImageConverter from "@/components/tools/ImageConverter";
 import ImageCompressor from "@/components/tools/ImageCompressor";
@@ -43,6 +45,8 @@ const REGISTRY = {
   "hash-generator": HashGenerator,
   "epoch-converter": EpochConverter,
   "remove-line-breaks": RemoveLineBreaks,
+  "remove-duplicate-lines": RemoveDuplicateLines,
+  "lorem-ipsum-generator": LoremIpsumGenerator,
   "image-resizer": ImageResizer,
   "image-converter": ImageConverter,
   "image-compressor": ImageCompressor,

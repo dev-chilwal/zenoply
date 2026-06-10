@@ -78,7 +78,7 @@ Internal linking between guides ↔ tools is the cheap SEO multiplier most sites
 
 The architecture already does most of this well (per-tool titles, canonical URLs, OpenGraph, SoftwareApplication + BreadcrumbList + FAQPage JSON-LD). Tighten:
 - **Unique, keyword-led meta descriptions** per tool (a few currently read generically — make each one match how people actually search).
-- **OG image.** Add a default share image so links to zenoply.com look good when shared (currently `twitter: summary` with no image).
+- ~~**OG image.**~~ ✅ DONE (9 Jun 2026). Branded 1200×630 `public/og.png` wired into root layout + `lib/seo.js`; `twitter:card` upgraded to `summary_large_image`. Verified live via opengraph.xyz. Source: `public/og.svg` (edit + re-render with sharp/ImageMagick if text changes). Future option: per-page dynamic OG images (Next `ImageResponse`) — nice-to-have, not needed.
 - **Homepage copy.** Make the H1 and intro target "free online tools" + the categories, so the homepage itself ranks.
 - **Related-tools internal linking** is already present (good) — make sure every new tool has 2+ FAQs so it qualifies for FAQ rich results.
 
