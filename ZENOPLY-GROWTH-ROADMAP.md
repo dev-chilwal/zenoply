@@ -1,16 +1,16 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 9 June 2026 (Phase 1 complete; Phase 2 underway — 21 tools live)._
+_Goal: grow organic search traffic. Last updated: 10 June 2026 (Phase 1 complete; Phase 2 underway — 23 tools live)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
 ---
 
-## Current state (updated 9 Jun 2026)
+## Current state (updated 10 Jun 2026)
 
-**21 tools now built and live in code, across 5 categories** (up from 9 at launch). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically.
+**23 tools now built and live in code, across 5 categories** (up from 9 at launch). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically.
 
-- **Text (3):** Word Counter, Case Converter, Remove Line Breaks
+- **Text (5):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Lorem Ipsum Generator
 - **Dev (5):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512)
 - **Convert (2):** Hex to RGB, Unix Timestamp Converter
 - **Finance (7):** SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage
@@ -46,11 +46,10 @@ PageSpeed flagged these minor "insights" at score 99; none worth acting on now, 
 
 The catalog already has ~35 stubbed tools marked `coming soon`. Each one you make live is a new indexable page. **Target: 2–4 new tools per week.** Prioritize by search volume and ease (most are pure client-side JS, fast to build):
 
-**✅ Shipped since launch (9 → 21 tools):** Percentage, Mortgage, URL Encoder, UUID Generator, Hash Generator, Unix Timestamp Converter, Base64, Remove Line Breaks, and the whole **Image Tools** category (Resizer, Converter, Compressor, Passport Photo Maker).
+**✅ Shipped since launch (9 → 23 tools):** Percentage, Mortgage, URL Encoder, UUID Generator, Hash Generator, Unix Timestamp Converter, Base64, Remove Line Breaks, the whole **Image Tools** category (Resizer, Converter, Compressor, Passport Photo Maker), and (10 Jun) Lorem Ipsum Generator + Remove Duplicate Lines.
 
 **Next batch — still stubbed as `coming soon` (broad, easy, high-value):**
-- Lorem Ipsum Generator (`/text/lorem-ipsum-generator`)
-- Remove Duplicate Lines, Find & Replace, Slug Generator, Text Reverser (text — trivial)
+- Find & Replace, Slug Generator, Text Reverser (text — trivial)
 - RGB to Hex, Color Converter (HEX/RGB/HSL/CMYK) (`/convert`)
 - JSON to CSV / CSV to JSON / YAML to JSON, Number to Words (`/convert`)
 - JWT Decoder, SQL Formatter, HTML Minifier (`/dev`)
@@ -98,4 +97,4 @@ The architecture already does most of this well (per-tool titles, canonical URLs
 | Monthly | Write 2–3 guides for the top-trafficked tools; refresh any stale meta descriptions |
 | Quarterly | PageSpeed audit; review which `coming soon` stubs to promote based on data |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 13 pages today, 50 in two months, each one earning its own trickle of search traffic that adds up.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 23 tools today, 50 in two months, each one earning its own trickle of search traffic that adds up.
