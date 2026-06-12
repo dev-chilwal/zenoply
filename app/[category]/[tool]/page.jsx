@@ -7,6 +7,10 @@ import WordCounter from "@/components/tools/WordCounter";
 import CaseConverter from "@/components/tools/CaseConverter";
 import JsonFormatter from "@/components/tools/JsonFormatter";
 import HexToRgb from "@/components/tools/HexToRgb";
+import RgbToHex from "@/components/tools/RgbToHex";
+import JwtDecoder from "@/components/tools/JwtDecoder";
+import SqlFormatter from "@/components/tools/SqlFormatter";
+import ColorConverter from "@/components/tools/ColorConverter";
 import SipCalculator from "@/components/tools/SipCalculator";
 import EmiCalculator from "@/components/tools/EmiCalculator";
 import GstCalculator from "@/components/tools/GstCalculator";
@@ -22,6 +26,8 @@ import EpochConverter from "@/components/tools/EpochConverter";
 import RemoveLineBreaks from "@/components/tools/RemoveLineBreaks";
 import RemoveDuplicateLines from "@/components/tools/RemoveDuplicateLines";
 import LoremIpsumGenerator from "@/components/tools/LoremIpsumGenerator";
+import FindAndReplace from "@/components/tools/FindAndReplace";
+import SlugGenerator from "@/components/tools/SlugGenerator";
 import ImageResizer from "@/components/tools/ImageResizer";
 import ImageConverter from "@/components/tools/ImageConverter";
 import ImageCompressor from "@/components/tools/ImageCompressor";
@@ -32,6 +38,10 @@ const REGISTRY = {
   "case-converter": CaseConverter,
   "json-formatter": JsonFormatter,
   "hex-to-rgb": HexToRgb,
+  "rgb-to-hex": RgbToHex,
+  "jwt-decoder": JwtDecoder,
+  "sql-formatter": SqlFormatter,
+  "color-converter": ColorConverter,
   "sip-calculator": SipCalculator,
   "emi-calculator": EmiCalculator,
   "gst-calculator": GstCalculator,
@@ -47,6 +57,8 @@ const REGISTRY = {
   "remove-line-breaks": RemoveLineBreaks,
   "remove-duplicate-lines": RemoveDuplicateLines,
   "lorem-ipsum-generator": LoremIpsumGenerator,
+  "find-and-replace": FindAndReplace,
+  "slug-generator": SlugGenerator,
   "image-resizer": ImageResizer,
   "image-converter": ImageConverter,
   "image-compressor": ImageCompressor,
