@@ -34,6 +34,8 @@ import ImageCompressor from "@/components/tools/ImageCompressor";
 import PassportPhotoMaker from "@/components/tools/PassportPhotoMaker";
 import TextReverser from "@/components/tools/TextReverser";
 import NumberToWords from "@/components/tools/NumberToWords";
+import CsvToJson from "@/components/tools/CsvToJson";
+import JsonToCsv from "@/components/tools/JsonToCsv";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -67,6 +69,8 @@ const REGISTRY = {
   "passport-photo-maker": PassportPhotoMaker,
   "text-reverser": TextReverser,
   "number-to-words": NumberToWords,
+  "csv-to-json": CsvToJson,
+  "json-to-csv": JsonToCsv,
 };
 
 export function generateStaticParams() {
