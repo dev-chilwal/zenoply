@@ -32,6 +32,8 @@ import ImageResizer from "@/components/tools/ImageResizer";
 import ImageConverter from "@/components/tools/ImageConverter";
 import ImageCompressor from "@/components/tools/ImageCompressor";
 import PassportPhotoMaker from "@/components/tools/PassportPhotoMaker";
+import TextReverser from "@/components/tools/TextReverser";
+import NumberToWords from "@/components/tools/NumberToWords";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -63,6 +65,8 @@ const REGISTRY = {
   "image-converter": ImageConverter,
   "image-compressor": ImageCompressor,
   "passport-photo-maker": PassportPhotoMaker,
+  "text-reverser": TextReverser,
+  "number-to-words": NumberToWords,
 };
 
 export function generateStaticParams() {
