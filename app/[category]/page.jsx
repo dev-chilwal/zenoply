@@ -14,7 +14,7 @@ export function generateMetadata({ params }) {
   return {
     title,
     description: c.blurb,
-    alternates: { canonical: `${SITE.domain}/${c.slug}` },
+    alternates: { canonical: `${SITE.domain}/${c.slug}/` },
   };
 }
 

@@ -3,7 +3,7 @@ import { CATEGORIES, liveTools, SITE } from "@/lib/site";
 import CategoryIcon from "@/components/CategoryIcon";
 
 export const metadata = {
-  alternates: { canonical: "/" },
+  alternates: { canonical: `${SITE.domain}/` },
 };
 
 export default function Home() {
