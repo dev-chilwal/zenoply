@@ -2,6 +2,10 @@ import Link from "next/link";
 import { CATEGORIES, liveTools, SITE } from "@/lib/site";
 import CategoryIcon from "@/components/CategoryIcon";
 
+export const metadata = {
+  alternates: { canonical: "/" },
+};
+
 export default function Home() {
   const live = liveTools();
   return (
