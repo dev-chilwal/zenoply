@@ -36,6 +36,8 @@ import TextReverser from "@/components/tools/TextReverser";
 import NumberToWords from "@/components/tools/NumberToWords";
 import CsvToJson from "@/components/tools/CsvToJson";
 import JsonToCsv from "@/components/tools/JsonToCsv";
+import HtmlMinifier from "@/components/tools/HtmlMinifier";
+import YamlToJson from "@/components/tools/YamlToJson";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -71,6 +73,8 @@ const REGISTRY = {
   "number-to-words": NumberToWords,
   "csv-to-json": CsvToJson,
   "json-to-csv": JsonToCsv,
+  "html-minifier": HtmlMinifier,
+  "yaml-to-json": YamlToJson,
 };
 
 export function generateStaticParams() {
