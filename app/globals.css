@@ -205,3 +205,10 @@ input[type="range"] { width: 100%; accent-color: var(--brand); }
 .passport-canvas { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
 .passport-canvas.dragging { cursor: grabbing; }
 .center { text-align: center; }
+
+/* ---- PDF tools: selected-file list ---- */
+.file-list { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: .5rem; }
+.file-item { display: flex; align-items: center; gap: .75rem; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: .5rem .75rem; font-size: .9rem; }
+.file-item .file-name { flex: 1; word-break: break-all; }
+.file-item .file-meta { color: var(--muted); font-size: .82rem; flex-shrink: 0; }
+.file-item .file-ctrl { display: flex; gap: .35rem; flex-shrink: 0; }

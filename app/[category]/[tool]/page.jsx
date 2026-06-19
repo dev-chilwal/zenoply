@@ -38,6 +38,14 @@ import CsvToJson from "@/components/tools/CsvToJson";
 import JsonToCsv from "@/components/tools/JsonToCsv";
 import HtmlMinifier from "@/components/tools/HtmlMinifier";
 import YamlToJson from "@/components/tools/YamlToJson";
+import MergePdf from "@/components/tools/MergePdf";
+import SplitPdf from "@/components/tools/SplitPdf";
+import CompressPdf from "@/components/tools/CompressPdf";
+import PdfToJpg from "@/components/tools/PdfToJpg";
+import JpgToPdf from "@/components/tools/JpgToPdf";
+import RotatePdf from "@/components/tools/RotatePdf";
+import UnlockPdf from "@/components/tools/UnlockPdf";
+import WatermarkPdf from "@/components/tools/WatermarkPdf";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -75,6 +83,14 @@ const REGISTRY = {
   "json-to-csv": JsonToCsv,
   "html-minifier": HtmlMinifier,
   "yaml-to-json": YamlToJson,
+  "merge-pdf": MergePdf,
+  "split-pdf": SplitPdf,
+  "compress-pdf": CompressPdf,
+  "pdf-to-jpg": PdfToJpg,
+  "jpg-to-pdf": JpgToPdf,
+  "rotate-pdf": RotatePdf,
+  "unlock-pdf": UnlockPdf,
+  "watermark-pdf": WatermarkPdf,
 };
 
 export function generateStaticParams() {
