@@ -18,6 +18,12 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+          <div>
+            <h4>Learn</h4>
+            <ul>
+              <li><Link href="/guides">Guides</Link></li>
+            </ul>
+          </div>
         </div>
         <p className="muted small">© {new Date().getFullYear()} {SITE.name}. Free online tools.</p>
       </div>

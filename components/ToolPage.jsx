@@ -50,6 +50,18 @@ export default function ToolPage({ tool, children, howTo }) {
           </section>
         )}
 
+        {tool.guide && (
+          <section className="related">
+            <h2>Learn more</h2>
+            <div className="card-grid">
+              <Link href={`/guides/${tool.guide.slug}`} className="card">
+                <strong>{tool.guide.title}</strong>
+                <span className="muted small">Read the guide</span>
+              </Link>
+            </div>
+          </section>
+        )}
+
         {related.length > 0 && (
           <section className="related">
             <h2>Related tools</h2>

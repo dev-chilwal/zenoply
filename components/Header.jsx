@@ -15,6 +15,7 @@ export default function Header() {
           {CATEGORIES.map((c) => (
             <Link key={c.slug} href={`/${c.slug}`}>{shortName(c.name)}</Link>
           ))}
+          <Link href="/guides">Guides</Link>
         </nav>
         <ThemeToggle />
       </div>
