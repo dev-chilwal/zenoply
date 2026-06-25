@@ -1,23 +1,33 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 10 June 2026 (Phase 1 complete; Phase 2 underway — 23 tools live)._
+_Goal: grow organic search traffic. Last updated: 25 June 2026 (Phase 1 complete; Phase 2 effectively complete — 43 tools live; Phase 3 advancing — 15 guides live)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
 ---
 
-## Current state (updated 10 Jun 2026)
+## Current state (updated 25 Jun 2026)
 
-**23 tools now built and live in code, across 5 categories** (up from 9 at launch). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically.
+**43 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **15 guides are also live** under `/guides`.
 
-- **Text (5):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Lorem Ipsum Generator
-- **Dev (5):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512)
-- **Convert (2):** Hex to RGB, Unix Timestamp Converter
+- **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
+- **Dev (8):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier
+- **Convert (8):** Hex to RGB, RGB to Hex, Color Converter (HEX/RGB/HSL/CMYK), Unix Timestamp Converter, JSON to CSV, CSV to JSON, YAML to JSON, Number to Words
 - **Finance (7):** SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage
-- **Image (4) — NEW category:** Image Resizer, Image Converter (PNG/JPG/WebP), Image Compressor, Passport Photo Maker
+- **PDF (8) — category added since launch:** Merge, Split, Compress, PDF to JPG, JPG to PDF, Rotate, Unlock, Watermark
+- **Image (4):** Image Resizer, Image Converter (PNG/JPG/WebP), Image Compressor, Passport Photo Maker
+
+**Still stubbed as `coming soon` (3):** Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — all finance; deferred because tax logic changes yearly and needs maintenance.
+
+**Guides live (15):** Each is linked to/from its tool (bidirectional internal linking).
+- _Finance (7):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated?
+- _Dev (4):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON?
+- _PDF (3):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF
+- _Image (1):_ PNG vs JPG vs WebP
 
 Notable build notes:
-- **Image tools** run entirely in-browser via the Canvas API — no uploads, no new npm dependencies, so the 99 PageSpeed score is preserved. Passport Photo Maker has 36 country presets (grouped dropdown) at 300 DPI and **drag-to-position** (mouse + touch) plus zoom.
+- **Image tools** run entirely in-browser via the Canvas API — no uploads, no new npm dependencies, so the original 99 PageSpeed score is preserved. Passport Photo Maker has 36 country presets (grouped dropdown) at 300 DPI and **drag-to-position** (mouse + touch) plus zoom.
+- **PDF tools** also run client-side (no uploads) but introduced the first heavy dependencies: `pdf-lib` (^1.17.1) and `pdfjs-dist` (^4.4.168). **Action: re-run a PageSpeed audit** to confirm these didn't dent the 99 score — they're lazy-loaded per-tool, but worth verifying since they're the first non-trivial bundles.
 - All formulas/crop math verified numerically; all components parse clean.
 
 > **Deployment note:** changes are committed via `git push` to `dev-chilwal/zenoply`; Cloudflare auto-rebuilds. The production build can't run in the sandbox (the local dev server locks `.next`/`out`, and the file mount serves stale copies of recently-edited files) — verify via the Read tool + `npm run dev` locally, then push and let Cloudflare build. Confirm the live tool count after each push.
@@ -29,10 +39,10 @@ Notable build notes:
 All foundation checks passed. Results:
 
 1. **Analytics — DONE.** Cloudflare Web Analytics enabled (zero-code, since the site is proxied through Cloudflare). Privacy-friendly, no cookie banner. Already showing first hits (mostly bots/crawlers at this stage — real users follow indexing; watch top pages + referrers, not raw country counts).
-2. **Google Search Console — VERIFIED.** Property verified as a Domain property under `zenoply.team@gmail.com`. Sitemap (`https://www.zenoply.com/sitemap.xml`) status **Success**, **48 pages discovered**. Page Indexing and Performance reports were still "processing data" on 9 Jun (normal for a property crawled the day before) with **no errors**. A scheduled check-in runs Fri 12 Jun to report first indexed counts + impressions.
+2. **Google Search Console — VERIFIED.** Property verified as a Domain property under `zenoply.team@gmail.com`. Sitemap (`https://www.zenoply.com/sitemap.xml`) status **Success**, **48 pages discovered** (the sitemap now covers more — re-check the discovered count). Page Indexing and Performance reports were still "processing data" on 9 Jun (normal for a property crawled the day before) with **no errors**.
    - **Multi-account gotcha:** Dev has several Google accounts signed in; zenoply.team is NOT the default. Use `/u/1/` style GSC URLs (e.g. `https://search.google.com/u/1/search-console/index?resource_id=sc-domain:zenoply.com`); plain URLs bounce to the wrong account.
 3. **Bing Webmaster Tools — handoff.** Import from GSC at bing.com/webmasters (carries over verification + sitemap automatically). ~2 min, self-serve. (Bing's site is blocked from the browser automation tool, so Dev does this one manually.)
-4. **Core Web Vitals — EXCELLENT.** PageSpeed mobile: **Performance 99, Accessibility 98, Best Practices 100, SEO 100.** FCP 1.5s, LCP 1.8s, CLS **0**, TBT **0ms**, Speed Index 2.5s. Brotli compression confirmed active (`content-encoding: br`). The "document request latency" insight was an unscored lab artifact — safe to ignore.
+4. **Core Web Vitals — EXCELLENT.** PageSpeed mobile: **Performance 99, Accessibility 98, Best Practices 100, SEO 100.** FCP 1.5s, LCP 1.8s, CLS **0**, TBT **0ms**, Speed Index 2.5s. Brotli compression confirmed active (`content-encoding: br`). The "document request latency" insight was an unscored lab artifact — safe to ignore. _(Re-audit after the PDF deps — see build notes above.)_
 
 **robots.txt & sitemap** also validated: both live and valid; sitemap referenced in robots.txt. Note: AI-training crawlers (GPTBot, ClaudeBot, Google-Extended, etc.) are blocked via Cloudflare's managed rules — this is fine and does NOT affect search indexing (`search=yes`).
 
@@ -42,48 +52,55 @@ PageSpeed flagged these minor "insights" at score 99; none worth acting on now, 
 - Render-blocking CSS — single stylesheet; FCP already 1.5s.
 - Legacy JavaScript (~11 KiB) — framework-controlled transpilation; trivial.
 
-## Phase 2 — Ship tools on a steady cadence (ongoing — the main growth engine)
+## Phase 2 — Ship tools on a steady cadence ✅ EASY/MID BATCH COMPLETE (ongoing for the long tail)
 
-The catalog already has ~35 stubbed tools marked `coming soon`. Each one you make live is a new indexable page. **Target: 2–4 new tools per week.** Prioritize by search volume and ease (most are pure client-side JS, fast to build):
+The launch catalog stubbed ~35 tools as `coming soon`. Nearly all of them are now live — the easy text/dev/convert wins, the full Image category, **and the whole PDF suite** (the "higher-effort, higher-payoff later" item). Catalog grew 9 → 23 → **43**.
 
-**✅ Shipped since launch (9 → 23 tools):** Percentage, Mortgage, URL Encoder, UUID Generator, Hash Generator, Unix Timestamp Converter, Base64, Remove Line Breaks, the whole **Image Tools** category (Resizer, Converter, Compressor, Passport Photo Maker), and (10 Jun) Lorem Ipsum Generator + Remove Duplicate Lines.
+**✅ Shipped:** all of the text/dev/convert "next batch" (Find & Replace, Slug Generator, Text Reverser, RGB to Hex, Color Converter, JSON↔CSV, YAML to JSON, Number to Words, JWT Decoder, SQL Formatter, HTML Minifier), the **Image Tools** category (Resizer, Converter, Compressor, Passport Photo Maker), and the **PDF Tools** category (Merge, Split, Compress, PDF↔JPG, Rotate, Unlock, Watermark).
 
-**Next batch — still stubbed as `coming soon` (broad, easy, high-value):**
-- Find & Replace, Slug Generator, Text Reverser (text — trivial)
-- RGB to Hex, Color Converter (HEX/RGB/HSL/CMYK) (`/convert`)
-- JSON to CSV / CSV to JSON / YAML to JSON, Number to Words (`/convert`)
-- JWT Decoder, SQL Formatter, HTML Minifier (`/dev`)
+**Remaining stubs (the only `coming soon` tiles left):**
+- **Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator** — high India search volume, but tax logic changes yearly so they need a maintenance plan before shipping. Decide: ship for FY2026-27 with a clear "last updated" note, or keep deferred.
 
-**High-value India batch (finance suite is already strong here):**
-- Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — high volume, but tax logic changes yearly so they need maintenance.
-
-**Higher-effort, higher-payoff later:**
-- PDF tools (merge/split/compress) — huge search volume but need a client-side PDF library (pdf-lib). Worth a dedicated push once the easy wins are done.
+**Future tool ideas (net-new, beyond the original stub list):**
 - Image: background remover (the old `E:\utilio` app used `@imgly/background-removal` + onnxruntime — heavy; only add if worth the bundle cost) and image cropper.
+- More converters/dev tools by GSC demand — let Search Console queries pick the next batch rather than guessing.
 
-## Phase 3 — Content / guides for long-tail and authority (ongoing)
+> With the easy backlog cleared, the growth engine shifts from "ship any tool" to **"ship what data says people search for"** (Phase 3 guides + GSC-driven picks).
 
-Tools win the "[thing] calculator" query; **guides win the "how/what/why" queries** and build topical authority that lifts the whole domain. A `/guides` section pairs naturally with the calculators (the old app even had guides like "what is GST", "SIP vs lumpsum" — that pattern works).
+## Phase 3 — Content / guides for long-tail and authority 🔄 UNDERWAY
 
-For each major calculator, write one 800–1,200 word guide and link it to/from the tool:
-- "How is EMI calculated?" → links to EMI Calculator
-- "How to calculate percentage increase" → Percentage Calculator
-- "Mortgage: principal vs interest explained" → Mortgage Calculator
-- "What is Base64 and when to use it" → Base64 tool
+Tools win the "[thing] calculator" query; **guides win the "how/what/why" queries** and build topical authority that lifts the whole domain. The `/guides` section is live and pairs each guide with its tool (internal linking both ways — the cheap SEO multiplier most sites skip). Each guide is 850–1,200 words with a worked example where relevant, 3 FAQs (FAQPage JSON-LD), Article schema, and ≥2 links to its tool. Every guide is paired with a `guide:` backlink on the tool entry in `lib/site.js`, so the link is bidirectional.
 
-Internal linking between guides ↔ tools is the cheap SEO multiplier most sites skip.
+**✅ Live (15):**
+- _Finance:_ SIP → SIP Calculator · EMI → EMI Calculator · GST → GST Calculator · Mortgage Principal vs Interest → Mortgage Calculator · Percentage Increase → Percentage Calculator · What Is Compound Interest? → Compound Interest Calculator · How Is FD Interest Calculated? → FD Calculator
+- _Dev:_ What Is Base64 Encoding? → Base64 Encoder · What's Inside a JWT? → JWT Decoder · MD5 vs SHA-256 → Hash Generator · What Is JSON? → JSON Formatter
+- _PDF:_ How to Merge PDF Files → Merge PDF · How to Split a PDF → Split PDF · How to Compress a PDF → Compress PDF
+- _Image:_ PNG vs JPG vs WebP → Image Converter
 
-## Phase 4 — On-page SEO polish (one focused pass)
+> The 10 dev/PDF/finance/image guides above (25 Jun) were drafted and fact-checked via a multi-agent workflow (draft → accuracy + SEO/style verification → revise), then integrated deterministically. All formulas and worked examples (compound interest 2,15,892; FD 1,41,478) were recomputed and verified, and `npm run build` generated all 15 guide pages cleanly (71 static pages total).
+
+**Next guides to write (pair with the remaining high-traffic tools that lack one):**
+- "How to calculate GST-inclusive vs exclusive" already covered; consider "SIP vs lump sum" as a standalone comparison → SIP Calculator
+- "What is a UUID (and when to use v4)" → UUID Generator
+- "URL encoding explained (percent-encoding)" → URL Encoder
+- "Unix timestamps explained" → Unix Timestamp Converter
+- "How to convert JPG to PDF / PDF to JPG" → JPG to PDF / PDF to JPG
+- "How to make a passport photo at home" → Passport Photo Maker (high volume)
+
+Let GSC Performance data pick the order — write guides for whichever live tools are already drawing impressions.
+
+## Phase 4 — On-page SEO polish (one focused pass) ⏳ NOT STARTED
 
 The architecture already does most of this well (per-tool titles, canonical URLs, OpenGraph, SoftwareApplication + BreadcrumbList + FAQPage JSON-LD). Tighten:
-- **Unique, keyword-led meta descriptions** per tool (a few currently read generically — make each one match how people actually search).
+- **Unique, keyword-led meta descriptions** per tool (a few currently read generically — make each one match how people actually search). Worth a dedicated pass now that there are 43 of them.
 - ~~**OG image.**~~ ✅ DONE (9 Jun 2026). Branded 1200×630 `public/og.png` wired into root layout + `lib/seo.js`; `twitter:card` upgraded to `summary_large_image`. Verified live via opengraph.xyz. Source: `public/og.svg` (edit + re-render with sharp/ImageMagick if text changes). Future option: per-page dynamic OG images (Next `ImageResponse`) — nice-to-have, not needed.
 - **Homepage copy.** Make the H1 and intro target "free online tools" + the categories, so the homepage itself ranks.
 - **Related-tools internal linking** is already present (good) — make sure every new tool has 2+ FAQs so it qualifies for FAQ rich results.
 
-## Phase 5 — Off-site / distribution (lower priority, do after 20+ tools live)
+## Phase 5 — Off-site / distribution (now unblocked — 20+ tools live) ⏳ NOT STARTED
 
-- Submit standout tools to directories (AlternativeTo, ToolFinder, relevant subreddits, Hacker News "Show HN" if there's a unique angle).
+The "do after 20+ tools live" gate is cleared (43 live). When ready:
+- Submit standout tools to directories (AlternativeTo, ToolFinder, relevant subreddits, Hacker News "Show HN" if there's a unique angle). The PDF suite and Passport Photo Maker are the strongest "Show HN" candidates.
 - A few quality backlinks from dev/finance communities move the needle more than volume.
 
 ---
@@ -92,9 +109,9 @@ The architecture already does most of this well (per-tool titles, canonical URLs
 
 | Cadence | Action |
 |---|---|
-| Each session | Build 2–4 tools, push, confirm they index in GSC |
-| Weekly | Check GSC Performance — which queries are appearing? Build more in winning categories |
-| Monthly | Write 2–3 guides for the top-trafficked tools; refresh any stale meta descriptions |
-| Quarterly | PageSpeed audit; review which `coming soon` stubs to promote based on data |
+| Each session | Write 1–2 guides (Phase 3) or polish meta descriptions (Phase 4); easy-tool backlog is now cleared |
+| Weekly | Check GSC Performance — which queries are appearing? Build tools/guides in winning categories |
+| Monthly | Write 2–3 guides for top-trafficked tools; refresh any stale meta descriptions |
+| Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review the 3 remaining stubs based on data |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 23 tools today, 50 in two months, each one earning its own trickle of search traffic that adds up.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 43 tools + 5 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
