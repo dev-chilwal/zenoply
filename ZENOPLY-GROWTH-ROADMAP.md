@@ -1,23 +1,23 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 26 June 2026 (Phase 1 complete; Phase 2 effectively complete — 43 tools live; Phase 3 advancing — 21 guides live)._
+_Goal: grow organic search traffic. Last updated: 26 June 2026 (Phase 1 complete; Phase 2 complete — 56 tools live, 0 stubs remaining; Phase 3 advancing — 21 guides live)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
 ---
 
-## Current state (updated 25 Jun 2026)
+## Current state (updated 26 Jun 2026)
 
-**43 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **21 guides are also live** under `/guides`.
+**56 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **21 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.**
 
 - **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
 - **Dev (8):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier
 - **Convert (8):** Hex to RGB, RGB to Hex, Color Converter (HEX/RGB/HSL/CMYK), Unix Timestamp Converter, JSON to CSV, CSV to JSON, YAML to JSON, Number to Words
-- **Finance (7):** SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage
+- **Finance (20):** SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage, Simple Interest, RD, PPF, NPS, Gratuity, HRA, Income Tax, In-Hand Salary, Lumpsum, SWP, CAGR, ROI, Inflation
 - **PDF (8) — category added since launch:** Merge, Split, Compress, PDF to JPG, JPG to PDF, Rotate, Unlock, Watermark
 - **Image (4):** Image Resizer, Image Converter (PNG/JPG/WebP), Image Compressor, Passport Photo Maker
 
-**Still stubbed as `coming soon` (3):** Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — all finance; deferred because tax logic changes yearly and needs maintenance.
+**No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
 **Guides live (21):** Each is linked to/from its tool (bidirectional internal linking).
 - _Finance (7):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated?
@@ -55,12 +55,11 @@ PageSpeed flagged these minor "insights" at score 99; none worth acting on now, 
 
 ## Phase 2 — Ship tools on a steady cadence ✅ EASY/MID BATCH COMPLETE (ongoing for the long tail)
 
-The launch catalog stubbed ~35 tools as `coming soon`. Nearly all of them are now live — the easy text/dev/convert wins, the full Image category, **and the whole PDF suite** (the "higher-effort, higher-payoff later" item). Catalog grew 9 → 23 → **43**.
+The launch catalog stubbed ~35 tools as `coming soon`. **All of them are now live** — the easy text/dev/convert wins, the full Image category, the whole PDF suite, and the complete finance calculator set including the three previously deferred tax tools. Catalog grew 9 → 23 → 43 → **56**, with 0 stubs remaining.
 
 **✅ Shipped:** all of the text/dev/convert "next batch" (Find & Replace, Slug Generator, Text Reverser, RGB to Hex, Color Converter, JSON↔CSV, YAML to JSON, Number to Words, JWT Decoder, SQL Formatter, HTML Minifier), the **Image Tools** category (Resizer, Converter, Compressor, Passport Photo Maker), and the **PDF Tools** category (Merge, Split, Compress, PDF↔JPG, Rotate, Unlock, Watermark).
 
-**Remaining stubs (the only `coming soon` tiles left):**
-- **Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator** — high India search volume, but tax logic changes yearly so they need a maintenance plan before shipping. Decide: ship for FY2026-27 with a clear "last updated" note, or keep deferred.
+**✅ Stubs cleared (26 Jun):** Income Tax Calculator, In-Hand Salary Calculator and PPF Calculator shipped for FY2025-26, plus a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation). **Maintenance note:** the tax/salary tools need a yearly review when slabs change — add to the quarterly cadence below.
 
 **Future tool ideas (net-new, beyond the original stub list):**
 - Image: background remover (the old `E:\utilio` app used `@imgly/background-removal` + onnxruntime — heavy; only add if worth the bundle cost) and image cropper.
@@ -93,14 +92,14 @@ Let GSC Performance data pick the order — write guides for whichever live tool
 ## Phase 4 — On-page SEO polish (one focused pass) ⏳ NOT STARTED
 
 The architecture already does most of this well (per-tool titles, canonical URLs, OpenGraph, SoftwareApplication + BreadcrumbList + FAQPage JSON-LD). Tighten:
-- **Unique, keyword-led meta descriptions** per tool (a few currently read generically — make each one match how people actually search). Worth a dedicated pass now that there are 43 of them.
+- **Unique, keyword-led meta descriptions** per tool (a few currently read generically — make each one match how people actually search). Worth a dedicated pass now that there are 56 of them.
 - ~~**OG image.**~~ ✅ DONE (9 Jun 2026). Branded 1200×630 `public/og.png` wired into root layout + `lib/seo.js`; `twitter:card` upgraded to `summary_large_image`. Verified live via opengraph.xyz. Source: `public/og.svg` (edit + re-render with sharp/ImageMagick if text changes). Future option: per-page dynamic OG images (Next `ImageResponse`) — nice-to-have, not needed.
 - **Homepage copy.** Make the H1 and intro target "free online tools" + the categories, so the homepage itself ranks.
 - **Related-tools internal linking** is already present (good) — make sure every new tool has 2+ FAQs so it qualifies for FAQ rich results.
 
 ## Phase 5 — Off-site / distribution (now unblocked — 20+ tools live) ⏳ NOT STARTED
 
-The "do after 20+ tools live" gate is cleared (43 live). When ready:
+The "do after 20+ tools live" gate is cleared (56 live). When ready:
 - Submit standout tools to directories (AlternativeTo, ToolFinder, relevant subreddits, Hacker News "Show HN" if there's a unique angle). The PDF suite and Passport Photo Maker are the strongest "Show HN" candidates.
 - A few quality backlinks from dev/finance communities move the needle more than volume.
 
@@ -113,6 +112,7 @@ The "do after 20+ tools live" gate is cleared (43 live). When ready:
 | Each session | Write 1–2 guides (Phase 3) or polish meta descriptions (Phase 4); easy-tool backlog is now cleared |
 | Weekly | Check GSC Performance — which queries are appearing? Build tools/guides in winning categories |
 | Monthly | Write 2–3 guides for top-trafficked tools; refresh any stale meta descriptions |
-| Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review the 3 remaining stubs based on data |
+| Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
+| Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 43 tools + 21 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 56 tools + 21 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
