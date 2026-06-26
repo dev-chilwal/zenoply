@@ -1,13 +1,23 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Fields, Slider, Result, ResultHero, SplitBar, Legend } from "@/components/calc/Calc";
+import { useRegion } from "@/components/LocaleContext";
+import { formatMoney } from "@/lib/formatters";
+import { moneyRange } from "@/lib/locales";
 
-const fmt = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+// Monthly-investment range in the IN baseline (scale = 1); scaled per region.
+const AMOUNT_BASE = { min: 500, max: 100000, step: 500, default: 25000 };
 
 export default function SipCalculator() {
-  const [amount, setAmount] = useState(25000);
+  const reg = useRegion();
+  const fmt = (n) => formatMoney(n, reg);
+  const amt = useMemo(() => moneyRange(AMOUNT_BASE, reg.scale), [reg.scale]);
+
+  const [amount, setAmount] = useState(amt.default);
   const [rate, setRate] = useState(12);
   const [years, setYears] = useState(10);
+
+  useEffect(() => { setAmount(amt.default); }, [reg.code, amt.default]);
 
   const r = useMemo(() => {
     const i = rate / 12 / 100;
@@ -26,7 +36,7 @@ export default function SipCalculator() {
     <div>
       <Fields>
         <Slider label="Monthly investment" display={fmt(amount)} value={amount}
-          min={500} max={100000} step={500} onChange={setAmount} />
+          min={amt.min} max={amt.max} step={amt.step} onChange={setAmount} />
         <Slider label="Expected return (p.a.)" display={`${rate}%`} value={rate}
           min={1} max={30} step={0.5} onChange={setRate} />
         <Slider label="Time period" display={yearsLabel} value={years}
