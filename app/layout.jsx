@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Sora, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Sora, Plus_Jakarta_Sans, JetBrains_Mono, Fraunces } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { LocaleProvider } from "@/components/LocaleContext";
@@ -22,6 +22,14 @@ const mono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-mono",
+  display: "swap",
+});
+// Editorial serif display — scoped to calculator pages (see .calc-page in globals.css).
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal"],
+  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -58,7 +66,7 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${sora.variable} ${jakarta.variable} ${mono.variable}`}
+      className={`${sora.variable} ${jakarta.variable} ${mono.variable} ${fraunces.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

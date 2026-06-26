@@ -1,8 +1,12 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import { Fields, Slider, Result, ResultHero, Rows, Row } from "@/components/calc/Calc";
+import {
+  NumberInput, CalcGrid, CalcMain, CalcRail,
+  ResultStatement, MiniChart, SumRows, SumRow,
+  RailNote, RailStat, RailFormula,
+} from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
-import { formatMoney } from "@/lib/formatters";
+import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
 const CONTRIB_BASE = { min: 500, max: 150000, step: 500, default: 10000 };
@@ -10,7 +14,9 @@ const CONTRIB_BASE = { min: 500, max: 150000, step: 500, default: 10000 };
 export default function NpsCalculator() {
   const reg = useRegion();
   const range = useMemo(() => moneyRange(CONTRIB_BASE, reg.scale), [reg.scale]);
+  const sym = currencySymbol(reg);
   const fmt = (n) => formatMoney(n, reg);
+  const fmtCompact = (n) => formatMoney(n, reg, { notation: "compact" });
 
   const [contribution, setContribution] = useState(range.default);
   const [currentAge, setCurrentAge] = useState(30);
@@ -34,31 +40,93 @@ export default function NpsCalculator() {
     const lumpSum = corpus - annuitised;
     const pension = annuitised * (annuityRate / 1200);
     const invested = contribution * months;
-    return { corpus, annuitised, lumpSum, pension, invested };
+    // Corpus accumulated at the end of each whole year (presentation only).
+    const yearsToRetire = Math.max(0, retirementAge - currentAge);
+    const series = Array.from({ length: yearsToRetire + 1 }, (_, y) => {
+      const m = y * 12;
+      return m === 0 ? 0
+        : i === 0 ? contribution * m
+        : contribution * ((Math.pow(1 + i, m) - 1) / i) * (1 + i);
+    });
+    return { corpus, annuitised, lumpSum, pension, invested, series };
   }, [contribution, currentAge, retirementAge, rate, annuityPct, annuityRate]);
 
   return (
-    <div>
-      <Fields>
-        <Slider label="Monthly contribution" display={fmt(contribution)} value={contribution} min={range.min} max={range.max} step={range.step} onChange={setContribution} />
-        <Slider label="Current age" display={`${currentAge} yrs`} value={currentAge} min={18} max={59} step={1} onChange={setCurrentAge} />
-        <Slider label="Retirement age" display={`${retirementAge} yrs`} value={retirementAge} min={40} max={75} step={1} onChange={setRetirementAge} />
-        <Slider label="Expected return (p.a.)" display={`${rate}%`} value={rate} min={1} max={15} step={0.5} onChange={setRate} />
-        <Slider label="Corpus to annuitise" display={`${annuityPct}%`} value={annuityPct} min={40} max={100} step={1} onChange={setAnnuityPct} />
-        <Slider label="Expected annuity rate (p.a.)" display={`${annuityRate}%`} value={annuityRate} min={3} max={12} step={0.5} onChange={setAnnuityRate} />
-      </Fields>
-      <Result>
-        <ResultHero label="Total corpus at retirement" value={fmt(r.corpus)} />
-      </Result>
-      <Rows>
-        <Row label="Invested" val={fmt(r.invested)} />
-        <Row label="Tax-free lump-sum (up to 60%)" val={fmt(r.lumpSum)} />
-        <Row label="Amount annuitised" val={fmt(r.annuitised)} />
-        <Row label="Estimated monthly pension" val={fmt(r.pension)} highlight />
-      </Rows>
-      <p className="muted small" style={{ marginTop: ".75rem" }}>
-        Estimates only, assuming monthly compounding and constant rates. At least 40% of the corpus must buy an annuity; the lump-sum (up to 60%) is tax-free under Section 10(12A), but the annuity pension is taxable as income. Returns and annuity rates are not guaranteed.
-      </p>
-    </div>
+    <CalcGrid>
+      <CalcMain>
+        <NumberInput
+          label="Monthly contribution" hint="How much you invest into NPS each month."
+          prefix={sym} value={contribution} onChange={setContribution}
+          min={range.min} max={range.max} step={range.step}
+        />
+        <NumberInput
+          label="Current age" hint="Your age today."
+          suffix="yrs" value={currentAge} onChange={setCurrentAge}
+          min={18} max={59} step={1}
+        />
+        <NumberInput
+          label="Retirement age" hint="When you plan to withdraw."
+          suffix="yrs" value={retirementAge} onChange={setRetirementAge}
+          min={40} max={75} step={1}
+        />
+        <NumberInput
+          label="Expected return (p.a.)" hint="Average annual growth of the NPS corpus."
+          suffix="%" value={rate} onChange={setRate}
+          min={1} max={15} step={0.5}
+        />
+        <NumberInput
+          label="Corpus to annuitise" hint="At least 40% must buy an annuity."
+          suffix="%" value={annuityPct} onChange={setAnnuityPct}
+          min={40} max={100} step={1}
+        />
+        <NumberInput
+          label="Expected annuity rate (p.a.)" hint="Rate the annuity provider pays."
+          suffix="%" value={annuityRate} onChange={setAnnuityRate}
+          min={3} max={12} step={0.5}
+        />
+
+        <ResultStatement>
+          At retirement you could build a corpus of <span className="pop">{fmt(r.corpus)}</span>.
+        </ResultStatement>
+
+        <MiniChart
+          series={r.series}
+          format={fmtCompact}
+          caption="Corpus per year"
+        />
+
+        <SumRows>
+          <SumRow label="Invested" value={fmt(r.invested)} />
+          <SumRow label="Tax-free lump-sum (up to 60%)" value={fmt(r.lumpSum)} />
+          <SumRow label="Amount annuitised" value={fmt(r.annuitised)} />
+          <SumRow label="Estimated monthly pension" value={fmt(r.pension)} />
+        </SumRows>
+
+        <p className="calc-disclaimer">
+          Estimates only, assuming monthly compounding and constant rates. At least 40% of the corpus must buy an annuity; the lump-sum (up to 60%) is tax-free under Section 10(12A), but the annuity pension is taxable as income. Returns and annuity rates are not guaranteed.
+        </p>
+      </CalcMain>
+
+      <CalcRail>
+        <RailNote title="What you retire with">
+          NPS splits into a tax-free lump-sum and an annuity that pays a monthly pension.
+        </RailNote>
+        <RailStat
+          label="Estimated monthly pension" tone="data"
+          value={fmt(r.pension)}
+          sub={`from ${fmt(r.annuitised)} annuitised`}
+        />
+        <RailStat
+          label="Tax-free lump-sum" tone="data"
+          value={fmt(r.lumpSum)}
+          sub="up to 60% of the corpus"
+        />
+        <RailFormula
+          label="The calculation"
+          formula={<>FV = P × ((1 + i)<sup>n</sup> − 1) ÷ i × (1 + i)</>}
+          note="Monthly contributions compound to retirement (annuity-due)."
+        />
+      </CalcRail>
+    </CalcGrid>
   );
 }
