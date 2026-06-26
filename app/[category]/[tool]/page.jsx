@@ -29,6 +29,8 @@ import InflationCalculator from "@/components/tools/InflationCalculator";
 import NpsCalculator from "@/components/tools/NpsCalculator";
 import GratuityCalculator from "@/components/tools/GratuityCalculator";
 import HraCalculator from "@/components/tools/HraCalculator";
+import IncomeTaxCalculator from "@/components/tools/IncomeTaxCalculator";
+import InHandSalaryCalculator from "@/components/tools/InHandSalaryCalculator";
 import Base64Encoder from "@/components/tools/Base64Encoder";
 import UrlEncoder from "@/components/tools/UrlEncoder";
 import UuidGenerator from "@/components/tools/UuidGenerator";
@@ -85,6 +87,8 @@ const REGISTRY = {
   "nps-calculator": NpsCalculator,
   "gratuity-calculator": GratuityCalculator,
   "hra-calculator": HraCalculator,
+  "income-tax-calculator": IncomeTaxCalculator,
+  "in-hand-salary-calculator": InHandSalaryCalculator,
   "base64-encoder": Base64Encoder,
   "url-encoder": UrlEncoder,
   "uuid-generator": UuidGenerator,
