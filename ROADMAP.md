@@ -39,13 +39,14 @@ depletion all confirmed against a worked example).
 
 ## Tier 2 — high-demand, more logic / yearly maintenance
 
-- [ ] NPS / Retirement corpus calculator
-- [ ] Gratuity calculator
-- [ ] HRA exemption calculator (3-way formula)
-- [ ] Income Tax calculator — old vs new regime, section-wise deductions
-      (80C, 80CCD(1B), 80D, 80G, 80E, 80TTA/TTB), current AY slabs ✓ (deferred:
-      heavy + needs yearly updates)
-- [ ] In-Hand Salary calculator — CTC → net pay (Basic, HRA, LTA, EPF)
+- [x] NPS / Retirement corpus calculator (monthly compounding, 40% min annuity)
+- [x] Gratuity calculator (15/26 formula, >6-month rounding, ₹20L exempt cap)
+- [x] HRA exemption calculator (3-way formula, metro/non-metro)
+- [x] Income Tax calculator — old vs new regime comparison, key deductions,
+      FY 2025-26 (AY 2026-27) slabs + 87A rebate (web-researched & verified).
+      Note: slabs need a yearly refresh in `lib/incometax.js`.
+- [x] In-Hand Salary calculator — CTC → net pay (PF, gratuity, professional
+      tax, income tax via the shared engine)
 
 ## Deepen existing calculators
 

@@ -1,6 +1,9 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Segmented, NumberField, Result, ResultHero } from "@/components/calc/Calc";
+import {
+  Segmented, NumberInput, CalcGrid, CalcMain, CalcRail,
+  ResultStatement, RailNote, RailStat, RailFormula,
+} from "@/components/calc/Calc";
 
 const round = (n) => Math.round(n * 10000) / 10000;
 const show = (n) =>
@@ -34,40 +37,89 @@ export default function PercentageCalculator() {
   }, [mode, a, b, x, y, v1, v2]);
 
   return (
-    <div>
-      <Segmented
-        ariaLabel="Mode"
-        value={mode}
-        onChange={setMode}
-        options={[
-          { value: "of", label: "% of a number" },
-          { value: "isWhat", label: "X is what % of Y" },
-          { value: "change", label: "% increase / decrease" },
-        ]}
-      />
+    <CalcGrid>
+      <CalcMain>
+        <Segmented
+          ariaLabel="Mode"
+          value={mode}
+          onChange={setMode}
+          options={[
+            { value: "of", label: "% of a number" },
+            { value: "isWhat", label: "X is what % of Y" },
+            { value: "change", label: "% increase / decrease" },
+          ]}
+        />
 
-      {mode === "of" && (
-        <div className="calc-grid">
-          <NumberField label="Percentage (%)" value={a} onChange={setA} suffix="%" step={1} />
-          <NumberField label="Of value" value={b} onChange={setB} step={1} />
-        </div>
-      )}
-      {mode === "isWhat" && (
-        <div className="calc-grid">
-          <NumberField label="Value (X)" value={x} onChange={setX} step={1} />
-          <NumberField label="Total (Y)" value={y} onChange={setY} step={1} />
-        </div>
-      )}
-      {mode === "change" && (
-        <div className="calc-grid">
-          <NumberField label="Original value" value={v1} onChange={setV1} step={1} />
-          <NumberField label="New value" value={v2} onChange={setV2} step={1} />
-        </div>
-      )}
+        {mode === "of" && (
+          <>
+            <NumberInput
+              label="Percentage" hint="The percentage to take."
+              suffix="%" value={a} onChange={setA} step={1} slider={false}
+            />
+            <NumberInput
+              label="Of value" hint="The number to take the percentage of."
+              value={b} onChange={setB} step={1} slider={false}
+            />
+          </>
+        )}
+        {mode === "isWhat" && (
+          <>
+            <NumberInput
+              label="Value (X)" hint="The part you have."
+              value={x} onChange={setX} step={1} slider={false}
+            />
+            <NumberInput
+              label="Total (Y)" hint="The whole it belongs to."
+              value={y} onChange={setY} step={1} slider={false}
+            />
+          </>
+        )}
+        {mode === "change" && (
+          <>
+            <NumberInput
+              label="Original value" hint="The starting number."
+              value={v1} onChange={setV1} step={1} slider={false}
+            />
+            <NumberInput
+              label="New value" hint="The number after the change."
+              value={v2} onChange={setV2} step={1} slider={false}
+            />
+          </>
+        )}
 
-      <Result>
-        <ResultHero label={result.label} value={result.val} />
-      </Result>
-    </div>
+        <ResultStatement>
+          {result.label} is <span className="pop">{result.val}</span>.
+        </ResultStatement>
+      </CalcMain>
+
+      <CalcRail>
+        <RailNote title="What this answers">
+          Three everyday percentage questions in one place — share, ratio, and change.
+        </RailNote>
+        <RailStat
+          label={result.label} tone="data"
+          value={result.val}
+        />
+        <RailFormula
+          label="The calculation"
+          formula={
+            mode === "of" ? (
+              <>result = a ÷ 100 × b</>
+            ) : mode === "isWhat" ? (
+              <>result = x ÷ y × 100</>
+            ) : (
+              <>result = (v₂ − v₁) ÷ |v₁| × 100</>
+            )
+          }
+          note={
+            mode === "of"
+              ? "Percentage of a value"
+              : mode === "isWhat"
+              ? "What share X is of Y"
+              : "Percent increase or decrease"
+          }
+        />
+      </CalcRail>
+    </CalcGrid>
   );
 }
