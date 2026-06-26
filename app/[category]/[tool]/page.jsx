@@ -18,6 +18,14 @@ import CompoundInterest from "@/components/tools/CompoundInterest";
 import FdCalculator from "@/components/tools/FdCalculator";
 import PercentageCalculator from "@/components/tools/PercentageCalculator";
 import MortgageCalculator from "@/components/tools/MortgageCalculator";
+import RdCalculator from "@/components/tools/RdCalculator";
+import PpfCalculator from "@/components/tools/PpfCalculator";
+import LumpsumCalculator from "@/components/tools/LumpsumCalculator";
+import SwpCalculator from "@/components/tools/SwpCalculator";
+import CagrCalculator from "@/components/tools/CagrCalculator";
+import RoiCalculator from "@/components/tools/RoiCalculator";
+import SimpleInterestCalculator from "@/components/tools/SimpleInterestCalculator";
+import InflationCalculator from "@/components/tools/InflationCalculator";
 import Base64Encoder from "@/components/tools/Base64Encoder";
 import UrlEncoder from "@/components/tools/UrlEncoder";
 import UuidGenerator from "@/components/tools/UuidGenerator";
@@ -63,6 +71,14 @@ const REGISTRY = {
   "fd-calculator": FdCalculator,
   "percentage-calculator": PercentageCalculator,
   "mortgage-calculator": MortgageCalculator,
+  "rd-calculator": RdCalculator,
+  "ppf-calculator": PpfCalculator,
+  "lumpsum-calculator": LumpsumCalculator,
+  "swp-calculator": SwpCalculator,
+  "cagr-calculator": CagrCalculator,
+  "roi-calculator": RoiCalculator,
+  "simple-interest-calculator": SimpleInterestCalculator,
+  "inflation-calculator": InflationCalculator,
   "base64-encoder": Base64Encoder,
   "url-encoder": UrlEncoder,
   "uuid-generator": UuidGenerator,
