@@ -2,6 +2,7 @@ import Link from "next/link";
 import Breadcrumbs from "./Breadcrumbs";
 import { guideJsonLd } from "@/lib/seo";
 import { getTool } from "@/lib/site";
+import { headingId, readingTime, guideToc, GUIDE_CATEGORIES } from "@/lib/guides";
 
 // Parse a tiny [label](href) inline-link syntax into React nodes so guide
 // body text can link to tools without raw HTML. Plain text passes through.
@@ -25,7 +26,8 @@ function renderInline(text, keyBase) {
 }
 
 function Block({ block, idx }) {
-  if (block.t === "h2") return <h2>{block.s}</h2>;
+  if (block.t === "h2")
+    return <h2 id={headingId(block.s)}>{block.s}</h2>;
   if (block.t === "h3") return <h3>{block.s}</h3>;
   if (block.t === "p") return <p>{renderInline(block.s, `p${idx}`)}</p>;
   if (block.t === "ul")
@@ -47,10 +49,24 @@ function Block({ block, idx }) {
   return null;
 }
 
+function formatDate(iso) {
+  if (!iso) return null;
+  const [y, m, d] = iso.split("-").map(Number);
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
+  return `${months[m - 1]} ${d}, ${y}`;
+}
+
 // Reusable shell for every guide page: schema + breadcrumbs + body + tool CTA + FAQ.
 export default function GuidePage({ guide }) {
   const jsonLd = guideJsonLd(guide);
   const relatedTool = getTool(guide.category, guide.tool.slug);
+  const toc = guideToc(guide);
+  const minutes = readingTime(guide);
+  const updated = formatDate(guide.updated);
+  const cat = GUIDE_CATEGORIES.find((c) => c.slug === guide.category);
 
   return (
     <>
@@ -58,7 +74,7 @@ export default function GuidePage({ guide }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="container tool-layout">
+      <div className="container tool-layout guide-page">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },
@@ -66,40 +82,77 @@ export default function GuidePage({ guide }) {
             { label: guide.title },
           ]}
         />
-        <h1>{guide.h1}</h1>
-        <p className="lead">{guide.desc}</p>
 
-        <article className="prose">
-          {guide.body.map((b, i) => (
-            <Block key={i} block={b} idx={i} />
-          ))}
-        </article>
+        <header className="guide-head">
+          <div className="fin-eyebrow">{cat ? cat.label : "Guide"}</div>
+          <h1 className="guide-title">{guide.h1}</h1>
+          <p className="guide-lead">{guide.desc}</p>
+          <div className="guide-meta">
+            <span>{minutes} min read</span>
+            {updated && (
+              <>
+                <span className="guide-meta-dot" aria-hidden />
+                <span>Updated {updated}</span>
+              </>
+            )}
+          </div>
+        </header>
 
-        {relatedTool && (
-          <section className="related">
-            <h2>Try the tool</h2>
-            <div className="card-grid">
-              <Link href={`/${relatedTool.category}/${relatedTool.slug}`} className="card">
-                <strong>{relatedTool.title}</strong>
-                <span className="muted small">{relatedTool.desc}</span>
+        <div className="guide-shell">
+          <article className="prose guide-body">
+            {guide.body.map((b, i) => (
+              <Block key={i} block={b} idx={i} />
+            ))}
+
+            {guide.faqs?.length > 0 && (
+              <section className="guide-faq">
+                <h2 id="faq">Frequently asked questions</h2>
+                <dl className="faq">
+                  {guide.faqs.map((f, i) => (
+                    <div key={i}>
+                      <dt>{f.q}</dt>
+                      <dd>{f.a}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            )}
+          </article>
+
+          <aside className="guide-aside">
+            {toc.length > 0 && (
+              <nav className="guide-toc" aria-label="On this page">
+                <div className="guide-toc-title">On this page</div>
+                <ul>
+                  {toc.map((h) => (
+                    <li key={h.id}>
+                      <a href={`#${h.id}`}>{h.text}</a>
+                    </li>
+                  ))}
+                  {guide.faqs?.length > 0 && (
+                    <li>
+                      <a href="#faq">FAQ</a>
+                    </li>
+                  )}
+                </ul>
+              </nav>
+            )}
+
+            {relatedTool && (
+              <Link
+                href={`/${relatedTool.category}/${relatedTool.slug}`}
+                className="guide-tool-card"
+              >
+                <span className="guide-tool-label">Try the tool</span>
+                <span className="guide-tool-name">{relatedTool.title}</span>
+                <span className="guide-tool-desc">{relatedTool.desc}</span>
+                <span className="guide-tool-cta">
+                  Open tool <span aria-hidden>→</span>
+                </span>
               </Link>
-            </div>
-          </section>
-        )}
-
-        {guide.faqs?.length > 0 && (
-          <section className="prose">
-            <h2>Frequently asked questions</h2>
-            <dl className="faq">
-              {guide.faqs.map((f, i) => (
-                <div key={i}>
-                  <dt>{f.q}</dt>
-                  <dd>{f.a}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
+            )}
+          </aside>
+        </div>
       </div>
     </>
   );
