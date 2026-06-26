@@ -190,6 +190,16 @@ h1, h2, h3 { font-family: var(--font-sora), var(--font-jakarta), sans-serif; }
   transition: border-color .15s, color .15s;
 }
 .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.currency-select {
+  flex-shrink: 0; height: 38px; max-width: 130px;
+  padding: 0 .6rem; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--surface); color: var(--fg);
+  font-family: inherit; font-size: .82rem; font-weight: 600; cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.currency-select:hover { border-color: var(--accent); }
+.currency-select:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+@media (max-width: 640px) { .currency-select { max-width: 92px; font-size: .78rem; } }
 
 /* ---------- Generic hero (home + simple hubs) ---------- */
 .hero {

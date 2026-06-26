@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CATEGORIES, SITE } from "@/lib/site";
 import ThemeToggle from "./ThemeToggle";
+import CurrencySelect from "./CurrencySelect";
 
 function shortName(name) {
   return name.replace(" Calculators", "").replace(" Tools", "");
@@ -30,6 +31,7 @@ export default function Header() {
           </Link>
         </nav>
         <Link href="/" className="header-cta">All tools</Link>
+        <CurrencySelect />
         <ThemeToggle />
       </div>
     </header>
