@@ -2,6 +2,7 @@ import "./globals.css";
 import { Sora, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { LocaleProvider } from "@/components/LocaleContext";
 import { SITE } from "@/lib/site";
 
 // Display: Sora · Body: Plus Jakarta Sans · Numbers/labels: JetBrains Mono.
@@ -63,9 +64,11 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <LocaleProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </LocaleProvider>
       </body>
     </html>
   );
