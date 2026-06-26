@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { PDFDocument, degrees } from "pdf-lib";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
+import { Segmented } from "@/components/calc/Calc";
 
 export default function RotatePdf() {
   const [file, setFile] = useState(null);
@@ -55,17 +56,8 @@ export default function RotatePdf() {
       {file && (
         <>
           <p className="muted small">{file.name} — {fmtBytes(file.size)}, {total} page{total === 1 ? "" : "s"}</p>
-          <div className="btn-row">
-            {[90, 180, 270].map((a) => (
-              <button
-                key={a}
-                className={"btn" + (angle === a ? "" : " btn-ghost")}
-                onClick={() => setAngle(a)}
-              >
-                {a}&deg; clockwise
-              </button>
-            ))}
-          </div>
+          <Segmented ariaLabel="Rotation" value={angle} onChange={setAngle}
+            options={[90, 180, 270].map((a) => ({ value: a, label: `${a}° clockwise` }))} />
           <div className="btn-row">
             <button className="btn" onClick={rotate} disabled={busy}>
               {busy ? "Rotating…" : "Rotate and download"}

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
+import { Segmented } from "@/components/calc/Calc";
 
 // Load pdf.js lazily on the client and point it at a matching worker so the
 // static export stays light and nothing runs at build time.
@@ -70,10 +71,8 @@ export default function PdfToJpg() {
       {file && (
         <>
           <p className="muted small">{file.name} — {fmtBytes(file.size)}</p>
-          <div className="btn-row">
-            <button className={"btn" + (format === "image/jpeg" ? "" : " btn-ghost")} onClick={() => setFormat("image/jpeg")}>JPG</button>
-            <button className={"btn" + (format === "image/png" ? "" : " btn-ghost")} onClick={() => setFormat("image/png")}>PNG</button>
-          </div>
+          <Segmented ariaLabel="Image format" value={format} onChange={setFormat}
+            options={[{ value: "image/jpeg", label: "JPG" }, { value: "image/png", label: "PNG" }]} />
           <label className="field">
             <span className="field-label">Quality: {scale}x resolution</span>
             <input type="range" min={1} max={4} step={1} value={scale} onChange={(e) => setScale(Number(e.target.value))} />

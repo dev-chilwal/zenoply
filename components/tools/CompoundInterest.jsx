@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import { Fields, Slider, Field, Result, ResultHero, SplitBar, Legend } from "@/components/calc/Calc";
 
 const fmt = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
 const FREQ = { Annually: 1, "Half-yearly": 2, Quarterly: 4, Monthly: 12 };
@@ -13,42 +14,30 @@ export default function CompoundInterest() {
   const r = useMemo(() => {
     const nfreq = FREQ[freq];
     const amount = principal * Math.pow(1 + rate / 100 / nfreq, nfreq * years);
-    return { amount, interest: amount - principal };
+    const interest = amount - principal;
+    const pPct = amount > 0 ? (principal / amount) * 100 : 0;
+    const iPct = amount > 0 ? (interest / amount) * 100 : 0;
+    return { amount, interest, pPct, iPct };
   }, [principal, rate, years, freq]);
 
+  const yearsLabel = `${years} ${years === 1 ? "year" : "years"}`;
   return (
     <div>
-      <Field label="Principal amount (₹)" value={principal} set={setPrincipal} min={0} step={10000} />
-      <Field label="Interest rate (% p.a.)" value={rate} set={setRate} min={0} max={50} step={0.5} />
-      <Field label="Time period (years)" value={years} set={setYears} min={1} max={50} step={1} />
-      <label className="field">
-        <span className="field-label">Compounding frequency</span>
-        <select className="inp" value={freq} onChange={(e) => setFreq(e.target.value)}>
-          {Object.keys(FREQ).map((f) => <option key={f} value={f}>{f}</option>)}
-        </select>
-      </label>
-      <div className="result-list">
-        <Row label="Principal" val={fmt(principal)} />
-        <Row label="Total interest" val={fmt(r.interest)} />
-        <Row label="Maturity value" val={fmt(r.amount)} highlight />
-      </div>
-    </div>
-  );
-}
-function Field({ label, value, set, min, max, step }) {
-  return (
-    <label className="field">
-      <span className="field-label">{label}</span>
-      <input className="inp" type="number" value={value} min={min} max={max} step={step}
-        onChange={(e) => set(parseFloat(e.target.value) || 0)} />
-    </label>
-  );
-}
-function Row({ label, val, highlight }) {
-  return (
-    <div className={"result-row" + (highlight ? " result-row-hl" : "")}>
-      <span className="result-label">{label}</span>
-      <code className="result-val">{val}</code>
+      <Fields>
+        <Slider label="Principal amount" display={fmt(principal)} value={principal} min={1000} max={10000000} step={10000} onChange={setPrincipal} />
+        <Slider label="Interest rate (p.a.)" display={`${rate}%`} value={rate} min={0.5} max={30} step={0.5} onChange={setRate} />
+        <Slider label="Time period" display={yearsLabel} value={years} min={1} max={40} step={1} onChange={setYears} />
+        <Field label="Compounding frequency">
+          <select className="inp" value={freq} onChange={(e) => setFreq(e.target.value)}>
+            {Object.keys(FREQ).map((f) => <option key={f} value={f}>{f}</option>)}
+          </select>
+        </Field>
+      </Fields>
+      <Result>
+        <ResultHero label="Maturity value" value={fmt(r.amount)} />
+        <SplitBar a={r.pPct} b={r.iPct} />
+        <Legend left={{ k: "Principal", v: fmt(principal) }} right={{ k: `Interest · ${Math.round(r.iPct)}%`, v: fmt(r.interest) }} />
+      </Result>
     </div>
   );
 }

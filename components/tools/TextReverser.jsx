@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import OutputBox from "@/components/OutputBox";
+import { Segmented } from "@/components/calc/Calc";
 
 // Reverse the order of characters in each line, preserving line breaks.
 function reverseCharacters(text) {
@@ -40,17 +41,8 @@ export default function TextReverser() {
 
   return (
     <div>
-      <div className="btn-row">
-        {Object.entries(modes).map(([key, { label }]) => (
-          <button
-            key={key}
-            className={"btn" + (mode === key ? "" : " btn-ghost")}
-            onClick={() => setMode(key)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <Segmented ariaLabel="Reverse mode" value={mode} onChange={setMode}
+        options={Object.entries(modes).map(([key, { label }]) => ({ value: key, label }))} />
       <label className="field">
         <span className="field-label">Text to reverse</span>
         <textarea

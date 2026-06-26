@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Segmented } from "@/components/calc/Calc";
 
 // Accepts seconds or milliseconds (auto-detected by magnitude).
 function epochToDate(raw) {
@@ -38,10 +39,8 @@ export default function EpochConverter() {
 
   return (
     <div>
-      <div className="btn-row">
-        <button className={"btn" + (mode === "toDate" ? "" : " btn-ghost")} onClick={() => setMode("toDate")}>Timestamp → Date</button>
-        <button className={"btn" + (mode === "toEpoch" ? "" : " btn-ghost")} onClick={() => setMode("toEpoch")}>Date → Timestamp</button>
-      </div>
+      <Segmented ariaLabel="Mode" value={mode} onChange={setMode}
+        options={[{ value: "toDate", label: "Timestamp → Date" }, { value: "toEpoch", label: "Date → Timestamp" }]} />
 
       {mode === "toDate" ? (
         <label className="field">

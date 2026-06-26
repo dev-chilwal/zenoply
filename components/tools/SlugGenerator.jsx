@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import OutputBox from "@/components/OutputBox";
+import { Segmented } from "@/components/calc/Calc";
 
 // Turn any title into a URL-friendly slug.
 // 1. Unicode-normalize and strip combining marks (cafe from cafe + accent),
@@ -40,14 +41,8 @@ export default function SlugGenerator() {
           placeholder="e.g. 10 Tips for Writing Better Headlines!"
         />
       </label>
-      <div className="btn-row">
-        <button className={"btn" + (separator === "-" ? "" : " btn-ghost")} onClick={() => setSeparator("-")}>
-          Hyphen (-)
-        </button>
-        <button className={"btn" + (separator === "_" ? "" : " btn-ghost")} onClick={() => setSeparator("_")}>
-          Underscore (_)
-        </button>
-      </div>
+      <Segmented ariaLabel="Separator" value={separator} onChange={setSeparator}
+        options={[{ value: "-", label: "Hyphen (-)" }, { value: "_", label: "Underscore (_)" }]} />
       <label className="check-row">
         <input type="checkbox" checked={lowercase} onChange={(e) => setLowercase(e.target.checked)} />
         <span>Convert to lowercase</span>

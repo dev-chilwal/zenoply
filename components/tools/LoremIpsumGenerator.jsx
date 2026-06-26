@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import OutputBox from "@/components/OutputBox";
+import { Segmented } from "@/components/calc/Calc";
 
 const WORDS = [
   "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
@@ -74,17 +75,8 @@ export default function LoremIpsumGenerator() {
 
   return (
     <div>
-      <div className="btn-row">
-        {UNITS.map((u) => (
-          <button
-            key={u.key}
-            className={"btn" + (unit === u.key ? "" : " btn-ghost")}
-            onClick={() => setUnit(u.key)}
-          >
-            {u.label}
-          </button>
-        ))}
-      </div>
+      <Segmented ariaLabel="Unit" value={unit} onChange={setUnit}
+        options={UNITS.map((u) => ({ value: u.key, label: u.label }))} />
       <label className="field">
         <span className="field-label">How many {unit}? (1-{limit})</span>
         <input

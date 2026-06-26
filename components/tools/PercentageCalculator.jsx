@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import { Segmented, NumberField, Result, ResultHero } from "@/components/calc/Calc";
 
 const round = (n) => Math.round(n * 10000) / 10000;
 const show = (n) =>
@@ -34,51 +35,39 @@ export default function PercentageCalculator() {
 
   return (
     <div>
-      <div className="btn-row">
-        <button className={"btn" + (mode === "of" ? "" : " btn-ghost")} onClick={() => setMode("of")}>% of a number</button>
-        <button className={"btn" + (mode === "isWhat" ? "" : " btn-ghost")} onClick={() => setMode("isWhat")}>X is what % of Y</button>
-        <button className={"btn" + (mode === "change" ? "" : " btn-ghost")} onClick={() => setMode("change")}>% increase / decrease</button>
-      </div>
+      <Segmented
+        ariaLabel="Mode"
+        value={mode}
+        onChange={setMode}
+        options={[
+          { value: "of", label: "% of a number" },
+          { value: "isWhat", label: "X is what % of Y" },
+          { value: "change", label: "% increase / decrease" },
+        ]}
+      />
 
       {mode === "of" && (
-        <>
-          <Field label="Percentage (%)" value={a} set={setA} step={1} />
-          <Field label="Of value" value={b} set={setB} step={1} />
-        </>
+        <div className="calc-grid">
+          <NumberField label="Percentage (%)" value={a} onChange={setA} suffix="%" step={1} />
+          <NumberField label="Of value" value={b} onChange={setB} step={1} />
+        </div>
       )}
       {mode === "isWhat" && (
-        <>
-          <Field label="Value (X)" value={x} set={setX} step={1} />
-          <Field label="Total (Y)" value={y} set={setY} step={1} />
-        </>
+        <div className="calc-grid">
+          <NumberField label="Value (X)" value={x} onChange={setX} step={1} />
+          <NumberField label="Total (Y)" value={y} onChange={setY} step={1} />
+        </div>
       )}
       {mode === "change" && (
-        <>
-          <Field label="Original value" value={v1} set={setV1} step={1} />
-          <Field label="New value" value={v2} set={setV2} step={1} />
-        </>
+        <div className="calc-grid">
+          <NumberField label="Original value" value={v1} onChange={setV1} step={1} />
+          <NumberField label="New value" value={v2} onChange={setV2} step={1} />
+        </div>
       )}
 
-      <div className="result-list">
-        <Row label={result.label} val={result.val} highlight />
-      </div>
-    </div>
-  );
-}
-function Field({ label, value, set, step }) {
-  return (
-    <label className="field">
-      <span className="field-label">{label}</span>
-      <input className="inp" type="number" value={value} step={step}
-        onChange={(e) => set(parseFloat(e.target.value) || 0)} />
-    </label>
-  );
-}
-function Row({ label, val, highlight }) {
-  return (
-    <div className={"result-row" + (highlight ? " result-row-hl" : "")}>
-      <span className="result-label">{label}</span>
-      <code className="result-val">{val}</code>
+      <Result>
+        <ResultHero label={result.label} value={result.val} />
+      </Result>
     </div>
   );
 }

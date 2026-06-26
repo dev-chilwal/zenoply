@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
+import { Segmented } from "@/components/calc/Calc";
 
 // A4 at 72 dpi, in points.
 const A4 = { w: 595.28, h: 841.89 };
@@ -98,10 +99,8 @@ export default function JpgToPdf() {
           ))}
         </ul>
       )}
-      <div className="btn-row">
-        <button className={"btn" + (fit === "a4" ? "" : " btn-ghost")} onClick={() => setFit("a4")}>Fit to A4 page</button>
-        <button className={"btn" + (fit === "image" ? "" : " btn-ghost")} onClick={() => setFit("image")}>Page matches image</button>
-      </div>
+      <Segmented ariaLabel="Page size" value={fit} onChange={setFit}
+        options={[{ value: "a4", label: "Fit to A4 page" }, { value: "image", label: "Page matches image" }]} />
       {error && <p className="error">{error}</p>}
       <div className="btn-row">
         <button className="btn" onClick={build} disabled={busy || !files.length}>

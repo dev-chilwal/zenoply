@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import { Fields, Slider, Result, ResultHero, SplitBar, Legend, Rows, Row } from "@/components/calc/Calc";
 
 const fmt = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
 
@@ -13,36 +14,29 @@ export default function EmiCalculator() {
     const i = rate / 100 / 12;
     const emi = i === 0 ? principal / n : (principal * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
     const total = emi * n;
-    return { emi, total, interest: total - principal };
+    const interest = total - principal;
+    const pPct = total > 0 ? (principal / total) * 100 : 0;
+    const iPct = total > 0 ? (interest / total) * 100 : 0;
+    return { emi, total, interest, pPct, iPct };
   }, [principal, rate, years]);
+
+  const yearsLabel = `${years} ${years === 1 ? "year" : "years"}`;
 
   return (
     <div>
-      <Field label="Loan amount (₹)" value={principal} set={setPrincipal} min={1000} step={50000} />
-      <Field label="Interest rate (% p.a.)" value={rate} set={setRate} min={1} max={30} step={0.1} />
-      <Field label="Loan tenure (years)" value={years} set={setYears} min={1} max={40} step={1} />
-      <div className="result-list">
-        <Row label="Monthly EMI" val={fmt(r.emi)} highlight />
-        <Row label="Total interest" val={fmt(r.interest)} />
+      <Fields>
+        <Slider label="Loan amount" display={fmt(principal)} value={principal} min={50000} max={10000000} step={50000} onChange={setPrincipal} />
+        <Slider label="Interest rate (p.a.)" display={`${rate}%`} value={rate} min={1} max={20} step={0.1} onChange={setRate} />
+        <Slider label="Loan tenure" display={yearsLabel} value={years} min={1} max={30} step={1} onChange={setYears} />
+      </Fields>
+      <Result>
+        <ResultHero label="Monthly EMI" value={fmt(r.emi)} />
+        <SplitBar a={r.pPct} b={r.iPct} />
+        <Legend left={{ k: "Principal", v: fmt(principal) }} right={{ k: `Interest · ${Math.round(r.iPct)}%`, v: fmt(r.interest) }} />
+      </Result>
+      <Rows>
         <Row label="Total payment" val={fmt(r.total)} />
-      </div>
-    </div>
-  );
-}
-function Field({ label, value, set, min, max, step }) {
-  return (
-    <label className="field">
-      <span className="field-label">{label}</span>
-      <input className="inp" type="number" value={value} min={min} max={max} step={step}
-        onChange={(e) => set(parseFloat(e.target.value) || 0)} />
-    </label>
-  );
-}
-function Row({ label, val, highlight }) {
-  return (
-    <div className={"result-row" + (highlight ? " result-row-hl" : "")}>
-      <span className="result-label">{label}</span>
-      <code className="result-val">{val}</code>
+      </Rows>
     </div>
   );
 }

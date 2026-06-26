@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import OutputBox from "@/components/OutputBox";
+import { Segmented } from "@/components/calc/Calc";
 
 // Percent-encode / decode. "Component" mode escapes reserved chars (for query
 // values); "Full URL" mode keeps the URL structure intact.
@@ -32,10 +33,8 @@ export default function UrlEncoder() {
 
   return (
     <div>
-      <div className="btn-row">
-        <button className={"btn" + (mode === "encode" ? "" : " btn-ghost")} onClick={() => setMode("encode")}>Encode</button>
-        <button className={"btn" + (mode === "decode" ? "" : " btn-ghost")} onClick={() => setMode("decode")}>Decode</button>
-      </div>
+      <Segmented ariaLabel="Mode" value={mode} onChange={setMode}
+        options={[{ value: "encode", label: "Encode" }, { value: "decode", label: "Decode" }]} />
       <label className="field">
         <span className="field-label">{mode === "encode" ? "Text or URL to encode" : "Encoded text to decode"}</span>
         <textarea

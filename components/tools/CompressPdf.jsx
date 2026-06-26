@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
+import { Segmented } from "@/components/calc/Calc";
 
 async function loadPdfjs() {
   const pdfjs = await import("pdfjs-dist");
@@ -82,13 +83,8 @@ export default function CompressPdf() {
       {file && (
         <>
           <p className="muted small">{file.name} — {fmtBytes(file.size)}</p>
-          <div className="btn-row">
-            {Object.entries(LEVELS).map(([key, v]) => (
-              <button key={key} className={"btn" + (level === key ? "" : " btn-ghost")} onClick={() => setLevel(key)}>
-                {v.label}
-              </button>
-            ))}
-          </div>
+          <Segmented ariaLabel="Compression level" value={level} onChange={setLevel}
+            options={Object.entries(LEVELS).map(([key, v]) => ({ value: key, label: v.label }))} />
           <p className="muted small">
             Pages are re-rendered as compressed images, so selectable text becomes part of the picture. Best for scans
             and image-heavy PDFs rather than plain text documents.
