@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 25 June 2026 (Phase 1 complete; Phase 2 effectively complete — 43 tools live; Phase 3 advancing — 20 guides live)._
+_Goal: grow organic search traffic. Last updated: 26 June 2026 (Phase 1 complete; Phase 2 effectively complete — 43 tools live; Phase 3 advancing — 21 guides live)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -8,7 +8,7 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ## Current state (updated 25 Jun 2026)
 
-**43 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **20 guides are also live** under `/guides`.
+**43 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **21 guides are also live** under `/guides`.
 
 - **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
 - **Dev (8):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier
@@ -19,9 +19,10 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 **Still stubbed as `coming soon` (3):** Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — all finance; deferred because tax logic changes yearly and needs maintenance.
 
-**Guides live (20):** Each is linked to/from its tool (bidirectional internal linking).
+**Guides live (21):** Each is linked to/from its tool (bidirectional internal linking).
 - _Finance (7):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated?
 - _Dev (6):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding?
+- _Convert (1):_ What Is a Unix Timestamp?
 - _PDF (5):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF · How to Convert JPG to PDF · How to Convert PDF to JPG
 - _Image (2):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home
 
@@ -71,16 +72,16 @@ The launch catalog stubbed ~35 tools as `coming soon`. Nearly all of them are no
 
 Tools win the "[thing] calculator" query; **guides win the "how/what/why" queries** and build topical authority that lifts the whole domain. The `/guides` section is live and pairs each guide with its tool (internal linking both ways — the cheap SEO multiplier most sites skip). Each guide is 850–1,200 words with a worked example where relevant, 3 FAQs (FAQPage JSON-LD), Article schema, and ≥2 links to its tool. Every guide is paired with a `guide:` backlink on the tool entry in `lib/site.js`, so the link is bidirectional.
 
-**✅ Live (20):**
+**✅ Live (21):**
 - _Finance:_ SIP → SIP Calculator · EMI → EMI Calculator · GST → GST Calculator · Mortgage Principal vs Interest → Mortgage Calculator · Percentage Increase → Percentage Calculator · What Is Compound Interest? → Compound Interest Calculator · How Is FD Interest Calculated? → FD Calculator
 - _Dev:_ What Is Base64 Encoding? → Base64 Encoder · What's Inside a JWT? → JWT Decoder · MD5 vs SHA-256 → Hash Generator · What Is JSON? → JSON Formatter · What Is a UUID? → UUID Generator · What Is URL Encoding? → URL Encoder
+- _Convert:_ What Is a Unix Timestamp? → Unix Timestamp Converter
 - _PDF:_ How to Merge PDF Files → Merge PDF · How to Split a PDF → Split PDF · How to Compress a PDF → Compress PDF · How to Convert JPG to PDF → JPG to PDF · How to Convert PDF to JPG → PDF to JPG
 - _Image:_ PNG vs JPG vs WebP → Image Converter · How to Make a Passport Photo at Home → Passport Photo Maker
 
 > All 20 guides were drafted and fact-checked via a multi-agent workflow (draft → accuracy + SEO/style verification → revise), then integrated deterministically into `lib/guides.js` + `lib/site.js`. Formulas and worked examples (compound interest 2,15,892; FD 1,41,478) were recomputed and tool UX was checked against the actual components (e.g. JPG-to-PDF reorders via Up/Down buttons, not drag). `npm run build` generated all 20 guide pages cleanly (76 static pages total). Batch 1 (10 guides) and batch 2 (5 guides) shipped 25 Jun.
 
 **Next guides to write (remaining live tools that lack a guide — note each tool can show only one `guide:` backlink, so prioritise tools with none):**
-- "What Is a Unix Timestamp?" → Unix Timestamp Converter
 - "RGB, HEX and HSL color codes explained" → Color Converter
 - "What Is a Slug (and how to make a URL slug)" → Slug Generator
 - "SQL formatting and why it matters" → SQL Formatter
@@ -114,4 +115,4 @@ The "do after 20+ tools live" gate is cleared (43 live). When ready:
 | Monthly | Write 2–3 guides for top-trafficked tools; refresh any stale meta descriptions |
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review the 3 remaining stubs based on data |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 43 tools + 5 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 43 tools + 21 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
