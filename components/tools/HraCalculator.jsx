@@ -1,8 +1,12 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import { Fields, Slider, Segmented, Result, ResultHero, SplitBar, Legend, Rows, Row } from "@/components/calc/Calc";
+import {
+  NumberInput, CalcGrid, CalcMain, CalcRail,
+  ResultStatement, SumRows, SumRow, Segmented, SplitBar, Legend,
+  RailNote, RailStat, RailFormula,
+} from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
-import { formatMoney } from "@/lib/formatters";
+import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
 const BASIC_BASE = { min: 0, max: 10000000, step: 10000, default: 600000 };
@@ -14,6 +18,7 @@ export default function HraCalculator() {
   const basicRange = useMemo(() => moneyRange(BASIC_BASE, reg.scale), [reg.scale]);
   const hraRange = useMemo(() => moneyRange(HRA_BASE, reg.scale), [reg.scale]);
   const rentRange = useMemo(() => moneyRange(RENT_BASE, reg.scale), [reg.scale]);
+  const sym = currencySymbol(reg);
   const fmt = (n) => formatMoney(n, reg);
 
   const [basic, setBasic] = useState(basicRange.default);
@@ -41,31 +46,68 @@ export default function HraCalculator() {
   }, [basic, hra, rent, city]);
 
   return (
-    <div>
-      <Fields>
-        <Slider label="Basic salary + DA (annual)" display={fmt(basic)} value={basic} min={basicRange.min} max={basicRange.max} step={basicRange.step} onChange={setBasic} />
-        <Slider label="HRA received (annual)" display={fmt(hra)} value={hra} min={hraRange.min} max={hraRange.max} step={hraRange.step} onChange={setHra} />
-        <Slider label="Rent paid (annual)" display={fmt(rent)} value={rent} min={rentRange.min} max={rentRange.max} step={rentRange.step} onChange={setRent} />
+    <CalcGrid>
+      <CalcMain>
+        <NumberInput
+          label="Basic salary + DA (annual)" hint="Your annual Basic plus Dearness Allowance."
+          prefix={sym} value={basic} onChange={setBasic}
+          min={basicRange.min} max={basicRange.max} step={basicRange.step}
+        />
+        <NumberInput
+          label="HRA received (annual)" hint="House Rent Allowance received over the year."
+          prefix={sym} value={hra} onChange={setHra}
+          min={hraRange.min} max={hraRange.max} step={hraRange.step}
+        />
+        <NumberInput
+          label="Rent paid (annual)" hint="Total rent you actually paid in the year."
+          prefix={sym} value={rent} onChange={setRent}
+          min={rentRange.min} max={rentRange.max} step={rentRange.step}
+        />
         <Segmented
           ariaLabel="City type"
           value={city}
           onChange={setCity}
           options={[{ value: "metro", label: "Metro city" }, { value: "non", label: "Non-metro" }]}
         />
-      </Fields>
-      <Result>
-        <ResultHero label="Exempt HRA" value={fmt(r.exempt)} />
+
+        <ResultStatement>
+          Of your {fmt(hra)} HRA, <span className="pop">{fmt(r.exempt)}</span> is exempt from tax.
+        </ResultStatement>
+
         <SplitBar a={r.exemptPct} b={r.taxablePct} />
         <Legend left={{ k: "Exempt", v: fmt(r.exempt) }} right={{ k: `Taxable · ${Math.round(r.taxablePct)}%`, v: fmt(r.taxable) }} />
-      </Result>
-      <Rows>
-        <Row label="Actual HRA received" val={fmt(r.limit1)} />
-        <Row label={`${city === "metro" ? "50%" : "40%"} of Basic + DA`} val={fmt(r.limit2)} />
-        <Row label="Rent paid − 10% of Basic + DA" val={fmt(r.limit3)} />
-      </Rows>
-      <p className="muted small" style={{ marginTop: ".75rem" }}>
-        Enter all amounts annually. Exempt HRA under Section 10(13A) is the least of the three limits above. Metro = Delhi, Mumbai, Kolkata, Chennai (50%); all other cities use 40%. Exemption applies only under the old tax regime.
-      </p>
-    </div>
+
+        <SumRows>
+          <SumRow label="Actual HRA received" value={fmt(r.limit1)} />
+          <SumRow label={`${city === "metro" ? "50%" : "40%"} of Basic + DA`} value={fmt(r.limit2)} />
+          <SumRow label="Rent paid − 10% of Basic + DA" value={fmt(r.limit3)} />
+        </SumRows>
+
+        <p className="calc-disclaimer">
+          Enter all amounts annually. Exempt HRA under Section 10(13A) is the least of the three limits above. Metro = Delhi, Mumbai, Kolkata, Chennai (50%); all other cities use 40%. Exemption applies only under the old tax regime.
+        </p>
+      </CalcMain>
+
+      <CalcRail>
+        <RailNote title="What you keep tax-free">
+          HRA exemption is the least of three statutory limits under Section 10(13A).
+        </RailNote>
+        <RailStat
+          label="Exempt HRA" tone="data"
+          value={fmt(r.exempt)}
+          sub={`${Math.round(r.exemptPct)}% of the HRA you received`}
+        />
+        <RailStat
+          label="Taxable HRA" tone="loss"
+          value={fmt(r.taxable)}
+          sub={`${Math.round(r.taxablePct)}% added to taxable income`}
+        />
+        <RailFormula
+          label="The calculation"
+          formula={<>Exempt = min(HRA, {city === "metro" ? "50%" : "40%"}×Basic, Rent − 10%×Basic)</>}
+          note="Exempt HRA = least of the three limits"
+        />
+      </CalcRail>
+    </CalcGrid>
   );
 }

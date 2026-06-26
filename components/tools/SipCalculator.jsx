@@ -1,14 +1,20 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import { Fields, Slider, Result, ResultHero, SplitBar, Legend } from "@/components/calc/Calc";
+import {
+  NumberInput, CalcGrid, CalcMain, CalcRail,
+  ResultStatement, MiniChart, SplitBar, Legend,
+  RailNote, RailStat, RailFormula,
+} from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
-import { formatMoney } from "@/lib/formatters";
+import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
 
 export default function SipCalculator() {
   const reg = useRegion();
   const range = useMemo(() => moneyRange(MONEY_BASE.sipMonthly, reg.scale), [reg.scale]);
+  const sym = currencySymbol(reg);
   const fmt = (n) => formatMoney(n, reg);
+  const fmtCompact = (n) => formatMoney(n, reg, { notation: "compact" });
 
   const [amount, setAmount] = useState(range.default);
   const [rate, setRate] = useState(12);
@@ -25,29 +31,72 @@ export default function SipCalculator() {
     const fv = i === 0 ? invested : amount * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
     const returns = Math.max(0, fv - invested);
     const rPct = fv > 0 ? (returns / fv) * 100 : 0;
-    return { fv, invested, returns, rPct, iPct: 100 - rPct };
+    // Total value at the end of each year (0..years), for the chart.
+    const series = Array.from({ length: years + 1 }, (_, y) => {
+      const m = y * 12;
+      return i === 0 ? amount * m : amount * ((Math.pow(1 + i, m) - 1) / i) * (1 + i);
+    });
+    return { fv, invested, returns, rPct, iPct: 100 - rPct, series };
   }, [amount, rate, years]);
 
   const yearsLabel = years + (years === 1 ? " year" : " years");
 
   return (
-    <div>
-      <Fields>
-        <Slider label="Monthly investment" display={fmt(amount)} value={amount}
-          min={range.min} max={range.max} step={range.step} onChange={setAmount} />
-        <Slider label="Expected return (p.a.)" display={`${rate}%`} value={rate}
-          min={1} max={30} step={0.5} onChange={setRate} />
-        <Slider label="Time period" display={yearsLabel} value={years}
-          min={1} max={40} step={1} onChange={setYears} />
-      </Fields>
-      <Result>
-        <ResultHero label={`Total value after ${yearsLabel}`} value={fmt(r.fv)} />
+    <CalcGrid>
+      <CalcMain>
+        <NumberInput
+          label="Monthly investment" hint="How much you invest each month."
+          prefix={sym} value={amount} onChange={setAmount}
+          min={range.min} max={range.max} step={range.step}
+        />
+        <NumberInput
+          label="Expected return (p.a.)" hint="Estimated annual return rate."
+          suffix="%" value={rate} onChange={setRate}
+          min={1} max={30} step={0.5}
+        />
+        <NumberInput
+          label="Time period" hint="How long you keep investing."
+          suffix="yrs" value={years} onChange={setYears}
+          min={1} max={40} step={1}
+        />
+
+        <ResultStatement>
+          After {yearsLabel}, your SIP could grow to <span className="pop">{fmt(r.fv)}</span>.
+        </ResultStatement>
+
+        <MiniChart
+          series={r.series}
+          format={fmtCompact}
+          caption="Total value per year"
+        />
+
         <SplitBar a={r.iPct} b={r.rPct} />
         <Legend
           left={{ k: "Invested", v: fmt(r.invested) }}
           right={{ k: `Est. returns · ${Math.round(r.rPct)}%`, v: fmt(r.returns) }}
         />
-      </Result>
-    </div>
+      </CalcMain>
+
+      <CalcRail>
+        <RailNote title="How your money grows">
+          Monthly contributions compound over time, so returns build on returns.
+        </RailNote>
+        <RailStat
+          label="Total invested" tone="loss"
+          value={fmt(r.invested)}
+          sub={`paid in over ${yearsLabel}`}
+        />
+        <RailStat
+          label="Estimated returns" tone="data"
+          value={fmt(r.returns)}
+          sub={`${Math.round(r.rPct)}% of the final value`}
+        />
+        <RailFormula
+          label="The calculation"
+          formula={<>FV = P × ((1 + i)<sup>n</sup> − 1) / i × (1 + i)</>}
+          note="P = monthly amount, i = monthly rate, n = number of months"
+        />
+      </CalcRail>
+    </CalcGrid>
   );
 }

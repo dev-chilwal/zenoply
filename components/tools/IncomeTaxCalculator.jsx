@@ -1,12 +1,17 @@
 "use client";
 import { useState, useMemo } from "react";
-import { Fields, Slider, Result, ResultHero, Rows, Row } from "@/components/calc/Calc";
-import { formatMoney } from "@/lib/formatters";
+import {
+  NumberInput, CalcGrid, CalcMain, CalcRail,
+  ResultStatement, SumRows, SumRow,
+  RailNote, RailStat, RailFormula,
+} from "@/components/calc/Calc";
+import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { NEW_REGIME, OLD_REGIME, DEDUCTION_CAPS, TAX_YEAR, computeTax } from "@/lib/incometax";
 
 // India income tax is statutory in rupees, so this tool always shows ₹.
 const fmt = (n) => formatMoney(n, REGIONS.IN);
+const sym = currencySymbol(REGIONS.IN);
 
 export default function IncomeTaxCalculator() {
   const [gross, setGross] = useState(1500000);
@@ -34,26 +39,74 @@ export default function IncomeTaxCalculator() {
   }, [gross, c80, d80, nps, homeLoan, hraOther]);
 
   return (
-    <div>
-      <Fields>
-        <Slider label="Gross annual income" display={fmt(gross)} value={gross} min={300000} max={5000000} step={50000} onChange={setGross} />
-        <Slider label="Section 80C (EPF, PPF, ELSS…)" display={fmt(c80)} value={c80} min={0} max={150000} step={5000} onChange={setC80} />
-        <Slider label="Section 80D (health insurance)" display={fmt(d80)} value={d80} min={0} max={100000} step={1000} onChange={setD80} />
-        <Slider label="NPS — Section 80CCD(1B)" display={fmt(nps)} value={nps} min={0} max={50000} step={5000} onChange={setNps} />
-        <Slider label="Home loan interest — Section 24(b)" display={fmt(homeLoan)} value={homeLoan} min={0} max={200000} step={5000} onChange={setHomeLoan} />
-        <Slider label="HRA + other exemptions" display={fmt(hraOther)} value={hraOther} min={0} max={1000000} step={10000} onChange={setHraOther} />
-      </Fields>
-      <Result>
-        <ResultHero label={`Lower tax — ${r.better} regime`} value={fmt(r.betterTotal)} />
-      </Result>
-      <Rows>
-        <Row label="New regime — total tax" val={fmt(r.newTax.total)} highlight={r.better === "New"} />
-        <Row label="Old regime — total tax" val={fmt(r.oldTax.total)} highlight={r.better === "Old"} />
-        <Row label={`You save with the ${r.better} regime`} val={fmt(r.save)} />
-      </Rows>
-      <p className="muted small" style={{ marginTop: ".75rem" }}>
-        Based on FY {TAX_YEAR.fy} (AY {TAX_YEAR.ay}) slabs, including the standard deduction (₹75,000 new / ₹50,000 old), Section 87A rebate and 4% cess. Deductions apply to the old regime only; the new regime is the default. Excludes surcharge (income over ₹50 lakh), capital-gains/special-rate income and senior-citizen exemptions. Figures in ₹.
-      </p>
-    </div>
+    <CalcGrid>
+      <CalcMain>
+        <NumberInput
+          label="Gross annual income" hint="Total income before any deductions."
+          prefix={sym} value={gross} onChange={setGross}
+          min={300000} max={5000000} step={50000}
+        />
+        <NumberInput
+          label="Section 80C (EPF, PPF, ELSS…)" hint="Capped at ₹1,50,000 (old regime)."
+          prefix={sym} value={c80} onChange={setC80}
+          min={0} max={150000} step={5000}
+        />
+        <NumberInput
+          label="Section 80D (health insurance)" hint="Medical insurance premiums."
+          prefix={sym} value={d80} onChange={setD80}
+          min={0} max={100000} step={1000}
+        />
+        <NumberInput
+          label="NPS — Section 80CCD(1B)" hint="Extra ₹50,000 NPS deduction."
+          prefix={sym} value={nps} onChange={setNps}
+          min={0} max={50000} step={5000}
+        />
+        <NumberInput
+          label="Home loan interest — Section 24(b)" hint="Capped at ₹2,00,000 (old regime)."
+          prefix={sym} value={homeLoan} onChange={setHomeLoan}
+          min={0} max={200000} step={5000}
+        />
+        <NumberInput
+          label="HRA + other exemptions" hint="House-rent allowance and similar."
+          prefix={sym} value={hraOther} onChange={setHraOther}
+          min={0} max={1000000} step={10000}
+        />
+
+        <ResultStatement>
+          The {r.better} regime is cheaper, with a tax of <span className="pop">{fmt(r.betterTotal)}</span>.
+        </ResultStatement>
+
+        <SumRows>
+          <SumRow label="New regime — total tax" value={fmt(r.newTax.total)} />
+          <SumRow label="Old regime — total tax" value={fmt(r.oldTax.total)} />
+          <SumRow label={`You save with the ${r.better} regime`} value={fmt(r.save)} />
+        </SumRows>
+
+        <p className="calc-disclaimer">
+          Based on FY {TAX_YEAR.fy} (AY {TAX_YEAR.ay}) slabs, including the standard deduction (₹75,000 new / ₹50,000 old), Section 87A rebate and 4% cess. Deductions apply to the old regime only; the new regime is the default. Excludes surcharge (income over ₹50 lakh), capital-gains/special-rate income and senior-citizen exemptions. Figures in ₹.
+        </p>
+      </CalcMain>
+
+      <CalcRail>
+        <RailNote title="Which regime wins">
+          The new regime has lower slab rates but few deductions; the old regime trades higher rates for deductions.
+        </RailNote>
+        <RailStat
+          label={`Lower tax — ${r.better} regime`} tone="loss"
+          value={fmt(r.betterTotal)}
+          sub={`for FY ${TAX_YEAR.fy}`}
+        />
+        <RailStat
+          label={`You save with the ${r.better} regime`} tone="data"
+          value={fmt(r.save)}
+          sub="versus the other regime"
+        />
+        <RailFormula
+          label="The calculation"
+          formula={<>tax = slab(TI) − 87A, ×1.04 cess</>}
+          note="Tax on taxable income, less rebate, plus 4% cess; lower of the two regimes wins."
+        />
+      </CalcRail>
+    </CalcGrid>
   );
 }
