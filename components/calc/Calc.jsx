@@ -226,6 +226,40 @@ export function RailFormula({ label, formula, note }) {
 }
 
 /**
+ * Year-by-year amortization schedule table. rows: pre-formatted
+ * { year, principal, interest, balance } strings. Scrolls when long.
+ */
+export function ScheduleTable({ rows, caption }) {
+  return (
+    <div className="sched-block">
+      {caption && <p className="chart-caption">{caption}</p>}
+      <div className="sched-wrap">
+        <table className="sched">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th className="r">Principal</th>
+              <th className="r">Interest</th>
+              <th className="r">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.year}>
+                <td>{row.year}</td>
+                <td className="r">{row.principal}</td>
+                <td className="r">{row.interest}</td>
+                <td className="r">{row.balance}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Flat SVG line chart, themed via CSS (.mini-chart classes).
  * series: array of numbers (one per x step, starting at index 0).
  * format: fn(number) -> label string for the y-axis.
