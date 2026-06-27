@@ -6,7 +6,7 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ---
 
-## Current state (updated 26 Jun 2026)
+## Current state (updated 27 Jun 2026)
 
 **56 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **22 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.**
 
@@ -19,8 +19,8 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 **No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
-**Guides live (21):** Each is linked to/from its tool (bidirectional internal linking).
-- _Finance (7):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated?
+**Guides live (22):** Each is linked to/from its tool (bidirectional internal linking).
+- _Finance (8):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated? · How Is PPF Interest Calculated?
 - _Dev (6):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding?
 - _Convert (1):_ What Is a Unix Timestamp?
 - _PDF (5):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF · How to Convert JPG to PDF · How to Convert PDF to JPG
@@ -85,7 +85,7 @@ Tools win the "[thing] calculator" query; **guides win the "how/what/why" querie
 - "What Is a Slug (and how to make a URL slug)" → Slug Generator
 - "SQL formatting and why it matters" → SQL Formatter
 - "How to rotate / unlock / watermark a PDF" → the remaining PDF tools
-- Higher-effort: promote a stub (Income Tax / In-Hand Salary / PPF) **with** a paired explainer guide.
+- High-search-volume finance calculators still lacking a guide: Income Tax, In-Hand Salary, NPS, Gratuity, HRA, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation (all live since 26 Jun). ✅ PPF guide shipped 27 Jun.
 
 Let GSC Performance data pick the order — write guides for whichever live tools are already drawing impressions.
 
