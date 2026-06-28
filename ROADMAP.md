@@ -53,8 +53,9 @@ depletion all confirmed against a worked example).
 - [ ] Step-up / top-up SIP — as its own page (Groww runs a dedicated one) ✓
 - [ ] SIP / FD / CI inflation-adjusted ("real") returns
 - [ ] Lumpsum-vs-SIP comparison
-- [ ] EMI prepayment / part-payment modes (monthly, quarterly, yearly, one-time) ✓
-- [ ] EMI / mortgage full amortization schedule + chart ✓
+- [x] EMI / mortgage prepayment — extra monthly payment, with interest &
+      time saved (shared `lib/amortization.js`). One-time/lump-sum mode pending.
+- [x] EMI / mortgage full amortization schedule (year-by-year table) + balance chart
 - [ ] Mortgage full-cost inputs: property tax, insurance, PMI, down payment,
       maintenance, one-time (stamp duty / registration) ✓
 - [ ] FD / RD post-tax returns (TDS on interest)
@@ -62,7 +63,8 @@ depletion all confirmed against a worked example).
 
 ## Cross-cutting UX (all backend-free)
 
-- [ ] Year-by-year breakdown tables (Groww-standard) ✓
+- [x] Year-by-year breakdown tables (Groww-standard) — `ScheduleTable`
+      component, live in EMI & mortgage
 - [ ] Charts: growth line + donut breakdown (dwell-time boost)
 - [ ] Internal-linking calculator clusters (strongest verified SEO pattern) ✓
       — partly automatic via same-category related tools
