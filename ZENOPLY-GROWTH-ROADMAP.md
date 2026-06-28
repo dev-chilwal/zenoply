@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 27 June 2026 (Phase 1 complete; Phase 2 complete — 56 tools live, 0 stubs remaining; Phase 3 advancing — 22 guides live)._
+_Goal: grow organic search traffic. Last updated: 28 June 2026 (Phase 1 complete; Phase 2 complete — 56 tools live, 0 stubs remaining; Phase 3 advancing — 23 guides live)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -8,7 +8,7 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ## Current state (updated 27 Jun 2026)
 
-**56 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **22 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.**
+**56 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **23 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.**
 
 - **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
 - **Dev (8):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier
@@ -85,7 +85,7 @@ Tools win the "[thing] calculator" query; **guides win the "how/what/why" querie
 - "What Is a Slug (and how to make a URL slug)" → Slug Generator
 - "SQL formatting and why it matters" → SQL Formatter
 - "How to rotate / unlock / watermark a PDF" → the remaining PDF tools
-- High-search-volume finance calculators still lacking a guide: Income Tax, In-Hand Salary, NPS, Gratuity, HRA, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation (all live since 26 Jun). ✅ PPF guide shipped 27 Jun.
+- High-search-volume finance calculators still lacking a guide: In-Hand Salary, NPS, Gratuity, HRA, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation (all live since 26 Jun). ✅ PPF guide shipped 27 Jun. ✅ Income Tax guide (old vs new regime) shipped 28 Jun.
 
 Let GSC Performance data pick the order — write guides for whichever live tools are already drawing impressions.
 
@@ -115,4 +115,4 @@ The "do after 20+ tools live" gate is cleared (56 live). When ready:
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
 | Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 56 tools + 22 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 56 tools + 23 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
