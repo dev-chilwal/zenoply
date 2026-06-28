@@ -50,7 +50,8 @@ depletion all confirmed against a worked example).
 
 ## Deepen existing calculators
 
-- [ ] Step-up / top-up SIP — as its own page (Groww runs a dedicated one) ✓
+- [x] Step-up / top-up SIP — annual step-up field on the SIP calc (0 = regular)
+      AND a dedicated /step-up-sip-calculator page (own SEO) sharing the component
 - [ ] SIP / FD / CI inflation-adjusted ("real") returns
 - [ ] Lumpsum-vs-SIP comparison
 - [x] EMI / mortgage prepayment — extra monthly payment, with interest &
