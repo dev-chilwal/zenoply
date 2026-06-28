@@ -12,6 +12,7 @@ import JwtDecoder from "@/components/tools/JwtDecoder";
 import SqlFormatter from "@/components/tools/SqlFormatter";
 import ColorConverter from "@/components/tools/ColorConverter";
 import SipCalculator from "@/components/tools/SipCalculator";
+import StepUpSipCalculator from "@/components/tools/StepUpSipCalculator";
 import EmiCalculator from "@/components/tools/EmiCalculator";
 import GstCalculator from "@/components/tools/GstCalculator";
 import CompoundInterest from "@/components/tools/CompoundInterest";
@@ -70,6 +71,7 @@ const REGISTRY = {
   "sql-formatter": SqlFormatter,
   "color-converter": ColorConverter,
   "sip-calculator": SipCalculator,
+  "step-up-sip-calculator": StepUpSipCalculator,
   "emi-calculator": EmiCalculator,
   "gst-calculator": GstCalculator,
   "compound-interest-calculator": CompoundInterest,
