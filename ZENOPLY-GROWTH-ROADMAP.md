@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 28 June 2026 (Phase 1 complete; Phase 2 complete — 56 tools live, 0 stubs remaining; Phase 3 advancing — 23 guides live)._
+_Goal: grow organic search traffic. Last updated: 29 June 2026 (Phase 1 complete; Phase 2 complete — 56 tools live, 0 stubs remaining; Phase 3 advancing — 24 guides live)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -72,7 +72,7 @@ The launch catalog stubbed ~35 tools as `coming soon`. **All of them are now liv
 Tools win the "[thing] calculator" query; **guides win the "how/what/why" queries** and build topical authority that lifts the whole domain. The `/guides` section is live and pairs each guide with its tool (internal linking both ways — the cheap SEO multiplier most sites skip). Each guide is 850–1,200 words with a worked example where relevant, 3 FAQs (FAQPage JSON-LD), Article schema, and ≥2 links to its tool. Every guide is paired with a `guide:` backlink on the tool entry in `lib/site.js`, so the link is bidirectional.
 
 **✅ Live (22):**
-- _Finance:_ SIP → SIP Calculator · EMI → EMI Calculator · GST → GST Calculator · Mortgage Principal vs Interest → Mortgage Calculator · Percentage Increase → Percentage Calculator · What Is Compound Interest? → Compound Interest Calculator · How Is FD Interest Calculated? → FD Calculator · How Is PPF Interest Calculated? → PPF Calculator
+- _Finance:_ SIP → SIP Calculator · EMI → EMI Calculator · GST → GST Calculator · Mortgage Principal vs Interest → Mortgage Calculator · Percentage Increase → Percentage Calculator · What Is Compound Interest? → Compound Interest Calculator · How Is FD Interest Calculated? → FD Calculator · How Is PPF Interest Calculated? → PPF Calculator · Old vs New Tax Regime → Income Tax Calculator · How Is HRA Exemption Calculated? → HRA Calculator
 - _Dev:_ What Is Base64 Encoding? → Base64 Encoder · What's Inside a JWT? → JWT Decoder · MD5 vs SHA-256 → Hash Generator · What Is JSON? → JSON Formatter · What Is a UUID? → UUID Generator · What Is URL Encoding? → URL Encoder
 - _Convert:_ What Is a Unix Timestamp? → Unix Timestamp Converter
 - _PDF:_ How to Merge PDF Files → Merge PDF · How to Split a PDF → Split PDF · How to Compress a PDF → Compress PDF · How to Convert JPG to PDF → JPG to PDF · How to Convert PDF to JPG → PDF to JPG
@@ -85,7 +85,7 @@ Tools win the "[thing] calculator" query; **guides win the "how/what/why" querie
 - "What Is a Slug (and how to make a URL slug)" → Slug Generator
 - "SQL formatting and why it matters" → SQL Formatter
 - "How to rotate / unlock / watermark a PDF" → the remaining PDF tools
-- High-search-volume finance calculators still lacking a guide: In-Hand Salary, NPS, Gratuity, HRA, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation (all live since 26 Jun). ✅ PPF guide shipped 27 Jun. ✅ Income Tax guide (old vs new regime) shipped 28 Jun.
+- High-search-volume finance calculators still lacking a guide: In-Hand Salary, NPS, Gratuity, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation (all live since 26 Jun). ✅ PPF guide shipped 27 Jun. ✅ Income Tax guide (old vs new regime) shipped 28 Jun. ✅ HRA exemption guide shipped 29 Jun.
 
 Let GSC Performance data pick the order — write guides for whichever live tools are already drawing impressions.
 
