@@ -137,8 +137,12 @@ function stripChromeFromLeftover(pageData) {
 
 // Vertical whitespace bands uncovered in most rows become column boundaries.
 function columnsFromText(rows, medCharW) {
-  const glyphs = rows.flatMap((r) => r.glyphs);
-  if (!glyphs.length) return [];
+  // Infer columns only from multi-cell data rows. Single-run rows (section
+  // titles, wrapped notes like "Please check all entries…") span across real
+  // column gaps and would otherwise mask them, merging adjacent columns.
+  const dataRows = rows.filter((r) => r.glyphs.length >= 2);
+  if (dataRows.length < 2) return [];
+  const glyphs = dataRows.flatMap((r) => r.glyphs);
   let minX = Infinity;
   let maxX = -Infinity;
   for (const g of glyphs) {
@@ -152,7 +156,7 @@ function columnsFromText(rows, medCharW) {
   const binOf = (x) => Math.min(nBins - 1, Math.max(0, Math.floor((x - minX) / binSize)));
 
   const coverCount = new Uint32Array(nBins);
-  for (const r of rows) {
+  for (const r of dataRows) {
     const covered = new Uint8Array(nBins);
     for (const g of r.glyphs) {
       const a = binOf(g.x);
@@ -161,7 +165,11 @@ function columnsFromText(rows, medCharW) {
     }
     for (let i = 0; i < nBins; i++) if (covered[i]) coverCount[i]++;
   }
-  const sepMax = Math.max(1, Math.floor(rows.length * 0.2));
+  // A separator bin is one almost no row covers. Keep this low so a sparsely
+  // populated but real column (e.g. a Credit column with only a few deposits)
+  // isn't mistaken for whitespace and merged into its neighbour; still tolerates
+  // a handful of full-width rows (titles) crossing a genuine gap.
+  const sepMax = Math.max(1, Math.floor(dataRows.length * 0.06));
   const gapBins = Math.max(1, Math.round((medCharW * 1.2) / binSize));
   const bounds = [];
   let runStart = -1;
@@ -256,55 +264,117 @@ function ruledRegions(hClusters, vClusters, medH) {
     }
   }
 
-  // Attach vertical rules that fall inside each region.
+  // Attach vertical rules (full clusters) that fall inside each region.
   for (const reg of regions) {
-    reg.vxs = vClusters
-      .filter(
-        (v) =>
-          v.x >= reg.x0 - 2 &&
-          v.x <= reg.x1 + 2 &&
-          overlap(v.y0, v.y1, reg.yBot, reg.yTop) > (reg.yTop - reg.yBot) * 0.3
-      )
-      .map((v) => v.x)
-      .sort((a, b) => a - b);
+    reg.vLines = vClusters.filter(
+      (v) =>
+        v.x >= reg.x0 - 2 &&
+        v.x <= reg.x1 + 2 &&
+        overlap(v.y0, v.y1, reg.yBot, reg.yTop) > (reg.yTop - reg.yBot) * 0.3
+    );
     reg.hys.sort((a, b) => b - a); // top first
   }
   // A region needs at least a top and bottom rule to bound rows.
   return regions.filter((r) => r.hys.length >= 2);
 }
 
-// Build a table grid for one ruled region, using line edges where available and
-// falling back to text geometry for whichever axis the lines don't define.
-function tableFromRegion(reg, glyphs, medCharW, medH) {
+// A ruled region can span several logically-distinct tables stacked under a run
+// of full-width rules (e.g. a summary box, then an interest table, then the
+// start of a transaction list). Segment it by vertical gaps and build a table
+// per segment, detecting columns per segment so different shapes stay separate.
+function tablesFromRegion(reg, glyphs, medCharW, medH) {
   const inside = glyphs.filter(
     (g) => g.x + g.w / 2 >= reg.x0 - 2 && g.x + g.w / 2 <= reg.x1 + 2 && g.y <= reg.yTop + medH && g.y >= reg.yBot - medH
   );
-  if (!inside.length) return null;
+  if (!inside.length) return [];
+  const rows = clusterRows(inside, medH * 0.5);
+  const out = [];
+  for (const block of segmentBlocks(rows, medH)) {
+    const t = buildBlockTable(block, reg.vLines, reg.hys, medCharW, medH);
+    if (t) out.push(t);
+  }
+  return out;
+}
 
-  // Columns: prefer vertical rules (>=2 cols), else text.
+// Build one table from a run of consecutive rows. Columns come from interior
+// vertical rules that span the block, else from text whitespace; rows come from
+// horizontal rules that fall inside the block, else from text (with wrap merge).
+// Leading/trailing single-cell rows (section titles, notes) are dropped.
+function buildBlockTable(block, vLines, hys, medCharW, medH) {
+  if (block.length < 2) return null;
+  const bg = block.flatMap((r) => r.glyphs);
+  let minX = Infinity;
+  let maxX = -Infinity;
+  for (const g of bg) {
+    minX = Math.min(minX, g.x);
+    maxX = Math.max(maxX, g.x + g.w);
+  }
+  const yTop = block[0].y;
+  const yBot = block[block.length - 1].y;
+
+  const interior = (vLines || []).filter(
+    (v) => v.x > minX + medCharW && v.x < maxX - medCharW && overlap(v.y0, v.y1, yBot, yTop) > (yTop - yBot) * 0.5
+  );
   let colEdges;
-  if (reg.vxs.length >= 3) {
-    colEdges = dedupeSorted(reg.vxs, medCharW * 0.6);
-    if (colEdges[0] > reg.x0 + 1) colEdges.unshift(reg.x0);
-    if (colEdges[colEdges.length - 1] < reg.x1 - 1) colEdges.push(reg.x1);
+  if (interior.length >= 1) {
+    colEdges = dedupeSorted([minX - 1, ...interior.map((v) => v.x), maxX + 1], medCharW * 0.6);
   } else {
-    const rows = clusterRows(inside, medH * 0.5);
-    const bounds = columnsFromText(rows, medCharW);
-    colEdges = [reg.x0 - 1, ...bounds, reg.x1 + 1];
+    const bounds = columnsFromText(block, medCharW);
+    colEdges = [minX - 1, ...bounds, maxX + 1];
   }
   if (colEdges.length < 3) return null; // need >=2 columns
 
-  // Rows: prefer horizontal rules (>=3 => >=2 bands), else text.
-  let rowBands;
-  if (reg.hys.length >= 3) {
-    rowBands = rowBandsFromLines(reg.hys);
-  } else {
-    const rows = clusterRows(inside, medH * 0.5);
-    rowBands = rowBandsFromText(rows, medH);
-  }
+  // Include the top/bottom border rules: they sit up to a row-height beyond the
+  // first/last text baseline, so the margin must be the row pitch, not medH —
+  // otherwise the border is dropped and the row bands shift, losing a row.
+  const blockGaps = [];
+  for (let i = 1; i < block.length; i++) blockGaps.push(block[i - 1].y - block[i].y);
+  const band = Math.max(medH * 1.5, median(blockGaps.filter((g) => g > 0)) || medH);
+  const hInBlock = (hys || []).filter((y) => y <= yTop + band && y >= yBot - band).sort((a, b) => b - a);
+  const t = {
+    colEdges,
+    yTop,
+    yBot,
+    xRange: [minX, maxX],
+    glyphs: bg,
+    rows: block,
+    hInBlock,
+    // Trust horizontal rules for rows only in a true grid (interior vertical
+    // rules too). Otherwise the rules are section boxes, not per-row lines, so
+    // use text rows + wrap merge — safer for statements and invoices.
+    lineRows: interior.length >= 1 && hInBlock.length >= 3,
+    medCharW,
+    medH,
+  };
+  const grid = regrid(t, colEdges);
+  if (grid.length < 2) return null;
+  t.grid = grid;
+  return t;
+}
 
-  const grid = assembleGrid(inside, colEdges, rowBands, medCharW, medH);
-  return { grid, colEdges, yTop: reg.yTop, yBot: reg.yBot };
+// (Re)build a table's grid for a given set of column edges. Used both for the
+// initial grid and to re-grid a page with a chain's unified columns.
+function regrid(t, colEdges) {
+  let grid;
+  if (t.lineRows) {
+    grid = assembleGrid(t.glyphs, colEdges, rowBandsFromLines(t.hInBlock), t.medCharW, t.medH);
+  } else {
+    grid = assembleGrid(t.glyphs, colEdges, rowBandsFromText(t.rows, t.medH), t.medCharW, t.medH);
+    const gaps = [];
+    for (let i = 1; i < t.rows.length; i++) gaps.push(t.rows[i - 1].y - t.rows[i].y);
+    grid = mergeWraps(grid, t.rows.map((r) => r.y), median(gaps.filter((g) => g > 0)) || t.medH);
+  }
+  return stripEdgeSingleCellRows(grid);
+}
+
+// Drop leading/trailing rows that fill only one column (section titles, notes).
+function stripEdgeSingleCellRows(grid) {
+  const filled = (r) => r.filter((c) => c.trim() !== "").length;
+  let a = 0;
+  let b = grid.length;
+  while (a < b && filled(grid[a]) <= 1) a++;
+  while (b > a && filled(grid[b - 1]) <= 1) b--;
+  return grid.slice(a, b);
 }
 
 function dedupeSorted(xs, tol) {
@@ -323,11 +393,12 @@ function segmentBlocks(rows, medH) {
   const gaps = [];
   for (let i = 1; i < rows.length; i++) gaps.push(rows[i - 1].y - rows[i].y);
   const medGap = median(gaps.filter((g) => g > 0)) || medH;
+  const threshold = Math.max(medGap * 1.9, medH * 2.2);
   const blocks = [];
   let cur = [rows[0]];
   for (let i = 1; i < rows.length; i++) {
     const gap = rows[i - 1].y - rows[i].y;
-    if (gap > medGap * 2.4) {
+    if (gap > threshold) {
       blocks.push(cur);
       cur = [];
     }
@@ -338,7 +409,10 @@ function segmentBlocks(rows, medH) {
 }
 
 // Merge a row into the previous one when it looks like a wrapped continuation:
-// it fills only a subset of columns and sits an unusually short gap below.
+// either its key (first) column is empty — the classic statement/invoice case
+// where a description spills onto the next line with no new date — or it fills
+// only a subset of columns at an unusually short gap. Never merge across a gap
+// large enough to be a real row break.
 function mergeWraps(grid, rowYs, medGap) {
   const out = [];
   const outY = [];
@@ -346,7 +420,14 @@ function mergeWraps(grid, rowYs, medGap) {
     const row = grid[i];
     const filled = row.filter((c) => c.trim() !== "").length;
     const gapAbove = i > 0 ? outY[outY.length - 1] - rowYs[i] : Infinity;
-    if (out.length && filled > 0 && filled < row.length && gapAbove < medGap * 0.72) {
+    const keyEmpty = row[0] !== undefined && row[0].trim() === "";
+    const isWrap =
+      out.length &&
+      filled > 0 &&
+      filled < row.length &&
+      gapAbove < medGap * 1.6 &&
+      (keyEmpty || gapAbove < medGap * 0.72);
+    if (isWrap) {
       const prev = out[out.length - 1];
       for (let c = 0; c < row.length; c++) {
         if (row[c].trim()) prev[c] = (prev[c] ? prev[c] + " " : "") + row[c];
@@ -359,34 +440,29 @@ function mergeWraps(grid, rowYs, medGap) {
   return out;
 }
 
+// Text-only block table (leftover regions with no ruling lines).
 function tableFromBlock(block, medCharW, medH) {
-  const bounds = columnsFromText(block, medCharW);
-  if (!bounds.length) return null; // single column -> prose, not a table
-  let minX = Infinity;
-  let maxX = -Infinity;
-  for (const r of block) for (const g of r.glyphs) {
-    minX = Math.min(minX, g.x);
-    maxX = Math.max(maxX, g.x + g.w);
-  }
-  const colEdges = [minX - 1, ...bounds, maxX + 1];
-  const glyphs = block.flatMap((r) => r.glyphs);
-  const rowBands = rowBandsFromText(block, medH);
-  let grid = assembleGrid(glyphs, colEdges, rowBands, medCharW, medH);
-  const gaps = [];
-  for (let i = 1; i < block.length; i++) gaps.push(block[i - 1].y - block[i].y);
-  const medGap = median(gaps.filter((g) => g > 0)) || medH;
-  grid = mergeWraps(grid, block.map((r) => r.y), medGap);
-  return { grid, colEdges, yTop: block[0].y, yBot: block[block.length - 1].y };
+  return buildBlockTable(block, [], [], medCharW, medH);
 }
 
 // ---- cross-page continuation ----------------------------------------------
 
-function sameStructure(a, b, tol) {
-  if (a.colEdges.length !== b.colEdges.length) return false;
-  for (let i = 0; i < a.colEdges.length; i++) {
-    if (Math.abs(a.colEdges[i] - b.colEdges[i]) > tol) return false;
-  }
-  return true;
+function xOverlapFrac(a, b) {
+  const ov = overlap(a.xRange[0], a.xRange[1], b.xRange[0], b.xRange[1]);
+  const minW = Math.min(a.xRange[1] - a.xRange[0], b.xRange[1] - b.xRange[0]) || 1;
+  return ov / minW;
+}
+
+// Two tables can be the same table across a page break only if their columns
+// line up: near-equal column count and each interior boundary of the smaller
+// has a match in the larger. Stops an unrelated footer/box that merely overlaps
+// horizontally from being appended to a real table.
+function columnsCompatible(a, b, tol) {
+  const ia = a.colEdges.slice(1, -1);
+  const ib = b.colEdges.slice(1, -1);
+  if (Math.abs(ia.length - ib.length) > 1) return false;
+  const [short, long] = ia.length <= ib.length ? [ia, ib] : [ib, ia];
+  return short.every((x) => long.some((y) => Math.abs(x - y) <= tol));
 }
 
 function rowsEqual(r1, r2) {
@@ -394,25 +470,59 @@ function rowsEqual(r1, r2) {
   return r1.every((c, i) => c.trim() === r2[i].trim());
 }
 
-function mergeContinuations(tables, medCharW) {
-  const out = [];
+// Group tables that continue across page breaks into chains: consecutive pages,
+// bottom-of-page to top-of-next, and overlapping x-extent — NOT requiring the
+// detected column count to match, since an empty column on one page can change
+// how many columns text detection finds.
+function chainContinuations(tables) {
+  const chains = [];
   for (const t of tables) {
-    const prev = out[out.length - 1];
+    const chain = chains[chains.length - 1];
+    const prev = chain ? chain[chain.length - 1] : null;
     if (
       prev &&
       t.page === prev.page + 1 &&
       prev.lastOnPage &&
       t.firstOnPage &&
-      sameStructure(prev, t, Math.max(12, medCharW * 3))
+      xOverlapFrac(prev, t) > 0.6 &&
+      columnsCompatible(prev, t, Math.max(15, prev.medCharW * 4))
     ) {
-      const rows = t.grid.slice();
-      if (rowsEqual(rows[0], prev.grid[0])) rows.shift(); // drop repeated header
-      prev.grid.push(...rows);
-      continue;
+      chain.push(t);
+    } else {
+      chains.push([t]);
     }
-    out.push(t);
   }
-  return out;
+  return chains;
+}
+
+// Collapse each chain into one table. For multi-page chains, re-detect columns
+// from every page's text pooled together so the whole table shares one column
+// structure, then re-grid each page and concatenate, dropping repeated headers.
+function mergeContinuations(tables) {
+  return chainContinuations(tables).map((chain) => {
+    if (chain.length === 1) return { grid: chain[0].grid, page: chain[0].page };
+
+    const pooledRows = chain.flatMap((t) => t.rows);
+    let minX = Infinity;
+    let maxX = -Infinity;
+    for (const t of chain) {
+      minX = Math.min(minX, t.xRange[0]);
+      maxX = Math.max(maxX, t.xRange[1]);
+    }
+    const bounds = columnsFromText(pooledRows, chain[0].medCharW);
+    const unified = [minX - 1, ...bounds, maxX + 1];
+
+    let grid = [];
+    let header = null;
+    for (const t of chain) {
+      const g = regrid(t, unified);
+      let rows = g;
+      if (header && rows.length && rowsEqual(rows[0], header)) rows = rows.slice(1);
+      if (!header && rows.length) header = rows[0];
+      grid.push(...rows);
+    }
+    return { grid, page: chain[0].page };
+  });
 }
 
 // ---- trimming --------------------------------------------------------------
@@ -444,9 +554,9 @@ export function extractTables(pages) {
     const ruled = [];
     const usedBoxes = [];
     for (const reg of regions) {
-      const t = tableFromRegion(reg, glyphs, medCharW, medH);
-      if (t) {
-        ruled.push(t);
+      const ts = tablesFromRegion(reg, glyphs, medCharW, medH);
+      if (ts.length) {
+        ruled.push(...ts);
         usedBoxes.push(reg);
       }
     }
@@ -487,7 +597,7 @@ export function extractTables(pages) {
   });
 
   // Pass 4: merge cross-page continuations, trim, keep only real tables.
-  const merged = mergeContinuations(tables, 6);
+  const merged = mergeContinuations(tables);
   return merged
     .map((t) => ({ rows: trimGrid(t.grid), page: t.page }))
     .filter((t) => t.rows.length >= 2 && t.rows[0].length >= 2);
