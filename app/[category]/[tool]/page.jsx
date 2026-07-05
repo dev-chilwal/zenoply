@@ -60,6 +60,8 @@ import JpgToPdf from "@/components/tools/JpgToPdf";
 import RotatePdf from "@/components/tools/RotatePdf";
 import UnlockPdf from "@/components/tools/UnlockPdf";
 import WatermarkPdf from "@/components/tools/WatermarkPdf";
+import PdfToWord from "@/components/tools/PdfToWord";
+import PdfToExcel from "@/components/tools/PdfToExcel";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -119,6 +121,8 @@ const REGISTRY = {
   "rotate-pdf": RotatePdf,
   "unlock-pdf": UnlockPdf,
   "watermark-pdf": WatermarkPdf,
+  "pdf-to-word": PdfToWord,
+  "pdf-to-excel": PdfToExcel,
 };
 
 export function generateStaticParams() {
