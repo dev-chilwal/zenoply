@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 8 July 2026 (Phase 1 complete; Phase 2 complete — 58 tools live, 0 stubs remaining; Phase 3 advancing — 35 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 9 July 2026 (Phase 1 complete; Phase 2 complete — 58 tools live, 0 stubs remaining; Phase 3 advancing — 36 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -19,7 +19,7 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 **No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
-**Guides live (22):** Each is linked to/from its tool (bidirectional internal linking).
+**Guides live (36):** Each is linked to/from its tool (bidirectional internal linking).
 - _Finance (8):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated? · How Is PPF Interest Calculated?
 - _Dev (6):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding?
 - _Convert (1):_ What Is a Unix Timestamp?
@@ -101,7 +101,7 @@ Tools win the "[thing] calculator" query; **guides win the "how/what/why" querie
 - "What Is a Slug (and how to make a URL slug)" → Slug Generator
 - "SQL formatting and why it matters" → SQL Formatter
 - "How to rotate / unlock / watermark a PDF" → the remaining PDF tools
-- High-search-volume finance calculators still lacking a guide: Inflation (live since 26 Jun). ✅ Simple Interest guide (SI = P × R × T / 100 term-by-term + worked example + rearrangements + simple vs compound) shipped 8 Jul. ✅ PPF guide shipped 27 Jun. ✅ Income Tax guide (old vs new regime) shipped 28 Jun. ✅ HRA exemption guide shipped 29 Jun. ✅ In-Hand Salary guide (CTC → take-home) shipped 30 Jun. ✅ Gratuity guide (15/26 formula) shipped 1 Jul. ✅ NPS guide (corpus + 40% annuity + pension) shipped 2 Jul. ✅ RD guide (quarterly-compounding maturity formula) shipped 3 Jul. ✅ Lumpsum guide (compound-growth formula + Rule of 72 + lumpsum vs SIP) shipped 4 Jul. ✅ SWP guide (month-by-month withdrawal loop + closed-form check + depletion + safe-withdrawal rule) shipped 5 Jul. ✅ CAGR guide (geometric-root formula + why it beats a simple average + CAGR vs total return + Rule of 72) shipped 6 Jul. ✅ ROI guide (net-gain formula + total vs annualized ROI + negative ROI + what ROI leaves out) shipped 7 Jul.
+- High-search-volume finance calculators still lacking a guide: **all finance calculators now have guides.** ✅ Inflation guide (future-cost + purchasing-power formulas + real-return vs headline-return + Rule of 70 halving) shipped 9 Jul. ✅ Simple Interest guide (SI = P × R × T / 100 term-by-term + worked example + rearrangements + simple vs compound) shipped 8 Jul. ✅ PPF guide shipped 27 Jun. ✅ Income Tax guide (old vs new regime) shipped 28 Jun. ✅ HRA exemption guide shipped 29 Jun. ✅ In-Hand Salary guide (CTC → take-home) shipped 30 Jun. ✅ Gratuity guide (15/26 formula) shipped 1 Jul. ✅ NPS guide (corpus + 40% annuity + pension) shipped 2 Jul. ✅ RD guide (quarterly-compounding maturity formula) shipped 3 Jul. ✅ Lumpsum guide (compound-growth formula + Rule of 72 + lumpsum vs SIP) shipped 4 Jul. ✅ SWP guide (month-by-month withdrawal loop + closed-form check + depletion + safe-withdrawal rule) shipped 5 Jul. ✅ CAGR guide (geometric-root formula + why it beats a simple average + CAGR vs total return + Rule of 72) shipped 6 Jul. ✅ ROI guide (net-gain formula + total vs annualized ROI + negative ROI + what ROI leaves out) shipped 7 Jul.
 
 Let GSC Performance data pick the order — write guides for whichever live tools are already drawing impressions.
 
@@ -136,4 +136,4 @@ The "do after 20+ tools live" gate is cleared (56 live). With technical SEO done
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
 | Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 56 tools + 29 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 56 tools + 36 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
