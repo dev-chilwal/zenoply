@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 9 July 2026 (Phase 1 complete; Phase 2 complete — 58 tools live, 0 stubs remaining; Phase 3 advancing — 36 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 10 July 2026 (Phase 1 complete; Phase 2 complete — 59 tools live, 0 stubs remaining; Phase 3 advancing — 37 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -101,6 +101,7 @@ Tools win the "[thing] calculator" query; **guides win the "how/what/why" querie
 - "What Is a Slug (and how to make a URL slug)" → Slug Generator
 - "SQL formatting and why it matters" → SQL Formatter
 - "How to rotate / unlock / watermark a PDF" → the remaining PDF tools
+- Text & writing (new guide category): ✅ Word Counter guide — "Word Count, Character Count and Reading Time Explained" (whitespace word rule + chars with/without spaces + reading-time estimate at 200–250 wpm + platform limits: X 280 / SMS 160 / meta 150–160 / Instagram 2,200 + words-per-page 500 single / 250 double) shipped 10 Jul. First guide under the new **Text & writing** hub category.
 - High-search-volume finance calculators still lacking a guide: **all finance calculators now have guides.** ✅ Inflation guide (future-cost + purchasing-power formulas + real-return vs headline-return + Rule of 70 halving) shipped 9 Jul. ✅ Simple Interest guide (SI = P × R × T / 100 term-by-term + worked example + rearrangements + simple vs compound) shipped 8 Jul. ✅ PPF guide shipped 27 Jun. ✅ Income Tax guide (old vs new regime) shipped 28 Jun. ✅ HRA exemption guide shipped 29 Jun. ✅ In-Hand Salary guide (CTC → take-home) shipped 30 Jun. ✅ Gratuity guide (15/26 formula) shipped 1 Jul. ✅ NPS guide (corpus + 40% annuity + pension) shipped 2 Jul. ✅ RD guide (quarterly-compounding maturity formula) shipped 3 Jul. ✅ Lumpsum guide (compound-growth formula + Rule of 72 + lumpsum vs SIP) shipped 4 Jul. ✅ SWP guide (month-by-month withdrawal loop + closed-form check + depletion + safe-withdrawal rule) shipped 5 Jul. ✅ CAGR guide (geometric-root formula + why it beats a simple average + CAGR vs total return + Rule of 72) shipped 6 Jul. ✅ ROI guide (net-gain formula + total vs annualized ROI + negative ROI + what ROI leaves out) shipped 7 Jul.
 
 Let GSC Performance data pick the order — write guides for whichever live tools are already drawing impressions.
@@ -136,4 +137,4 @@ The "do after 20+ tools live" gate is cleared (56 live). With technical SEO done
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
 | Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 56 tools + 36 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 59 tools + 37 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
