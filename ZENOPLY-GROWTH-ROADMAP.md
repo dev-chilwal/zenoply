@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 13 July 2026 (Phase 1 complete; Phase 2 complete — 59 tools live, 0 stubs remaining; Phase 3 advancing — 40 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 14 July 2026 (Phase 1 complete; Phase 2 complete — 59 tools live, 0 stubs remaining; Phase 3 advancing — 41 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -19,13 +19,13 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 **No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
-**Guides live (40):** Each is linked to/from its tool (bidirectional internal linking).
+**Guides live (41):** Each is linked to/from its tool (bidirectional internal linking).
 - _Text (3):_ Word Count, Character Count and Reading Time Explained · Text Case Formats Explained (UPPERCASE/Title/camel/snake) · What Is Lorem Ipsum? Meaning, History and When to Use It
 - _Finance (20):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated? · How Is PPF Interest Calculated? · plus Old vs New Tax Regime, HRA, In-Hand Salary, Gratuity, NPS, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation
 - _Dev (6):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding?
 - _Convert (2):_ What Is a Unix Timestamp? · How to Convert JSON to CSV
 - _PDF (7):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF · How to Convert JPG to PDF · How to Convert PDF to JPG · How to Convert PDF to Word · How to Extract Tables from a PDF to Excel
-- _Image (2):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home
+- _Image (3):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home · How to Compress an Image
 
 Notable build notes:
 - **Image tools** run entirely in-browser via the Canvas API — no uploads, no new npm dependencies, so the original 99 PageSpeed score is preserved. Passport Photo Maker has 36 country presets (grouped dropdown) at 300 DPI and **drag-to-position** (mouse + touch) plus zoom.
@@ -139,4 +139,4 @@ The "do after 20+ tools live" gate is cleared (56 live). With technical SEO done
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
 | Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 59 tools + 39 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 59 tools + 41 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
