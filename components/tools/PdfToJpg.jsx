@@ -1,15 +1,8 @@
 "use client";
 import { useState } from "react";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
+import { loadPdfjs, renderPage } from "./pdfjs";
 import { Segmented } from "@/components/calc/Calc";
-
-// Load pdf.js lazily on the client and point it at a matching worker so the
-// static export stays light and nothing runs at build time.
-async function loadPdfjs() {
-  const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
-  return pdfjs;
-}
 
 function canvasToBlob(canvas, type, quality) {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
@@ -52,13 +45,17 @@ export default function PdfToJpg() {
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
-        await page.render({ canvasContext: ctx, viewport }).promise;
+        await renderPage(page, { canvasContext: ctx, viewport });
         const blob = await canvasToBlob(canvas, format, format === "image/jpeg" ? 0.92 : undefined);
         if (blob) downloadBytes(blob, `${base}-page-${n}.${ext}`, format);
       }
       setProgress(`Done — ${pdf.numPages} image${pdf.numPages === 1 ? "" : "s"} downloaded.`);
-    } catch {
-      setError("Couldn't convert this PDF. It may be corrupted or password-protected.");
+    } catch (err) {
+      setError(
+        err?.name === "PdfRenderTimeoutError"
+          ? "This PDF is taking too long to render. Try a lower resolution, or a smaller file."
+          : "Couldn't convert this PDF. It may be corrupted or password-protected."
+      );
       setProgress("");
     } finally {
       setBusy(false);

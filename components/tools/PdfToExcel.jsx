@@ -3,14 +3,7 @@ import { useState } from "react";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
 import { buildXlsx, XLSX_MIME } from "./officeExport";
 import { extractPageTable, trimTable, rectangular, toCsv } from "./pdfTable";
-
-// Load pdf.js lazily on the client with a matching worker so the static export
-// stays light and nothing runs at build time.
-async function loadPdfjs() {
-  const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
-  return pdfjs;
-}
+import { loadPdfjs } from "./pdfjs";
 
 export default function PdfToExcel() {
   const [file, setFile] = useState(null);

@@ -3,14 +3,7 @@ import { useState } from "react";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
 import { Segmented } from "@/components/calc/Calc";
 import { buildDocx, DOCX_MIME } from "./officeExport";
-
-// Load pdf.js lazily on the client with a matching worker so the static export
-// stays light and nothing runs at build time.
-async function loadPdfjs() {
-  const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
-  return pdfjs;
-}
+import { loadPdfjs } from "./pdfjs";
 
 function median(nums) {
   if (!nums.length) return 0;

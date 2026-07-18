@@ -2,13 +2,8 @@
 import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
+import { loadPdfjs, renderPage } from "./pdfjs";
 import { Segmented } from "@/components/calc/Calc";
-
-async function loadPdfjs() {
-  const pdfjs = await import("pdfjs-dist");
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
-  return pdfjs;
-}
 
 function canvasToBlob(canvas, type, quality) {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
@@ -57,7 +52,7 @@ export default function CompressPdf() {
         const ctx = canvas.getContext("2d");
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        await page.render({ canvasContext: ctx, viewport }).promise;
+        await renderPage(page, { canvasContext: ctx, viewport });
         const blob = await canvasToBlob(canvas, "image/jpeg", quality);
         const jpgBytes = new Uint8Array(await blob.arrayBuffer());
         const img = await out.embedJpg(jpgBytes);
@@ -69,8 +64,12 @@ export default function CompressPdf() {
       downloadBytes(compressed, "compressed.pdf");
       setResult({ before: file.size, after: newSize });
       setProgress("");
-    } catch {
-      setError("Couldn't compress this PDF. It may be corrupted or password-protected.");
+    } catch (err) {
+      setError(
+        err?.name === "PdfRenderTimeoutError"
+          ? "This PDF is taking too long to render. Try a smaller file."
+          : "Couldn't compress this PDF. It may be corrupted or password-protected."
+      );
       setProgress("");
     } finally {
       setBusy(false);
