@@ -380,6 +380,38 @@ h2 { font-size: 1.35rem; margin: 1.75rem 0 .9rem; letter-spacing: -.01em; }
 .dropzone-preview img { max-width: 100%; max-height: 240px; border-radius: 8px; }
 .field-row { display: flex; gap: .75rem; flex-wrap: wrap; }
 .field-row .field { flex: 1; min-width: 130px; }
+/* ---------- PDF page grid (organize / remove blank pages) ---------- */
+/* minmax(0, 1fr) rather than 1fr: auto-fill tracks otherwise refuse to shrink
+   below the thumbnail's intrinsic width and the grid overflows on mobile. */
+.page-grid {
+  display: grid; gap: .75rem; margin: 1rem 0;
+  grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr));
+}
+.page-card {
+  display: flex; flex-direction: column; overflow: hidden;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+}
+.page-thumb {
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 3 / 4; padding: .4rem;
+  background: color-mix(in srgb, var(--fg) 4%, transparent);
+}
+.page-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 1px 4px rgba(0, 0, 0, .18); }
+.page-card-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: .4rem;
+  padding: .35rem .5rem; border-top: 1px solid var(--line-soft);
+}
+/* "Page 10" must stay on one line — the cards are too narrow to absorb a wrap. */
+.page-card-bar > .muted { white-space: nowrap; }
+.page-card-actions { display: flex; gap: .2rem; }
+.page-card-actions button {
+  min-width: 26px; height: 26px; padding: 0; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--fg);
+  font-size: .85rem; line-height: 1;
+}
+.page-card-actions button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.page-card-actions button:disabled { opacity: .35; cursor: not-allowed; }
+
 .passport-preview { display: flex; justify-content: center; margin: 1rem 0; padding: 1rem; background: color-mix(in srgb, var(--fg) 4%, transparent); border-radius: 10px; }
 .passport-canvas { max-width: 240px; max-height: 320px; height: auto; border: 1px solid var(--line); background: #fff; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
 .passport-canvas.dragging { cursor: grabbing; }

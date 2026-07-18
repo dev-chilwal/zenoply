@@ -62,6 +62,10 @@ import UnlockPdf from "@/components/tools/UnlockPdf";
 import WatermarkPdf from "@/components/tools/WatermarkPdf";
 import PdfToWord from "@/components/tools/PdfToWord";
 import PdfToExcel from "@/components/tools/PdfToExcel";
+import AddPageNumbers from "@/components/tools/AddPageNumbers";
+import OrganizePdf from "@/components/tools/OrganizePdf";
+import RemovePages from "@/components/tools/RemovePages";
+import RemoveBlankPages from "@/components/tools/RemoveBlankPages";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -123,6 +127,10 @@ const REGISTRY = {
   "watermark-pdf": WatermarkPdf,
   "pdf-to-word": PdfToWord,
   "pdf-to-excel": PdfToExcel,
+  "add-page-numbers": AddPageNumbers,
+  "organize-pdf": OrganizePdf,
+  "remove-pages": RemovePages,
+  "remove-blank-pages": RemoveBlankPages,
 };
 
 export function generateStaticParams() {
