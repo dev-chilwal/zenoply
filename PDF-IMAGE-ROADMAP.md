@@ -131,25 +131,41 @@ Smallpdf, PDF24, Sejda, Xodo) ✓. And self-inflicted: `lib/guides.js` at lines
 1275, 1300 and 1335 already tells readers "you would first need OCR". **We are
 actively routing our own traffic away for want of the tool.**
 
-- [ ] Image to text / OCR (`image-to-text`)
-- [ ] Searchable scanned PDF (`ocr-pdf`)
+- [x] Image to text / OCR (`image-to-text`) — image category. Upload photo/
+      screenshot/scan → editable text, copy or download .txt. English, Hindi,
+      or both.
+      **Verified on the production build**: OCR of a canvas-drawn image
+      returned an exact match including numbers and symbols ("Invoice #4815
+      total: $162.30"); language-switch recreates the worker; copy/download work.
+- [x] Searchable scanned PDF (`ocr-pdf`) — PDF category. Renders each page,
+      OCRs it, and rebuilds a PDF with an invisible, selectable text layer
+      (tesseract's own PDF renderer positions the text; pdf-lib merges pages).
+      **Verified on the production build**: a 6-page file became a 6-page
+      searchable PDF in ~12s; extracting text from the output returned the
+      correct words on content pages and nothing on the two blank pages.
 
-Feasible via **tesseract.js** under two non-negotiable constraints ✓ (both
-verified by measuring the CDN directly, not trusting the README):
+Implementation notes (as built):
 
-- **Keep `oem` at the LSTM default (1).** Legacy oem 0/2 pulls 10-20MB per
-  language (eng 10.42MB, jpn 15.41MB, chi_sim 19.23MB). The scary "10.4MB
-  first load" in issue #806 describes *that* path, not the default.
-- **Use a bounded ~4-worker scheduler pool.** Docs verbatim: "code should
-  never be able to create an arbitrary number of workers"; unbounded creation
-  is "likely to cause crashes due to resource limitations".
+- **Both constraints honoured.** tesseract.js's `createWorker` already defaults
+  to `OEM.LSTM_ONLY` (1), which also selects the LSTM-only core (~3.7MB) and the
+  `_best_int` language files — so we never touch the 10-20MB legacy path. On
+  worker count: rather than a 4-worker scheduler, each tool uses **one** worker
+  processing pages sequentially — one worker is inherently bounded, which is the
+  point of the "never spawn unbounded workers" guidance. A scheduler pool is a
+  future speed optimisation for `ocr-pdf` on long documents, not a correctness
+  need.
+- **Everything is self-hosted** (`scripts/copy-tesseract-assets.mjs`,
+  `components/tools/tesseract.js`): worker + SIMD-LSTM core + eng/hin
+  `.traineddata.gz` copied from node_modules into `/public` on predev/prebuild
+  and committed, exactly like the pdf.js worker. Verified: zero external
+  requests during OCR (no jsdelivr), so the privacy claim holds for the engine
+  and language data too, not just the user's file. ~8MB of committed assets.
+- **Languages: English + Hindi** (India focus). Adding more is one line in
+  `OCR_LANGS` plus the language in the copy script's asset list.
+- Hard boundary ✓ still stands: Tesseract does **text only — no table-structure
+  recognition**, so it can't feed `pdf-to-excel`. Not promised anywhere.
 
-Real English first load is **~7-8MB**, not ~2MB — the 2.82MB `eng` file
-excludes the ~4.7MB `tesseract-core-simd.wasm.js`. Indic langs are cheap if we
-go multilingual: hin 1.33MB, ben 1.31MB, tam 1.38MB.
-
-Hard boundary ✓: Tesseract does **text only — no table-structure recognition**.
-It cannot meaningfully feed `pdf-to-excel`. Don't promise that.
+Both tools are verified end-to-end and ready to ship.
 
 ## Tier 3 — image quick wins
 

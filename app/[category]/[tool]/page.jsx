@@ -66,6 +66,8 @@ import AddPageNumbers from "@/components/tools/AddPageNumbers";
 import OrganizePdf from "@/components/tools/OrganizePdf";
 import RemovePages from "@/components/tools/RemovePages";
 import RemoveBlankPages from "@/components/tools/RemoveBlankPages";
+import ImageToText from "@/components/tools/ImageToText";
+import OcrPdf from "@/components/tools/OcrPdf";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -131,6 +133,8 @@ const REGISTRY = {
   "organize-pdf": OrganizePdf,
   "remove-pages": RemovePages,
   "remove-blank-pages": RemoveBlankPages,
+  "image-to-text": ImageToText,
+  "ocr-pdf": OcrPdf,
 };
 
 export function generateStaticParams() {

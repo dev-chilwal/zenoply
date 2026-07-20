@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-pdf-worker.mjs",
+    "copy-assets": "node scripts/copy-pdf-worker.mjs && node scripts/copy-tesseract-assets.mjs",
+    "predev": "npm run copy-assets",
     "dev": "next dev",
-    "prebuild": "node scripts/copy-pdf-worker.mjs",
+    "prebuild": "npm run copy-assets",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -15,6 +16,12 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.4.168",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tesseract.js": "^7.0.0",
+    "tesseract.js-core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "@tesseract.js-data/hin": "^1.0.0"
   }
 }
