@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 15 July 2026 (Phase 1 complete; Phase 2 complete — 59 tools live, 0 stubs remaining; Phase 3 advancing — 42 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 20 July 2026 (Phase 1 complete; Phase 2 complete — 65 tools live, 0 stubs remaining; Phase 3 advancing — 43 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -8,7 +8,7 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ## Current state (updated 15 Jul 2026)
 
-**59 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **42 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 16 live tools still lack a guide — that is the remaining Phase 3 backlog.
+**65 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **43 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 21 live tools still lack a guide — that is the remaining Phase 3 backlog.
 
 - **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
 - **Dev (8):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier
@@ -19,13 +19,13 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 **No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
-**Guides live (42):** Each is linked to/from its tool (bidirectional internal linking).
+**Guides live (43):** Each is linked to/from its tool (bidirectional internal linking).
 - _Text (3):_ Word Count, Character Count and Reading Time Explained · Text Case Formats Explained (UPPERCASE/Title/camel/snake) · What Is Lorem Ipsum? Meaning, History and When to Use It
 - _Finance (20):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated? · How Is PPF Interest Calculated? · plus Old vs New Tax Regime, HRA, In-Hand Salary, Gratuity, NPS, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation
 - _Dev (6):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding?
 - _Convert (3):_ What Is a Unix Timestamp? · How to Convert JSON to CSV · RGB, HEX and HSL Color Codes Explained
 - _PDF (7):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF · How to Convert JPG to PDF · How to Convert PDF to JPG · How to Convert PDF to Word · How to Extract Tables from a PDF to Excel
-- _Image (3):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home · How to Compress an Image
+- _Image (4):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home · How to Compress an Image · How to Extract Text from an Image (OCR)
 
 Notable build notes:
 - **Image tools** run entirely in-browser via the Canvas API — no uploads, no new npm dependencies, so the original 99 PageSpeed score is preserved. Passport Photo Maker has 36 country presets (grouped dropdown) at 300 DPI and **drag-to-position** (mouse + touch) plus zoom.
@@ -99,6 +99,7 @@ Tools win the "[thing] calculator" query; **guides win the "how/what/why" querie
 
 **Next guides to write (remaining live tools that lack a guide — note each tool can show only one `guide:` backlink, so prioritise tools with none):**
 - ✅ "RGB, HEX and HSL Color Codes Explained" → Color Converter — shipped 15 Jul (all four systems: HEX as three base-16 channel pairs + 3-digit shorthand doubling + RGB additive 0–255 + HSL hue/saturation/lightness for intuitive editing + CMYK subtractive ink with the black 'key' plate and device-dependence caveat + worked example carrying #3b82f6 → rgb(59, 130, 246) → hsl(217, 91%, 60%) → cmyk(76%, 47%, 0%, 4%) — verified against the tool's own math + which-format-when + links to Hex to RGB / RGB to Hex).
+- ✅ "How to Extract Text from an Image (OCR)" → Image to Text — shipped 20 Jul (what OCR does stage by stage: binarise/deskew → layout analysis → line-level neural recognition vs old glyph-template matching + why the language setting is the biggest accuracy lever and when eng+hin actually helps + what makes OCR accurate, resolution ~300 DPI / contrast / straightness / lighting / light compression, plus the counterintuitive "don't compress before OCR" + worked example on a phone-shot invoice: >95% chars correct, predictable 0/O 1/l 5/S 8/B swaps to verify by eye, table structure not preserved + where OCR struggles + images vs scanned PDFs pointing to OCR PDF and the select-a-line check that sends you to PDF to Word instead + in-browser privacy for payslips/IDs + cleanup via Remove Line Breaks / Find & Replace / Word Counter).
 - "What Is a Slug (and how to make a URL slug)" → Slug Generator
 - "SQL formatting and why it matters" → SQL Formatter
 - "How to rotate / unlock / watermark a PDF" → the remaining PDF tools
@@ -139,4 +140,4 @@ The "do after 20+ tools live" gate is cleared (56 live). With technical SEO done
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
 | Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 59 tools + 42 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 65 tools + 43 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
