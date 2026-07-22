@@ -26,8 +26,15 @@ export function LocaleProvider({ children }) {
     // it, fetch https://get.geojs.io/v1/ip/country.json here as an opt-in step.
     try {
       const saved = localStorage.getItem("region");
-      if (saved && REGIONS[saved]) {
-        setCode(saved);
+      // "EU" was a single eurozone row before the per-country split. Migrate it
+      // to Ireland (it used the en-IE locale) rather than silently dropping
+      // these users back to the default region.
+      const migrated = saved === "EU" ? "IE" : saved;
+      if (migrated && REGIONS[migrated]) {
+        if (migrated !== saved) {
+          try { localStorage.setItem("region", migrated); } catch {}
+        }
+        setCode(migrated);
         return;
       }
     } catch {}

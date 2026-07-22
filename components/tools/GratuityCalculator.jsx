@@ -1,28 +1,29 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
   RailNote, RailStat, RailFormula,
 } from "@/components/calc/Calc";
-import { useRegion } from "@/components/LocaleContext";
+import { RegionPinned } from "@/components/calc/RegionNotice";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
-import { moneyRange } from "@/lib/locales";
+import { REGIONS } from "@/lib/locales";
 
-const SALARY_BASE = { min: 5000, max: 500000, step: 1000, default: 60000 };
+const RANGE = { min: 5000, max: 500000, step: 1000, default: 60000 };
 const EXEMPT_CAP = 2000000; // Section 10(10) lifetime tax-exemption cap (Rs 20 lakh)
 
+// Pinned to India: this is the Payment of Gratuity Act formula and the Section
+// 10(10) cap is a rupee figure. Following the currency selector would price a
+// rupee-denominated statutory cap in dollars — a meaningless comparison.
+const fmt = (n) => formatMoney(n, REGIONS.IN);
+const sym = currencySymbol(REGIONS.IN);
+
 export default function GratuityCalculator() {
-  const reg = useRegion();
-  const range = useMemo(() => moneyRange(SALARY_BASE, reg.scale), [reg.scale]);
-  const sym = currencySymbol(reg);
-  const fmt = (n) => formatMoney(n, reg);
+  const range = RANGE;
 
   const [salary, setSalary] = useState(range.default);
   const [years, setYears] = useState(10);
   const [months, setMonths] = useState(7);
-
-  useEffect(() => { setSalary(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const r = useMemo(() => {
     // Round up only when the final part-year exceeds 6 months (the Act counts
@@ -39,6 +40,10 @@ export default function GratuityCalculator() {
   return (
     <CalcGrid>
       <CalcMain>
+        <RegionPinned
+          code="IN"
+          reason="Gratuity here follows India's Payment of Gratuity Act, with a ₹20 lakh exemption cap. There's no equivalent statutory entitlement to convert."
+        />
         <NumberInput
           label="Last drawn salary (Basic + DA, monthly)" hint="Basic pay plus dearness allowance per month."
           prefix={sym} value={salary} onChange={setSalary}

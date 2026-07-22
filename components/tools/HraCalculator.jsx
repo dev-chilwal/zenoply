@@ -1,36 +1,29 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow, Segmented, SplitBar, Legend,
   RailNote, RailStat, RailFormula,
 } from "@/components/calc/Calc";
-import { useRegion } from "@/components/LocaleContext";
+import { RegionPinned } from "@/components/calc/RegionNotice";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
-import { moneyRange } from "@/lib/locales";
+import { REGIONS } from "@/lib/locales";
 
-const BASIC_BASE = { min: 0, max: 10000000, step: 10000, default: 600000 };
-const HRA_BASE = { min: 0, max: 10000000, step: 10000, default: 300000 };
-const RENT_BASE = { min: 0, max: 10000000, step: 10000, default: 240000 };
+const basicRange = { min: 0, max: 10000000, step: 10000, default: 600000 };
+const hraRange = { min: 0, max: 10000000, step: 10000, default: 300000 };
+const rentRange = { min: 0, max: 10000000, step: 10000, default: 240000 };
+
+// Pinned to India: the HRA exemption is Section 10(13A) of the Indian Income
+// Tax Act, including the metro/non-metro split. No other country has an
+// equivalent, so re-denominating it would imply a relief that doesn't exist.
+const fmt = (n) => formatMoney(n, REGIONS.IN);
+const sym = currencySymbol(REGIONS.IN);
 
 export default function HraCalculator() {
-  const reg = useRegion();
-  const basicRange = useMemo(() => moneyRange(BASIC_BASE, reg.scale), [reg.scale]);
-  const hraRange = useMemo(() => moneyRange(HRA_BASE, reg.scale), [reg.scale]);
-  const rentRange = useMemo(() => moneyRange(RENT_BASE, reg.scale), [reg.scale]);
-  const sym = currencySymbol(reg);
-  const fmt = (n) => formatMoney(n, reg);
-
   const [basic, setBasic] = useState(basicRange.default);
   const [hra, setHra] = useState(hraRange.default);
   const [rent, setRent] = useState(rentRange.default);
   const [city, setCity] = useState("metro");
-
-  useEffect(() => {
-    setBasic(basicRange.default);
-    setHra(hraRange.default);
-    setRent(rentRange.default);
-  }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const r = useMemo(() => {
     // Exempt HRA = least of the three statutory limits (Section 10(13A)).
@@ -48,6 +41,10 @@ export default function HraCalculator() {
   return (
     <CalcGrid>
       <CalcMain>
+        <RegionPinned
+          code="IN"
+          reason="HRA exemption is a Section 10(13A) relief under India's Income Tax Act. No other country has an equivalent, so this stays in rupees."
+        />
         <NumberInput
           label="Basic salary + DA (annual)" hint="Your annual Basic plus Dearness Allowance."
           prefix={sym} value={basic} onChange={setBasic}
