@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 31 July 2026 (Phase 1 complete; Phase 2 complete — 65 tools live, 0 stubs remaining; Phase 3 advancing — 52 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 1 August 2026 (Phase 1 complete; Phase 2 complete — 65 tools live, 0 stubs remaining; Phase 3 advancing — 53 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -8,7 +8,7 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ## Current state (updated 15 Jul 2026)
 
-**65 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **52 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 12 live tools still lack a guide — that is the remaining Phase 3 backlog.
+**65 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **53 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 11 live tools still lack a guide — that is the remaining Phase 3 backlog.
 
 - **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
 - **Dev (8):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier
@@ -19,11 +19,11 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 **No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
-**Guides live (52):** Each is linked to/from its tool (bidirectional internal linking).
-- _Text (3):_ Word Count, Character Count and Reading Time Explained · Text Case Formats Explained (UPPERCASE/Title/camel/snake) · What Is Lorem Ipsum? Meaning, History and When to Use It
+**Guides live (53):** Each is linked to/from its tool (bidirectional internal linking).
+- _Text (4):_ Word Count, Character Count and Reading Time Explained · Text Case Formats Explained (UPPERCASE/Title/camel/snake) · What Is Lorem Ipsum? Meaning, History and When to Use It · What Is a URL Slug?
 - _Finance (20):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated? · How Is PPF Interest Calculated? · plus Old vs New Tax Regime, HRA, In-Hand Salary, Gratuity, NPS, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation
 - _Dev (7):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding? · How to Format SQL Queries
-- _Convert (5):_ What Is a Unix Timestamp? · How to Convert JSON to CSV · How to Convert CSV to JSON · RGB, HEX and HSL Color Codes Explained · How to Convert YAML to JSON
+- _Convert (6):_ What Is a Unix Timestamp? · How to Convert JSON to CSV · How to Convert CSV to JSON · RGB, HEX and HSL Color Codes Explained · How to Convert YAML to JSON · How to Write Numbers in Words
 - _PDF (11):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF · How to Convert JPG to PDF · How to Convert PDF to JPG · How to Convert PDF to Word · How to Extract Tables from a PDF to Excel · How to Unlock a PDF · How to Make a Scanned PDF Searchable (OCR) · How to Rotate a PDF and Save It · How to Add a Watermark to a PDF
 - _Image (5):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home · How to Compress an Image · How to Extract Text from an Image (OCR) · How to Resize an Image
 
