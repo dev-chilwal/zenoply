@@ -68,6 +68,7 @@ import RemovePages from "@/components/tools/RemovePages";
 import RemoveBlankPages from "@/components/tools/RemoveBlankPages";
 import ImageToText from "@/components/tools/ImageToText";
 import OcrPdf from "@/components/tools/OcrPdf";
+import CropImage from "@/components/tools/CropImage";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -135,6 +136,7 @@ const REGISTRY = {
   "remove-blank-pages": RemoveBlankPages,
   "image-to-text": ImageToText,
   "ocr-pdf": OcrPdf,
+  "crop-image": CropImage,
 };
 
 export function generateStaticParams() {
