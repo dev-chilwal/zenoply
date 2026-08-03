@@ -172,7 +172,21 @@ Both tools are verified end-to-end and ready to ship.
 Confirmed gap ✓: iLoveIMG ships 13 image tools to our 4; nine have no Zenoply
 equivalent. These four are the cheap end — plain Canvas, no new deps.
 
-- [ ] Crop image (`crop-image`)
+- [x] Crop image (`crop-image`) — drag-or-type selection over a live preview:
+      eight resize grips plus drag-to-move, X/Y/W/H fields in source pixels
+      kept in sync with the box, aspect presets (Free, 1:1, 4:3, 3:2, 16:9,
+      3:4, 2:3, 9:16) that fit the largest box of that shape and hold the
+      ratio while dragging, PNG or JPG out. Plain Canvas `drawImage` with the
+      9-argument source-rect form — no new deps. Drag uses pointer capture
+      rather than window listeners added in an effect, so no move is lost
+      between pointerdown and the first move.
+      **Verified on the production build**: cropping (100,100,40,40) out of a
+      400×300 test image returns a 40×40 PNG that is entirely the planted
+      black marker, and a crop straddling both quadrant midlines puts the
+      boundary exactly between local x=19 and x=20 — no off-by-one. Presets
+      fit as expected (1:1 → 300×300 at x=50, 16:9 → 400×225 at y=38,
+      9:16 → 169×300 at x=116); an NW-handle drag holds the opposite edges
+      ([0,0,220,180] + (50,40) → [50,40,170,140]); the box clamps in bounds.
 - [ ] Rotate / flip image (`rotate-image`)
 - [ ] Watermark image (`watermark-image`)
 - [ ] Meme generator (`meme-generator`)
