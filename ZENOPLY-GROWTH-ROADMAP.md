@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 3 August 2026 (Phase 1 complete; Phase 2 complete — 66 tools live, 0 stubs remaining; Phase 3 advancing — 56 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 4 August 2026 (Phase 1 complete; Phase 2 complete — 67 tools live, 0 stubs remaining; Phase 3 advancing — 57 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -8,24 +8,24 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ## Current state (updated 15 Jul 2026)
 
-**66 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **56 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 9 live tools still lack a guide — that is the remaining Phase 3 backlog.
+**67 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **57 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 9 live tools still lack a guide — that is the remaining Phase 3 backlog.
 
 - **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
 - **Dev (8):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier
 - **Convert (8):** Hex to RGB, RGB to Hex, Color Converter (HEX/RGB/HSL/CMYK), Unix Timestamp Converter, JSON to CSV, CSV to JSON, YAML to JSON, Number to Words
-- **Finance (20):** SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage, Simple Interest, RD, PPF, NPS, Gratuity, HRA, Income Tax, In-Hand Salary, Lumpsum, SWP, CAGR, ROI, Inflation
-- **PDF (10) — category added since launch:** Merge, Split, Compress, PDF to JPG, JPG to PDF, Rotate, Unlock, Watermark, PDF to Word, PDF to Excel
-- **Image (4):** Image Resizer, Image Converter (PNG/JPG/WebP), Image Compressor, Passport Photo Maker
+- **Finance (21):** SIP, Step-Up SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage, Simple Interest, RD, PPF, NPS, Gratuity, HRA, Income Tax, In-Hand Salary, Lumpsum, SWP, CAGR, ROI, Inflation
+- **PDF (15) — category added since launch:** Merge, Split, Compress, PDF to JPG, JPG to PDF, Rotate, Unlock, Watermark, PDF to Word, PDF to Excel, Add Page Numbers, Organize, Remove Pages, Remove Blank Pages, OCR PDF
+- **Image (7):** Image Resizer, Image Converter (PNG/JPG/WebP), Image Compressor, Passport Photo Maker, Image to Text (OCR), Crop Image, EXIF Viewer & Remover
 
 **No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
-**Guides live (55):** Each is linked to/from its tool (bidirectional internal linking).
+**Guides live (57):** Each is linked to/from its tool (bidirectional internal linking).
 - _Text (4):_ Word Count, Character Count and Reading Time Explained · Text Case Formats Explained (UPPERCASE/Title/camel/snake) · What Is Lorem Ipsum? Meaning, History and When to Use It · What Is a URL Slug?
 - _Finance (20):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated? · How Is PPF Interest Calculated? · plus Old vs New Tax Regime, HRA, In-Hand Salary, Gratuity, NPS, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation
 - _Dev (7):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding? · How to Format SQL Queries
 - _Convert (6):_ What Is a Unix Timestamp? · How to Convert JSON to CSV · How to Convert CSV to JSON · RGB, HEX and HSL Color Codes Explained · How to Convert YAML to JSON · How to Write Numbers in Words
 - _PDF (13):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF · How to Convert JPG to PDF · How to Convert PDF to JPG · How to Convert PDF to Word · How to Extract Tables from a PDF to Excel · How to Unlock a PDF · How to Make a Scanned PDF Searchable (OCR) · How to Rotate a PDF and Save It · How to Add a Watermark to a PDF · How to Add Page Numbers to a PDF · How to Delete Pages from a PDF
-- _Image (5):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home · How to Compress an Image · How to Extract Text from an Image (OCR) · How to Resize an Image
+- _Image (7):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home · How to Compress an Image · How to Extract Text from an Image (OCR) · How to Resize an Image · How to Crop an Image · How to Remove EXIF Data from Photos
 
 Notable build notes:
 - **Image tools** run entirely in-browser via the Canvas API — no uploads, no new npm dependencies, so the original 99 PageSpeed score is preserved. Passport Photo Maker has 36 country presets (grouped dropdown) at 300 DPI and **drag-to-position** (mouse + touch) plus zoom.
@@ -42,7 +42,7 @@ Notable build notes:
 A full codebase audit found **no critical technical SEO gaps**: all ~94 pages have unique titles/descriptions/canonicals, JSON-LD (SoftwareApplication, Article, BreadcrumbList, FAQPage) everywhere, verified sitemap, clean internal linking, 99 PageSpeed. Stop optimizing the tech. What actually moves rankings from here:
 
 1. **Ride out the new-domain cold-start.** ~1 month into Google's evaluation period; expect 3–6+ months before meaningful rankings regardless of quality. The best signal during this window is a **steady publishing cadence** — don't pause the guide-per-day rhythm.
-2. **Close the guide gap, GSC-ordered** (Phase 3). 27 tools still lack guides; write them in the order GSC impressions suggest, not alphabetically.
+2. **Close the guide gap, GSC-ordered** (Phase 3). 9 tools still lack guides; write them in the order GSC impressions suggest, not alphabetically.
 3. **Target long-tail question queries, not head terms** (Phase 3). "SIP calculator" is owned by Groww/ClearTax/ET Money — a new domain won't crack it soon. Question-shaped queries ("is gratuity taxable after 5 years", "PPF vs FD which is better", "how much SIP for 1 crore in 15 years") are winnable now and funnel to the calculators. Add comparison/scenario guides, not just formula explainers.
 4. **Backlinks — the completely untouched lever** (Phase 5). A technically perfect site with zero referring domains stays in the sandbox longer. This is now the biggest gap.
 5. **Weekly GSC feedback loop** (rhythm table). Impressions-without-guides → next guide; guides ranking positions 8–20 → expand/refresh (small gains there move to page 1). Bump the guide's `updated` date on real revisions — the sitemap reports true lastmod, so Google recrawls.
@@ -145,4 +145,4 @@ The "do after 20+ tools live" gate is cleared (56 live). With technical SEO done
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
 | Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 66 tools + 56 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 67 tools + 57 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
