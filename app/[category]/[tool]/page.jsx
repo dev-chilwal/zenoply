@@ -70,6 +70,7 @@ import ImageToText from "@/components/tools/ImageToText";
 import OcrPdf from "@/components/tools/OcrPdf";
 import CropImage from "@/components/tools/CropImage";
 import ExifViewer from "@/components/tools/ExifViewer";
+import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -139,6 +140,7 @@ const REGISTRY = {
   "ocr-pdf": OcrPdf,
   "crop-image": CropImage,
   "exif-viewer": ExifViewer,
+  "qr-code-generator": QrCodeGenerator,
 };
 
 export function generateStaticParams() {
