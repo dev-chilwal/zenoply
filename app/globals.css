@@ -380,6 +380,34 @@ h2 { font-size: 1.35rem; margin: 1.75rem 0 .9rem; letter-spacing: -.01em; }
 .dropzone-preview img { max-width: 100%; max-height: 240px; border-radius: 8px; }
 .field-row { display: flex; gap: .75rem; flex-wrap: wrap; }
 .field-row .field { flex: 1; min-width: 130px; }
+
+/* ---------- Editable grade-point rows (CGPA calculator) ---------- */
+/* minmax(0, 1fr) on the name track: a plain 1fr refuses to shrink below the
+   text input's intrinsic width and the row overflows the viewport on mobile. */
+.gp-rows { display: grid; gap: .5rem; margin-top: 1rem; }
+.gp-head, .gp-row { display: grid; grid-template-columns: minmax(0, 1fr) 96px 90px 30px; gap: .5rem; align-items: center; }
+.gp-head {
+  font-family: var(--font-mono), monospace; font-size: .7rem; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--muted-2);
+  /* end, not center: the narrow columns wrap to two lines on mobile and the
+     labels should still sit on a common baseline above the inputs. */
+  align-items: end; line-height: 1.3;
+}
+.gp-head .r { text-align: right; }
+.gp-row .inp { width: 100%; padding: .45rem .6rem; font-size: .9rem; }
+.gp-row .inp.r { text-align: right; }
+.gp-del {
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+  border-radius: 8px; width: 30px; height: 30px; line-height: 1; font-size: 1rem;
+  cursor: pointer; padding: 0;
+}
+.gp-del:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.gp-del:disabled { opacity: .35; cursor: not-allowed; }
+@media (max-width: 560px) {
+  .gp-head, .gp-row { grid-template-columns: minmax(0, 1fr) 72px 66px 28px; gap: .35rem; }
+  .gp-del { width: 28px; height: 28px; }
+}
+
 /* ---------- PDF page grid (organize / remove blank pages) ---------- */
 /* minmax(0, 1fr) rather than 1fr: auto-fill tracks otherwise refuse to shrink
    below the thumbnail's intrinsic width and the grid overflows on mobile. */

@@ -71,6 +71,7 @@ import OcrPdf from "@/components/tools/OcrPdf";
 import CropImage from "@/components/tools/CropImage";
 import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
+import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -141,6 +142,7 @@ const REGISTRY = {
   "crop-image": CropImage,
   "exif-viewer": ExifViewer,
   "qr-code-generator": QrCodeGenerator,
+  "cgpa-to-percentage": CgpaToPercentage,
 };
 
 export function generateStaticParams() {
