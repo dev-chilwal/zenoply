@@ -72,6 +72,7 @@ import CropImage from "@/components/tools/CropImage";
 import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
+import RupeesInWords from "@/components/tools/RupeesInWords";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -119,6 +120,7 @@ const REGISTRY = {
   "passport-photo-maker": PassportPhotoMaker,
   "text-reverser": TextReverser,
   "number-to-words": NumberToWords,
+  "rupees-in-words": RupeesInWords,
   "csv-to-json": CsvToJson,
   "json-to-csv": JsonToCsv,
   "html-minifier": HtmlMinifier,
