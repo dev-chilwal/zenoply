@@ -73,6 +73,7 @@ import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
 import RupeesInWords from "@/components/tools/RupeesInWords";
+import TokenCounter from "@/components/tools/TokenCounter";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -145,6 +146,7 @@ const REGISTRY = {
   "exif-viewer": ExifViewer,
   "qr-code-generator": QrCodeGenerator,
   "cgpa-to-percentage": CgpaToPercentage,
+  "token-counter": TokenCounter,
 };
 
 export function generateStaticParams() {
