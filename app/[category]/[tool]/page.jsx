@@ -45,6 +45,7 @@ import SlugGenerator from "@/components/tools/SlugGenerator";
 import ImageResizer from "@/components/tools/ImageResizer";
 import ImageConverter from "@/components/tools/ImageConverter";
 import ImageCompressor from "@/components/tools/ImageCompressor";
+import CompressImageToSize from "@/components/tools/CompressImageToSize";
 import PassportPhotoMaker from "@/components/tools/PassportPhotoMaker";
 import TextReverser from "@/components/tools/TextReverser";
 import NumberToWords from "@/components/tools/NumberToWords";
@@ -118,6 +119,7 @@ const REGISTRY = {
   "image-resizer": ImageResizer,
   "image-converter": ImageConverter,
   "image-compressor": ImageCompressor,
+  "compress-image-to-size": CompressImageToSize,
   "passport-photo-maker": PassportPhotoMaker,
   "text-reverser": TextReverser,
   "number-to-words": NumberToWords,
