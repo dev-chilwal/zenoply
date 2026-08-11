@@ -56,6 +56,7 @@ import YamlToJson from "@/components/tools/YamlToJson";
 import MergePdf from "@/components/tools/MergePdf";
 import SplitPdf from "@/components/tools/SplitPdf";
 import CompressPdf from "@/components/tools/CompressPdf";
+import CompressPdfToSize from "@/components/tools/CompressPdfToSize";
 import PdfToJpg from "@/components/tools/PdfToJpg";
 import JpgToPdf from "@/components/tools/JpgToPdf";
 import RotatePdf from "@/components/tools/RotatePdf";
@@ -131,6 +132,7 @@ const REGISTRY = {
   "merge-pdf": MergePdf,
   "split-pdf": SplitPdf,
   "compress-pdf": CompressPdf,
+  "compress-pdf-to-size": CompressPdfToSize,
   "pdf-to-jpg": PdfToJpg,
   "jpg-to-pdf": JpgToPdf,
   "rotate-pdf": RotatePdf,
