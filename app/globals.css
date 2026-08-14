@@ -451,6 +451,10 @@ h2 { font-size: 1.35rem; margin: 1.75rem 0 .9rem; letter-spacing: -.01em; }
 .passport-preview { display: flex; justify-content: center; margin: 1rem 0; padding: 1rem; background: color-mix(in srgb, var(--fg) 4%, transparent); border-radius: 10px; }
 .passport-canvas { max-width: 240px; max-height: 320px; height: auto; border: 1px solid var(--line); background: #fff; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
 .passport-canvas.dragging { cursor: grabbing; }
+/* Exam outputs range from a 140x60 signature to a 413x531 photo, so the width is
+   set inline per output and the canvas keeps its own aspect ratio from there. */
+.exam-canvas { max-width: 100%; max-height: none; }
+.exam-canvas.no-drag { cursor: default; }
 
 /* ---------- Crop image: draggable selection over the preview ---------- */
 .crop-stage { position: relative; display: block; margin: 1rem auto 0; max-width: 560px; line-height: 0; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 4%, transparent); touch-action: none; user-select: none; -webkit-user-select: none; }

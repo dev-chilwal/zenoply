@@ -47,6 +47,7 @@ import ImageConverter from "@/components/tools/ImageConverter";
 import ImageCompressor from "@/components/tools/ImageCompressor";
 import CompressImageToSize from "@/components/tools/CompressImageToSize";
 import PassportPhotoMaker from "@/components/tools/PassportPhotoMaker";
+import ExamPhotoResizer from "@/components/tools/ExamPhotoResizer";
 import TextReverser from "@/components/tools/TextReverser";
 import NumberToWords from "@/components/tools/NumberToWords";
 import CsvToJson from "@/components/tools/CsvToJson";
@@ -122,6 +123,7 @@ const REGISTRY = {
   "image-compressor": ImageCompressor,
   "compress-image-to-size": CompressImageToSize,
   "passport-photo-maker": PassportPhotoMaker,
+  "exam-photo-resizer": ExamPhotoResizer,
   "text-reverser": TextReverser,
   "number-to-words": NumberToWords,
   "rupees-in-words": RupeesInWords,
