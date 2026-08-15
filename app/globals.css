@@ -532,6 +532,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .file-item .file-name { flex: 1; word-break: break-all; }
 .file-item .file-meta { color: var(--muted); font-size: .82rem; flex-shrink: 0; }
 .file-item .file-ctrl { display: flex; gap: .35rem; flex-shrink: 0; }
+/* Converted-image preview inside a result row (HEIC converter). Fixed box so a
+   row of mixed portrait/landscape photos keeps one baseline height. */
+.file-item .file-thumb {
+  width: 44px; height: 44px; flex-shrink: 0; object-fit: cover;
+  border-radius: 6px; border: 1px solid var(--line-soft); background: var(--surface);
+}
 
 /* ============================================================
    FINANCE LANDING — the redesign

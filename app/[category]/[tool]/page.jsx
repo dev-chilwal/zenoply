@@ -77,6 +77,7 @@ import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
 import RupeesInWords from "@/components/tools/RupeesInWords";
 import TokenCounter from "@/components/tools/TokenCounter";
+import HeicToJpg from "@/components/tools/HeicToJpg";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -150,6 +151,7 @@ const REGISTRY = {
   "ocr-pdf": OcrPdf,
   "crop-image": CropImage,
   "exif-viewer": ExifViewer,
+  "heic-to-jpg": HeicToJpg,
   "qr-code-generator": QrCodeGenerator,
   "cgpa-to-percentage": CgpaToPercentage,
   "token-counter": TokenCounter,
