@@ -62,6 +62,7 @@ import PdfToJpg from "@/components/tools/PdfToJpg";
 import JpgToPdf from "@/components/tools/JpgToPdf";
 import RotatePdf from "@/components/tools/RotatePdf";
 import UnlockPdf from "@/components/tools/UnlockPdf";
+import ProtectPdf from "@/components/tools/ProtectPdf";
 import WatermarkPdf from "@/components/tools/WatermarkPdf";
 import PdfToWord from "@/components/tools/PdfToWord";
 import PdfToExcel from "@/components/tools/PdfToExcel";
@@ -140,6 +141,7 @@ const REGISTRY = {
   "jpg-to-pdf": JpgToPdf,
   "rotate-pdf": RotatePdf,
   "unlock-pdf": UnlockPdf,
+  "protect-pdf": ProtectPdf,
   "watermark-pdf": WatermarkPdf,
   "pdf-to-word": PdfToWord,
   "pdf-to-excel": PdfToExcel,

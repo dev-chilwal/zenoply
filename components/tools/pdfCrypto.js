@@ -125,3 +125,29 @@ export async function unlockPdf(bytes, password) {
   }
   return res.out;
 }
+
+// The other direction: encrypt with an open password (Protect PDF). AES-256,
+// which is revision 6 of the PDF encryption handler — the only strength worth
+// offering, since 40-bit and RC4-128 are broken and qpdf refuses to write them
+// without --allow-weak-crypto anyway.
+//
+// The same password is set as both the user and the owner password, and that is
+// deliberate rather than a shortcut. PDF's second password only gates the
+// permission flags (no printing, no copying), which are advisory bits that any
+// conforming reader is free to ignore and any tool can strip — including this
+// site's own Unlock PDF. Offering them as a feature would promise enforcement
+// the format cannot deliver. The alternative shape, an empty user password with
+// a real owner password, is what qpdf explicitly refuses at 256-bit ("insecure
+// as it can be opened without a password") unless --allow-insecure is passed.
+// So one password, doing the one job that is actually cryptographic.
+//
+// Passwords go in via --user-password=<pw> rather than qpdf's older positional
+// form, so a password that happens to start with "-" is not parsed as an option.
+export async function encryptPdf(bytes, password) {
+  const res = await runQpdf(
+    ["--encrypt", "--user-password=" + password, "--owner-password=" + password, "--bits=256", "--"],
+    bytes
+  );
+  if (!res.ok) throw new Error("Couldn't protect this PDF — the file may be damaged.");
+  return res.out;
+}
