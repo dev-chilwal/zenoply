@@ -79,6 +79,7 @@ import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
 import RupeesInWords from "@/components/tools/RupeesInWords";
 import TokenCounter from "@/components/tools/TokenCounter";
 import HeicToJpg from "@/components/tools/HeicToJpg";
+import PdfMetadata from "@/components/tools/PdfMetadata";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -157,6 +158,7 @@ const REGISTRY = {
   "qr-code-generator": QrCodeGenerator,
   "cgpa-to-percentage": CgpaToPercentage,
   "token-counter": TokenCounter,
+  "pdf-metadata": PdfMetadata,
 };
 
 export function generateStaticParams() {
