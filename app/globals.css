@@ -557,6 +557,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .pill-live .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
 [data-theme="dark"] .pill-live .dot { box-shadow: 0 0 8px var(--accent); }
 
+/* Privacy/no-signup pills under the title on every tool page. Left-aligned
+   sibling of .fin-pills; min-width:0 so it wraps rather than forcing a grid
+   track wider than the viewport on mobile. */
+.trust-strip { display: flex; gap: .5rem; flex-wrap: wrap; min-width: 0; margin: 0 0 1.4rem; }
+.trust-strip .pill { padding: .4rem .75rem; font-size: .78rem; }
+
 /* Mono tag chip on calculator/tool cards */
 .fin-tag {
   font-family: var(--font-mono), monospace; font-size: .72rem; font-weight: 700; letter-spacing: .04em;

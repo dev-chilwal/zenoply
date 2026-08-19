@@ -30,6 +30,7 @@ export default function Footer() {
               <h4>Learn</h4>
               <ul>
                 <li><Link href="/guides">Guides</Link></li>
+                <li><Link href="/privacy">Privacy</Link></li>
               </ul>
             </div>
           </div>

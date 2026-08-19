@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Breadcrumbs from "./Breadcrumbs";
+import TrustStrip from "./TrustStrip";
 import { toolJsonLd } from "@/lib/seo";
 import { relatedTools, getCategory, TOOLS } from "@/lib/site";
 
@@ -52,6 +53,7 @@ export default function ToolPage({ tool, children, howTo }) {
               </nav>
               <h1>{tool.h1}</h1>
               <p className="calc-sub">{tool.desc}</p>
+              <TrustStrip />
               <hr className="calc-rule" />
 
               {/* All finance calculators use the editorial CalcGrid layout
@@ -126,6 +128,7 @@ export default function ToolPage({ tool, children, howTo }) {
         />
         <h1>{tool.h1}</h1>
         <p className="lead">{tool.desc}</p>
+        <TrustStrip />
 
         {/* Tool UI — instant, above the fold */}
         <section className="tool-ui">{children}</section>

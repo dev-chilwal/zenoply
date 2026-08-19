@@ -9,7 +9,7 @@ function shortName(name) {
 const HERO = {
   finance: {
     pre: "Finance calculators that ", accent: "just work", post: ".",
-    lead: "SIP, EMI, GST, FD, tax and loan calculators. Fast, accurate, no signup, no clutter — results the moment you type.",
+    lead: "SIP, EMI, GST, FD, tax and loan calculators. Results the moment you type — and your salary and income figures never leave your browser.",
     noun: "calculators",
   },
   pdf: {
@@ -29,7 +29,7 @@ const HERO = {
   },
   convert: {
     pre: "Converters that ", accent: "just work", post: ".",
-    lead: "Color, time, number and data-format converters. Fast, accurate and free — results the moment you type.",
+    lead: "Color, time, number and data-format converters. Fast, accurate and free — no signup, and every conversion runs locally in your browser.",
     noun: "converters",
   },
   image: {
