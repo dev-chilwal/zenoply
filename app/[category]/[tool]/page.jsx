@@ -80,6 +80,7 @@ import RupeesInWords from "@/components/tools/RupeesInWords";
 import TokenCounter from "@/components/tools/TokenCounter";
 import HeicToJpg from "@/components/tools/HeicToJpg";
 import PdfMetadata from "@/components/tools/PdfMetadata";
+import PdfToText from "@/components/tools/PdfToText";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -159,6 +160,7 @@ const REGISTRY = {
   "cgpa-to-percentage": CgpaToPercentage,
   "token-counter": TokenCounter,
   "pdf-metadata": PdfMetadata,
+  "pdf-to-text": PdfToText,
 };
 
 export function generateStaticParams() {

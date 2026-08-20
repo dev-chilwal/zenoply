@@ -4,90 +4,7 @@ import PdfDropzone, { fmtBytes, downloadBytes } from "./PdfDropzone";
 import { Segmented } from "@/components/calc/Calc";
 import { buildDocx, DOCX_MIME } from "./officeExport";
 import { loadPdfjs } from "./pdfjs";
-
-function median(nums) {
-  if (!nums.length) return 0;
-  const s = [...nums].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-}
-
-// Turn a page's raw text items into visual lines, sorted top-to-bottom and
-// left-to-right. Each line is { y, text }.
-function itemsToLines(items) {
-  const glyphs = items
-    .filter((it) => it.str && it.str.length)
-    .map((it) => ({
-      x: it.transform[4],
-      y: it.transform[5],
-      w: it.width || 0,
-      h: it.height || Math.abs(it.transform[3]) || 10,
-      str: it.str,
-    }));
-  if (!glyphs.length) return [];
-
-  const medH = median(glyphs.map((g) => g.h)) || 10;
-  const yTol = medH * 0.5;
-
-  // Cluster by y (descending = top of page first).
-  glyphs.sort((a, b) => b.y - a.y || a.x - b.x);
-  const lines = [];
-  for (const g of glyphs) {
-    const line = lines[lines.length - 1];
-    if (line && Math.abs(line.y - g.y) <= yTol) {
-      line.glyphs.push(g);
-    } else {
-      lines.push({ y: g.y, glyphs: [g] });
-    }
-  }
-
-  // Join each line's glyphs, inserting a space across visual gaps that the PDF
-  // didn't already encode as whitespace.
-  return lines.map((line) => {
-    line.glyphs.sort((a, b) => a.x - b.x);
-    let text = "";
-    let prev = null;
-    for (const g of line.glyphs) {
-      if (prev) {
-        const gap = g.x - (prev.x + prev.w);
-        const needsSpace =
-          gap > (prev.h || medH) * 0.25 &&
-          !/\s$/.test(text) &&
-          !/^\s/.test(g.str);
-        if (needsSpace) text += " ";
-      }
-      text += g.str;
-      prev = g;
-    }
-    return { y: line.y, text: text.replace(/\s+/g, " ").trim() };
-  });
-}
-
-// Group lines into flowing paragraphs, starting a new one where the vertical
-// gap between lines is noticeably larger than the document's usual line spacing.
-function linesToParagraphs(lines) {
-  const nonEmpty = lines.filter((l) => l.text);
-  if (!nonEmpty.length) return [];
-  const gaps = [];
-  for (let i = 1; i < nonEmpty.length; i++) {
-    gaps.push(nonEmpty[i - 1].y - nonEmpty[i].y);
-  }
-  const medGap = median(gaps.filter((g) => g > 0)) || 0;
-  const paras = [];
-  let current = [];
-  for (let i = 0; i < nonEmpty.length; i++) {
-    if (i > 0) {
-      const gap = nonEmpty[i - 1].y - nonEmpty[i].y;
-      if (medGap > 0 && gap > medGap * 1.6) {
-        paras.push(current.join(" "));
-        current = [];
-      }
-    }
-    current.push(nonEmpty[i].text);
-  }
-  if (current.length) paras.push(current.join(" "));
-  return paras;
-}
+import { pageBlocks } from "./pdfText";
 
 export default function PdfToWord() {
   const [file, setFile] = useState(null);
@@ -118,12 +35,7 @@ export default function PdfToWord() {
         setProgress(`Reading page ${n} of ${pdf.numPages}…`);
         const page = await pdf.getPage(n);
         const content = await page.getTextContent();
-        const lines = itemsToLines(content.items);
-        if (mode === "lines") {
-          lines.forEach((l) => l.text && paragraphs.push(l.text));
-        } else {
-          paragraphs.push(...linesToParagraphs(lines));
-        }
+        paragraphs.push(...pageBlocks(content.items, mode));
         if (n < pdf.numPages) paragraphs.push(""); // page break spacer
       }
 
