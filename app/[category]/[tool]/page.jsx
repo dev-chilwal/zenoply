@@ -81,6 +81,7 @@ import TokenCounter from "@/components/tools/TokenCounter";
 import HeicToJpg from "@/components/tools/HeicToJpg";
 import PdfMetadata from "@/components/tools/PdfMetadata";
 import PdfToText from "@/components/tools/PdfToText";
+import ResizePdfPages from "@/components/tools/ResizePdfPages";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -161,6 +162,7 @@ const REGISTRY = {
   "token-counter": TokenCounter,
   "pdf-metadata": PdfMetadata,
   "pdf-to-text": PdfToText,
+  "resize-pdf-pages": ResizePdfPages,
 };
 
 export function generateStaticParams() {
