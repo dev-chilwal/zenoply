@@ -82,6 +82,7 @@ import HeicToJpg from "@/components/tools/HeicToJpg";
 import PdfMetadata from "@/components/tools/PdfMetadata";
 import PdfToText from "@/components/tools/PdfToText";
 import ResizePdfPages from "@/components/tools/ResizePdfPages";
+import CropPdf from "@/components/tools/CropPdf";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -163,6 +164,7 @@ const REGISTRY = {
   "pdf-metadata": PdfMetadata,
   "pdf-to-text": PdfToText,
   "resize-pdf-pages": ResizePdfPages,
+  "crop-pdf": CropPdf,
 };
 
 export function generateStaticParams() {

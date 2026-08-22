@@ -459,6 +459,9 @@ h2 { font-size: 1.35rem; margin: 1.75rem 0 .9rem; letter-spacing: -.01em; }
 /* ---------- Crop image: draggable selection over the preview ---------- */
 .crop-stage { position: relative; display: block; margin: 1rem auto 0; max-width: 560px; line-height: 0; overflow: hidden; border-radius: 10px; border: 1px solid var(--line); background: color-mix(in srgb, var(--fg) 4%, transparent); touch-action: none; user-select: none; -webkit-user-select: none; }
 .crop-stage img { display: block; width: 100%; height: auto; }
+/* Holds the stage at the page's shape while a PDF page rasterises, so the crop
+   box and everything under it do not jump when the image arrives. */
+.crop-stage .crop-placeholder { display: flex; align-items: center; justify-content: center; width: 100%; line-height: 1.5; }
 .crop-box { position: absolute; box-sizing: border-box; border: 1px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,.5); cursor: move; }
 .crop-box::before, .crop-box::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-color: rgba(255,255,255,.45); border-style: solid; }
 .crop-box::before { border-width: 0 1px; left: 33.33%; right: 33.33%; }
