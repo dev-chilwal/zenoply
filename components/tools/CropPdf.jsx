@@ -260,7 +260,11 @@ export default function CropPdf() {
       const scanned = `Measured ${sample.length} page${sample.length === 1 ? "" : "s"}`;
       const sampled = sample.length < list.length ? `, sampled evenly from ${list.length}` : "";
       const blanks = blank ? `; ${blank} blank page${blank === 1 ? "" : "s"} skipped` : "";
-      setNote(`${scanned}${sampled}${blanks}. The box is the smallest crop that keeps every one of them whole — drag it if you want it tighter.`);
+      const whole =
+        sample.length === 1
+          ? "The box is the smallest crop that keeps this page whole"
+          : "The box is the smallest crop that keeps every one of them whole";
+      setNote(`${scanned}${sampled}${blanks}. ${whole} — drag it if you want it tighter.`);
     } catch (err) {
       setError(
         err?.name === "PdfRenderTimeoutError"
