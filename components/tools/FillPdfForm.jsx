@@ -78,6 +78,11 @@ export default function FillPdfForm() {
   }, [font, fields, values]);
 
   const undrawableNames = Object.keys(undrawable);
+  // The ticked preference is kept in state so it comes back once the offending
+  // character is removed, but everything the user is shown — the tick, the
+  // button, the file name — reflects what will actually happen.
+  const canFlatten = undrawableNames.length === 0;
+  const willFlatten = flatten && canFlatten;
 
   const save = async () => {
     setError("");
@@ -86,7 +91,7 @@ export default function FillPdfForm() {
     setBusy(true);
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
-      const result = await buildFilledPdf(bytes, values, { flatten });
+      const result = await buildFilledPdf(bytes, values, { flatten: willFlatten });
       const base = file.name.replace(/\.[^.]+$/, "");
       downloadBytes(result.bytes, `${base}-${result.flattened ? "flattened" : "filled"}.pdf`);
       if (result.flattened) {
@@ -297,23 +302,23 @@ export default function FillPdfForm() {
               <label className="check-row">
                 <input
                   type="checkbox"
-                  checked={flatten}
-                  disabled={undrawableNames.length > 0}
+                  checked={willFlatten}
+                  disabled={!canFlatten}
                   onChange={(e) => setFlatten(e.target.checked)}
                 />
                 <span>Flatten — lock the answers in so they can&apos;t be edited</span>
               </label>
               <p className="muted small">
-                {undrawableNames.length > 0
+                {!canFlatten
                   ? "Flattening is unavailable while a field holds characters the built-in font can't draw — the answer would be flattened away to nothing."
-                  : flatten
+                  : willFlatten
                     ? "The answers are painted onto the pages and the form fields are removed. The text still selects and prints, but nobody can type over it — which is what most offices mean by \"do not send an editable form\"."
                     : "Left off, the file stays a working form: the answers are saved as field values and can be changed again later."}
               </p>
 
               <div className="btn-row">
                 <button className="btn" onClick={save} disabled={busy}>
-                  {busy ? "Working…" : flatten ? "Fill, flatten and download" : "Fill and download"}
+                  {busy ? "Working…" : willFlatten ? "Fill, flatten and download" : "Fill and download"}
                 </button>
               </div>
               {done && <p className="muted small">{done}</p>}
