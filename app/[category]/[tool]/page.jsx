@@ -83,6 +83,7 @@ import PdfMetadata from "@/components/tools/PdfMetadata";
 import PdfToText from "@/components/tools/PdfToText";
 import ResizePdfPages from "@/components/tools/ResizePdfPages";
 import CropPdf from "@/components/tools/CropPdf";
+import FillPdfForm from "@/components/tools/FillPdfForm";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -165,6 +166,7 @@ const REGISTRY = {
   "pdf-to-text": PdfToText,
   "resize-pdf-pages": ResizePdfPages,
   "crop-pdf": CropPdf,
+  "fill-pdf-form": FillPdfForm,
 };
 
 export function generateStaticParams() {
