@@ -65,7 +65,43 @@ APIs, permissive licenses, heavy assets lazy-loaded + self-hosted.
 
 Cheapest wins first — each completes an existing cluster and cross-links:
 
-- **JSON to YAML** (reverse of existing YAML to JSON; `js-yaml` `dump()`)
+- ~~**JSON to YAML**~~ **SHIPPED 26 Aug 2026** (`/convert/json-to-yaml`) — zero
+  new deps; `js-yaml` was **not** used, and the plan's `dump()` would have been
+  wrong twice over. (1) **`JSON.parse` is lossy for exactly the values people
+  check.** It rounds `12345678901234567890` to `12345678901234567000` and
+  rewrites `1.50` as `1.5` — a config file's IDs and version pins. So
+  `components/tools/jsonYaml.js` hand-rolls a JSON parser that keeps every
+  number as its **original literal text** and only ever re-emits that text. The
+  one deliberate rewrite is exponents: `1e5` is written `1.0e+5`, because the
+  YAML 1.1 resolver's float regex demands both a `.` in the mantissa **and** a
+  signed exponent, so a bare `1e5` loads as a *string* under Psych/PyYAML while
+  being a float under 1.2. (2) **YAML types unquoted scalars by shape**, so
+  `isPlainSafe` quotes the **union** of the 1.1 and 1.2 resolvers rather than
+  either alone — `NO` (Norway), `yes`/`no`/`on`/`off`/`y`/`n`, `1_000`, `017`,
+  `0x1F`, `0b101`, `1:30`, `.inf`, `2026-08-25`, `<<` — because you rarely know
+  which loader reads the file at the other end. Keys get a *stricter* rule
+  still (any bare `:` quotes the key), since a re-typed key is as damaging as a
+  re-typed value. Multi-line strings become **literal block scalars** with the
+  right chomping indicator, falling back to double-quoted — exact, because
+  YAML's double-quoted style is a superset of a JSON string — where a block
+  cannot be faithful: a space-led or empty first line (indentation would be
+  mis-detected), a trailing space on any line (silently dropped), 2+ trailing
+  newlines (depends on blank lines at the end of the block surviving), or any
+  tab. Nested sequences pad the dash to the child column (`-   - 1` at a
+  4-space indent), which a naive `- ` emitter gets wrong for any indent != 2.
+  Duplicate keys resolve last-wins (matching `JSON.parse`) and the **count is
+  surfaced in the UI** rather than silently dropped, since YAML cannot express
+  a duplicate key at all. Verified by round-tripping **45 cases through Ruby's
+  Psych 5.3.1** — a real YAML 1.1 loader — at *both* 2- and 4-space indents,
+  with the loaded tree walked so any non-JSON-native result (Date, Integer key,
+  Symbol, Infinity) becomes a marker string: without that, a date-typed value
+  would serialise straight back to the string it started as and the test would
+  pass while the bug shipped. Then driven end to end in a **real browser
+  against the production build** (`next build` + static serve of `out/`, since
+  dev servers are blocked in scheduled runs) — conversion, both indents, the
+  error path, the duplicate notice and literal preservation all checked on the
+  shipped bundle, console clean. PyYAML was not installed on the host; Psych is
+  the same YAML 1.1 schema and was used instead
 - **HTML Beautifier** (reverse of HTML Minifier; `js-beautify`, MIT)
 - **XML to JSON + JSON to XML** (`fast-xml-parser`, MIT) — completes the
   data-format matrix with the existing JSON↔CSV / YAML→JSON
