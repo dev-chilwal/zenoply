@@ -54,6 +54,7 @@ import CsvToJson from "@/components/tools/CsvToJson";
 import JsonToCsv from "@/components/tools/JsonToCsv";
 import HtmlMinifier from "@/components/tools/HtmlMinifier";
 import YamlToJson from "@/components/tools/YamlToJson";
+import JsonToYaml from "@/components/tools/JsonToYaml";
 import MergePdf from "@/components/tools/MergePdf";
 import SplitPdf from "@/components/tools/SplitPdf";
 import CompressPdf from "@/components/tools/CompressPdf";
@@ -139,6 +140,7 @@ const REGISTRY = {
   "json-to-csv": JsonToCsv,
   "html-minifier": HtmlMinifier,
   "yaml-to-json": YamlToJson,
+  "json-to-yaml": JsonToYaml,
   "merge-pdf": MergePdf,
   "split-pdf": SplitPdf,
   "compress-pdf": CompressPdf,
