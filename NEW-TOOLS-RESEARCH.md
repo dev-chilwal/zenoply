@@ -105,7 +105,45 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 - **HTML Beautifier** (reverse of HTML Minifier; `js-beautify`, MIT)
 - **XML to JSON + JSON to XML** (`fast-xml-parser`, MIT) — completes the
   data-format matrix with the existing JSON↔CSV / YAML→JSON
-- **XML Formatter** (`xml-formatter`, MIT) — FreeFormatter's flagship, inheritable
+- ~~**XML Formatter**~~ **SHIPPED 27 Aug 2026** (`/dev/xml-formatter`) — zero
+  new deps; `xml-formatter` was **not** used. The parser and emitter are
+  hand-rolled in `components/tools/xmlFormat.js` (the `jsonYaml.js` pattern) so
+  they run in node, which is where they are tested, and so the whitespace
+  contract could be chosen rather than inherited. That contract is the whole
+  tool: **character data is never altered, only markup is normalised.** It is
+  what makes an element holding real text — mixed content, `<p>Hello
+  <b>world</b>!</p>` — stay on **one line**, because indenting its children
+  turns the string `Hello ` into a newline plus indentation. That is not a
+  hypothetical: it is what every child-per-line beautifier does, it renders
+  wrong in a browser and fails a signature check, and it is invisible until
+  something downstream complains. Only elements whose content is entirely other
+  elements are indented. Whitespace **around** a text value is the boundary
+  case — trimming `<name>\n  Bob\n</name>` to `<name>Bob</name>` is what
+  everyone wants *and* is strictly an edit — so it is a switch (default on)
+  that `xml:space="preserve"` overrides in both directions, and entities are
+  passed through as written rather than decoded (re-encoding `&#233;` would
+  change the bytes of a document that may be signed). Doubles as a validator:
+  mismatched/unclosed tags, the bare `&`, `<` in an attribute value, unquoted
+  or duplicated attributes, text outside the root, unterminated comment/CDATA,
+  `--` inside a comment and a misplaced XML declaration, each with a line and
+  column. **Verified with 350 node assertions.** The strong ones are the
+  cross-checks: 15 real-world documents (RSS, POM, SOAP, SVG, XHTML, sitemap,
+  Android layout, DOCTYPE with an internal subset, Devanagari) formatted in 5
+  option combinations, each output re-parsed by **expat** via `python3` and its
+  canonicalised parse tree compared against the input's — so any change to
+  character data fails the test — and re-validated with **xmllint**; plus
+  idempotence and `beautify(minify(x)) === beautify(x)` on every document, and
+  **verdict agreement with xmllint on 27 malformed and 27 well-formed
+  documents**, which is what caught three real divergences: a whitespace-only
+  element emitting `<a>\n</a>`, `<!DOCTYPE a <a/>` being accepted because the
+  scan for `>` found the root element's, and an over-strict reserved-target
+  rule that would have rejected `<?xmlfoo?>` (libxml2 warns and accepts). The
+  one deliberate divergence — a multi-root **fragment** is a warning here and
+  an error to a real parser, since people paste fragments — is asserted in both
+  directions so it cannot drift. Then driven end to end in a real browser
+  against the **production build** (dev servers are blocked in scheduled runs):
+  all three indents, both modes, both switches, the error path and the fragment
+  warning, console clean, no mobile overflow
 - **String escapers** (JSON/JS/XML/CSV, pure JS) — FreeFormatter's second flagship
 - **Cron expression explainer** (`cronstrue` MIT ~6KB gz + `cron-parser` for next runs)
 - **HMAC generator** (WebCrypto `crypto.subtle.sign`, zero-dep) + **CRC32/file
@@ -175,10 +213,15 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 
 **Tier A and Tier B are now fully shipped** (Tier A closed 16 Aug 2026, Tier B
 closed 24 Aug 2026 with Extract Images from PDF; PDF to PNG was ruled out as a
-duplicate rather than built). The daily-ship feature slot should now take
-**Tier C** — half-day pair completions that also generate guide topics — with
-the FreeFormatter inheritance set first (XML Formatter, string escapers, cron
-explainer), since that keyword pool is the one actively losing its incumbent.
+duplicate rather than built). The daily-ship feature slot is now working
+through **Tier C** — half-day pair completions that also generate guide topics.
+JSON to YAML shipped 26 Aug and XML Formatter 27 Aug; the rest of the
+FreeFormatter inheritance set (**string escapers**, then the **cron
+explainer**) comes next, since that keyword pool is the one actively losing its
+incumbent. XML↔JSON is now the cheapest remaining pair completion too, because
+`xmlFormat.js` already parses XML into a tree with attributes, CDATA and
+entities intact — a converter is an emitter over that tree rather than a new
+dependency.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
