@@ -86,6 +86,7 @@ import ResizePdfPages from "@/components/tools/ResizePdfPages";
 import CropPdf from "@/components/tools/CropPdf";
 import ExtractPdfImages from "@/components/tools/ExtractPdfImages";
 import FillPdfForm from "@/components/tools/FillPdfForm";
+import XmlFormatter from "@/components/tools/XmlFormatter";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -171,6 +172,7 @@ const REGISTRY = {
   "crop-pdf": CropPdf,
   "extract-images-from-pdf": ExtractPdfImages,
   "fill-pdf-form": FillPdfForm,
+  "xml-formatter": XmlFormatter,
 };
 
 export function generateStaticParams() {
