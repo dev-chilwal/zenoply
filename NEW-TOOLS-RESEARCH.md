@@ -144,7 +144,46 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   against the **production build** (dev servers are blocked in scheduled runs):
   all three indents, both modes, both switches, the error path and the fragment
   warning, console clean, no mobile overflow
-- **String escapers** (JSON/JS/XML/CSV, pure JS) — FreeFormatter's second flagship
+- ~~**String escapers**~~ **SHIPPED 30 Aug 2026** (`/dev/string-escaper`) — zero
+  new deps, and shipped as **eight** targets rather than the four planned:
+  JSON, JavaScript/TypeScript, HTML, XML, CSV, SQL, regular expressions and
+  POSIX shell, with an Unescape direction on the six that reverse cleanly. All
+  rules live in `components/tools/escapeString.js` (the `jsonYaml.js` pattern)
+  so they run in node — which is the point, because each one is tested against
+  the **real consumer** of its format rather than a second implementation of
+  the same guess: `JSON.parse` for JSON (output is byte-identical to
+  `JSON.stringify`, incl. ES2019 well-formed escaping of unpaired surrogates),
+  `new Function()` for all three JS quote styles, python's `html.entities` name
+  by name plus full-string agreement with `html.unescape`, **expat** parsing the
+  XML back in both text and attribute position, python's `csv` module reading
+  every field, **sqlite3 actually executing `SELECT '<escaped>'`** and returning
+  the value, and **bash** passing the quoted argument through `printf`
+  unchanged. **1247 assertions**, then the shipped bundle driven end to end in a
+  real browser against the production build (dev servers are blocked in
+  scheduled runs): all eight formats, every option, both directions, console
+  clean, no mobile overflow. Four things the cross-checks forced, none of them
+  obvious. (1) **XML normalises a literal carriage return to a line feed**
+  before the application sees it, and inside an attribute value turns tab and
+  newline into spaces — so those must be written `&#13;`/`&#9;`/`&#10;` or they
+  are silently lost; caught by the expat round-trip, which is exactly the class
+  of bug a self-consistency test cannot find. (2) Escaping `-` as `\-` is a
+  **SyntaxError outside a character class once the `u` or `v` flag is on**, so
+  the regex escaper emits `\x2D`, legal in every position and every mode. (3)
+  XML 1.0 cannot hold most control characters *at all* — `&#1;` is a parse
+  error, not an escape — so they are reported and optionally stripped rather
+  than emitted into a document that will not parse. (4) Regex and shell are
+  **escape-only**: `\d`, `\b` and `\w` are character classes rather than
+  escaped letters, and shell quoting has many equally valid spellings, so
+  reversing either would be guessing. Output is built one code point at a time
+  rather than by chained replaces, which makes the classic `&`-ordering bug
+  (`<` → `&amp;lt;`) structurally impossible and handles astral characters and
+  lone surrogates correctly. SQL ships with a prominent note that escaping is
+  not a substitute for a parameterised query. **Prerequisite fix shipped in the
+  same push:** the three inline `<script type="application/ld+json">` blocks
+  serialised with a bare `JSON.stringify`, so the first literal `</script>` in
+  any FAQ ended the block and spilled the rest of the graph into the page as
+  visible text — this tool's own FAQ was the first content to trigger it.
+  `jsonLdScript()` in `lib/seo.js` now escapes `<`, `>`, `&` and U+2028/U+2029
 - **Cron expression explainer** (`cronstrue` MIT ~6KB gz + `cron-parser` for next runs)
 - **HMAC generator** (WebCrypto `crypto.subtle.sign`, zero-dep) + **CRC32/file
   checksum** (`crc-32` Apache-2.0 or `hash-wasm` per-algorithm) — bolt onto Hash Generator
@@ -215,10 +254,10 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 closed 24 Aug 2026 with Extract Images from PDF; PDF to PNG was ruled out as a
 duplicate rather than built). The daily-ship feature slot is now working
 through **Tier C** — half-day pair completions that also generate guide topics.
-JSON to YAML shipped 26 Aug and XML Formatter 27 Aug; the rest of the
-FreeFormatter inheritance set (**string escapers**, then the **cron
-explainer**) comes next, since that keyword pool is the one actively losing its
-incumbent. XML↔JSON is now the cheapest remaining pair completion too, because
+JSON to YAML shipped 26 Aug, XML Formatter 27 Aug and the string escapers
+30 Aug, which leaves the **cron expression explainer** as the last of the
+FreeFormatter inheritance set — that keyword pool is the one actively losing
+its incumbent, so it comes next. XML↔JSON is now the cheapest remaining pair completion too, because
 `xmlFormat.js` already parses XML into a tree with attributes, CDATA and
 entities intact — a converter is an emitter over that tree rather than a new
 dependency.
