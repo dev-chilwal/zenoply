@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Breadcrumbs from "./Breadcrumbs";
 import TrustStrip from "./TrustStrip";
-import { toolJsonLd } from "@/lib/seo";
+import { toolJsonLd, jsonLdScript } from "@/lib/seo";
 import { relatedTools, getCategory, TOOLS } from "@/lib/site";
 
 // Reusable shell for every tool page: schema + breadcrumbs + UI slot + how-to + FAQ + related.
@@ -19,7 +19,7 @@ export default function ToolPage({ tool, children, howTo }) {
       <>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
         />
         <div className="calc-page">
           <div className="calc-wrap calc-shell">
@@ -116,7 +116,7 @@ export default function ToolPage({ tool, children, howTo }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <div className="container tool-layout">
         <Breadcrumbs

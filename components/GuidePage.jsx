@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Breadcrumbs from "./Breadcrumbs";
-import { guideJsonLd } from "@/lib/seo";
+import { guideJsonLd, jsonLdScript } from "@/lib/seo";
 import { getTool } from "@/lib/site";
 import { headingId, readingTime, guideToc, GUIDE_CATEGORIES } from "@/lib/guides";
 
@@ -72,7 +72,7 @@ export default function GuidePage({ guide }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <div className="container tool-layout guide-page">
         <Breadcrumbs
