@@ -88,6 +88,7 @@ import ExtractPdfImages from "@/components/tools/ExtractPdfImages";
 import FillPdfForm from "@/components/tools/FillPdfForm";
 import XmlFormatter from "@/components/tools/XmlFormatter";
 import StringEscaper from "@/components/tools/StringEscaper";
+import CronExpressionGenerator from "@/components/tools/CronExpressionGenerator";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -175,6 +176,7 @@ const REGISTRY = {
   "fill-pdf-form": FillPdfForm,
   "xml-formatter": XmlFormatter,
   "string-escaper": StringEscaper,
+  "cron-expression-generator": CronExpressionGenerator,
 };
 
 export function generateStaticParams() {
