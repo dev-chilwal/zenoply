@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 30 August 2026 (Phase 1 complete; Phase 2 complete — 85 tools live, 0 stubs remaining; Phase 3 advancing — 75 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 1 September 2026 (Phase 1 complete; Phase 2 complete — 86 tools live, 0 stubs remaining; Phase 3 advancing — 76 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -8,10 +8,10 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ## Current state (updated 15 Jul 2026)
 
-**85 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **75 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 9 live tools still lack a guide — that is the remaining Phase 3 backlog.
+**86 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **76 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 9 live tools still lack a guide — that is the remaining Phase 3 backlog.
 
 - **Text (8):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
-- **Dev (10):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier, QR Code Generator, LLM Token Counter
+- **Dev (13):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), JWT Decoder, SQL Formatter, HTML Minifier, XML Formatter, QR Code Generator, LLM Token Counter, String Escaper & Unescaper, Cron Expression Generator & Explainer
 - **Convert (10):** Hex to RGB, RGB to Hex, Color Converter (HEX/RGB/HSL/CMYK), Unix Timestamp Converter, JSON to CSV, CSV to JSON, YAML to JSON, Number to Words, Rupees in Words, CGPA to Percentage
 - **Finance (21):** SIP, Step-Up SIP, EMI, GST, FD, Compound Interest, Mortgage, Percentage, Simple Interest, RD, PPF, NPS, Gratuity, HRA, Income Tax, In-Hand Salary, Lumpsum, SWP, CAGR, ROI, Inflation
 - **PDF (23) — category added since launch:** Merge, Split, Compress, Compress PDF to Size (KB), PDF to JPG, JPG to PDF, Rotate, Unlock, Protect (add password), Watermark, PDF Metadata Viewer & Remover, PDF to Word, PDF to Text, PDF to Excel, Resize PDF Pages, Crop PDF, Fill PDF Form, Extract Images from PDF, Add Page Numbers, Organize, Remove Pages, Remove Blank Pages, OCR PDF
@@ -19,10 +19,10 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 **No stubs remain.** The three previously deferred finance tools — Income Tax Calculator, In-Hand Salary Calculator, PPF Calculator — shipped 26 Jun (FY2025-26), alongside a Tier-1/Tier-2 finance expansion (Simple Interest, RD, NPS, Gratuity, HRA, Lumpsum, SWP, CAGR, ROI, Inflation) via PRs #4–#6. Tax-logic tools carry a "last updated / FY" note and need a yearly maintenance pass.
 
-**Guides live (75):** Each is linked to/from its tool (bidirectional internal linking).
+**Guides live (76):** Each is linked to/from its tool (bidirectional internal linking).
 - _Text (4):_ Word Count, Character Count and Reading Time Explained · Text Case Formats Explained (UPPERCASE/Title/camel/snake) · What Is Lorem Ipsum? Meaning, History and When to Use It · What Is a URL Slug?
 - _Finance (20):_ How Does SIP Investment Work? · How Is EMI Calculated? · How Is GST Calculated? · Mortgage Principal vs Interest, Explained · How to Calculate Percentage Increase · What Is Compound Interest? · How Is FD Interest Calculated? · How Is PPF Interest Calculated? · plus Old vs New Tax Regime, HRA, In-Hand Salary, Gratuity, NPS, RD, Lumpsum, SWP, CAGR, ROI, Simple Interest, Inflation
-- _Dev (11):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding? · How to Format SQL Queries · Do QR Codes Expire? · What Is a Token in an LLM? · How to Format XML · How to Escape a String
+- _Dev (12):_ What Is Base64 Encoding? · What's Inside a JWT? · MD5 vs SHA-256: How Hashing Works · What Is JSON? · What Is a UUID? · What Is URL Encoding? · How to Format SQL Queries · Do QR Codes Expire? · What Is a Token in an LLM? · How to Format XML · How to Escape a String · How to Read a Cron Expression
 - _Convert (9):_ What Is a Unix Timestamp? · How to Convert JSON to CSV · How to Convert CSV to JSON · RGB, HEX and HSL Color Codes Explained · How to Convert YAML to JSON · How to Write Numbers in Words · How to Convert CGPA to Percentage · How to Write Rupees in Words on a Cheque · How to Convert JSON to YAML
 - _PDF (21):_ How to Merge PDF Files · How to Split a PDF · How to Compress a PDF · How to Convert JPG to PDF · How to Convert PDF to JPG · How to Convert PDF to Word · How to Extract Tables from a PDF to Excel · How to Unlock a PDF · How to Password Protect a PDF · How to Make a Scanned PDF Searchable (OCR) · How to Rotate a PDF and Save It · How to Add a Watermark to a PDF · How to Add Page Numbers to a PDF · How to Delete Pages from a PDF · How to Compress a PDF to 100KB (or Any Size Limit) · How to Remove Metadata from a PDF · How to Extract Text from a PDF · How to Change PDF Page Size (A4, Letter, Legal) · How to Crop a PDF (Trim Margins Without Losing Text) · How to Fill In a PDF Form and Flatten It · How to Extract Images from a PDF (Without Losing Quality)
 - _Image (10):_ PNG vs JPG vs WebP · How to Make a Passport Photo at Home · How to Compress an Image · How to Compress an Image to a Specific Size in KB · How to Extract Text from an Image (OCR) · How to Resize an Image · How to Crop an Image · How to Remove EXIF Data from Photos · How to Resize a Photo and Signature for an Exam Form · How to Convert HEIC to JPG

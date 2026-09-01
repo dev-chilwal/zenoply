@@ -184,7 +184,51 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   any FAQ ended the block and spilled the rest of the graph into the page as
   visible text — this tool's own FAQ was the first content to trigger it.
   `jsonLdScript()` in `lib/seo.js` now escapes `<`, `>`, `&` and U+2028/U+2029
-- **Cron expression explainer** (`cronstrue` MIT ~6KB gz + `cron-parser` for next runs)
+- ~~**Cron expression explainer**~~ **SHIPPED 1 Sep 2026**
+  (`/dev/cron-expression-generator`) — zero new deps, and the plan's two
+  libraries were used as *test oracles* rather than shipped: `cronstrue` and
+  `cron-parser` were installed outside the project and the whole engine
+  cross-checked against them, so nothing enters the bundle. Rules live in
+  `components/tools/cronExpr.js` (the `jsonYaml.js` pattern) so they run in
+  node, which is where they are tested. Three flavours, because "cron" is not
+  one language: standard 5-field crontab, 6-field with seconds (node-cron,
+  Spring), and Quartz/EventBridge at 6 or 7 fields with `L`, `LW`, `L-3`,
+  `15W`, `6L` and `6#3`. The dialect is an input, not a guess — Quartz numbers
+  the week from **1 = Sunday**, so the same digit means a different day than in
+  a crontab, and it requires a `?` in exactly one day field. Four things drove
+  the design. (1) **Day-of-month and day-of-week are OR'd, not AND'd**, and
+  Vixie decides "restricted" by testing whether the field text *starts with*
+  a `*` — so `*/2` is unrestricted and `1-31` is not, though they cover the
+  same days. That literal test is reproduced, and the OR is flagged whenever it
+  applies; it is the tool's headline, since `30 4 1,15 * 5` (crontab(5)'s own
+  example) fires six times in September 2026, not zero. (2) The search runs on
+  **wall-clock fields and converts only the answer**, which is the only way to
+  notice a run landing in a skipped or repeated hour. (3) A step wider than its
+  field matches one value, so `*/90` must **not** be described as "every 90
+  minutes" — it is minute 0, hourly; describing it by its step would restate
+  the user's mistake. (4) Expressions that can never fire (`0 0 30 2 *`) are
+  detected analytically rather than by spinning to the horizon. **Verified:**
+  9,576 comparisons against cron-parser over 9 zones × 14 start instants ×
+  three dialects with **0 non-DST divergences**; 22 brute-force
+  minute-by-minute scans of a whole year matching the skip-ahead search exactly
+  (an independent implementation of the *search*, which is where the off-by-one
+  bugs live); and 13 day-rule checks against dates derived by plain `Date`
+  arithmetic rather than by asking the parser. The cross-check earned its keep
+  — it caught `tzOffset` comparing offsets at sub-second instants, so the
+  DST-transition binary search never converged and returned an arbitrary
+  midpoint, and it caught `mon,wed,fri` being rejected because a loose
+  `[LW#]` scan read the W in **WED** as a Quartz extension. The 53 remaining
+  DST divergences are **two deliberate, documented choices**: a run skipped by
+  a forward change is placed at the **transition instant** per crontab(5)
+  ("jobs skipped by a forward change are run soon after it") rather than at the
+  old offset the way cron-parser does, and a repeated local time is listed
+  **once** with a note saying Linux cron does not re-run a fixed-time job there
+  while wall-clock schedulers do — a stated limitation rather than a silent
+  omission, since a pure wall-clock search structurally cannot emit the second
+  pass. Then driven end to end in a real browser against the **production
+  build** (dev servers are blocked in scheduled runs): all three flavours, both
+  Explain and Build modes, every error path, `Intl.supportedValuesOf` giving
+  418 zones, console clean, no mobile overflow
 - **HMAC generator** (WebCrypto `crypto.subtle.sign`, zero-dep) + **CRC32/file
   checksum** (`crc-32` Apache-2.0 or `hash-wasm` per-algorithm) — bolt onto Hash Generator
 - **Sort lines / alphabetizer + whitespace remover + HTML tag stripper** — pure
@@ -254,13 +298,15 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 closed 24 Aug 2026 with Extract Images from PDF; PDF to PNG was ruled out as a
 duplicate rather than built). The daily-ship feature slot is now working
 through **Tier C** — half-day pair completions that also generate guide topics.
-JSON to YAML shipped 26 Aug, XML Formatter 27 Aug and the string escapers
-30 Aug, which leaves the **cron expression explainer** as the last of the
-FreeFormatter inheritance set — that keyword pool is the one actively losing
-its incumbent, so it comes next. XML↔JSON is now the cheapest remaining pair completion too, because
-`xmlFormat.js` already parses XML into a tree with attributes, CDATA and
-entities intact — a converter is an emitter over that tree rather than a new
-dependency.
+JSON to YAML shipped 26 Aug, XML Formatter 27 Aug, the string escapers 30 Aug
+and the cron expression explainer 1 Sep, which **closes the FreeFormatter
+inheritance set** — XML formatter, string escapers and cron tools are all now
+live, and that keyword pool is the one actively losing its incumbent.
+**XML↔JSON is the cheapest remaining pair completion**, because `xmlFormat.js`
+already parses XML into a tree with attributes, CDATA and entities intact — a
+converter is an emitter over that tree rather than a new dependency. After it,
+HTML Beautifier (the reverse of the live HTML Minifier) and the HMAC/CRC32
+bolt-on to Hash Generator are the next cheapest.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
