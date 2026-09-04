@@ -82,7 +82,7 @@ export default function HtmlMinifier() {
         <input type="checkbox" checked={removeComments} onChange={(e) => setRemoveComments(e.target.checked)} />
         <span>Remove comments (keeps conditional comments)</span>
       </label>
-      <p className="muted small">Collapses whitespace and removes the gaps between tags. The contents of pre, textarea, script and style tags are preserved exactly.</p>
+      <p className="muted small">Collapses whitespace and removes the gaps between tags. The contents of pre, textarea, script and style tags are preserved exactly. Going the other way? Use the <a href="/dev/html-beautifier">HTML Beautifier</a>.</p>
       {output && (
         <p className="muted small">Reduced from {input.length} to {output.length} characters, saving {saved} ({pct}%).</p>
       )}

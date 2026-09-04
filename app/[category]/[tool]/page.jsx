@@ -89,6 +89,7 @@ import FillPdfForm from "@/components/tools/FillPdfForm";
 import XmlFormatter from "@/components/tools/XmlFormatter";
 import StringEscaper from "@/components/tools/StringEscaper";
 import CronExpressionGenerator from "@/components/tools/CronExpressionGenerator";
+import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -177,6 +178,7 @@ const REGISTRY = {
   "xml-formatter": XmlFormatter,
   "string-escaper": StringEscaper,
   "cron-expression-generator": CronExpressionGenerator,
+  "html-beautifier": HtmlBeautifier,
 };
 
 export function generateStaticParams() {
