@@ -39,6 +39,7 @@ import HashGenerator from "@/components/tools/HashGenerator";
 import EpochConverter from "@/components/tools/EpochConverter";
 import RemoveLineBreaks from "@/components/tools/RemoveLineBreaks";
 import RemoveDuplicateLines from "@/components/tools/RemoveDuplicateLines";
+import SortLines from "@/components/tools/SortLines";
 import LoremIpsumGenerator from "@/components/tools/LoremIpsumGenerator";
 import FindAndReplace from "@/components/tools/FindAndReplace";
 import SlugGenerator from "@/components/tools/SlugGenerator";
@@ -128,6 +129,7 @@ const REGISTRY = {
   "epoch-converter": EpochConverter,
   "remove-line-breaks": RemoveLineBreaks,
   "remove-duplicate-lines": RemoveDuplicateLines,
+  "sort-lines": SortLines,
   "lorem-ipsum-generator": LoremIpsumGenerator,
   "find-and-replace": FindAndReplace,
   "slug-generator": SlugGenerator,
