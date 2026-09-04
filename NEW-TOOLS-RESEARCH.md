@@ -102,7 +102,57 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   error path, the duplicate notice and literal preservation all checked on the
   shipped bundle, console clean. PyYAML was not installed on the host; Psych is
   the same YAML 1.1 schema and was used instead
-- **HTML Beautifier** (reverse of HTML Minifier; `js-beautify`, MIT)
+- ~~**HTML Beautifier**~~ **SHIPPED 4 Sep 2026** (`/dev/html-beautifier`) — zero
+  new deps; `js-beautify` was **not** used. Parser and emitter are hand-rolled
+  in `components/tools/htmlFormat.js` (the `xmlFormat.js` pattern) so they run
+  in node, which is where they are tested, and so the whitespace contract could
+  be chosen rather than inherited. The contract: **the output differs from the
+  input only in whitespace, and only where CSS does not render it.** That is
+  stronger than what a beautifier normally promises, and it is the tool's whole
+  point, because HTML is the format where pretty-printing is not free: **a
+  newline collapses to a space, not to nothing.** Splitting
+  `<span>a</span><span>b</span>` across two lines renders "a b" instead of
+  "ab" — a one-space layout shift that breaks a pill row or an icon sitting
+  flush against its label, shows up in a diff as pure whitespace, and is what
+  essentially every other beautifier does. So a line is only ever broken next to
+  a **block-level** boundary, where the whitespace-processing model drops it;
+  anything holding text or inline tags stays on one line with its character data
+  copied byte for byte. Four more things drove the design. (1) **Every token is
+  emitted as a raw source slice**, so attribute order, quoting (double, single
+  or none), bare booleans and tag-name case survive untouched and no tag is ever
+  added or removed — lower-casing `<MyComponent>` breaks a Vue build and adding
+  a `</li>` changes what a framework parses. Optional end tags (a bare `<li>`,
+  `<p>`, `<tr>`, `<td>`) are resolved for *indentation only*, and the count is
+  reported rather than filled in. (2) **An unknown tag is `display: inline`**,
+  which is what a browser does with a custom element, so web components are
+  inline by default; the override is a checkbox, off by default, and is the one
+  option that can change rendering. (3) `<svg>` is **block-like inside and
+  inline outside** — it is a replaced inline box in HTML flow, so its insides
+  are laid out freely while a break beside it is not taken unless it is alone in
+  its parent. (4) **Script and style are shifted, never rewritten**, and the
+  shift is skipped when the block holds a template literal or a
+  backslash-continued string, where a line's leading spaces are part of a value;
+  `pre`/`textarea` are verbatim, with no newline after `<pre>` (the parser eats
+  it), and an inline `style="white-space: pre"` is honoured. Verified against
+  **parse5**, the reference HTML5 tree builder, installed outside the project so
+  nothing enters the bundle. Four invariants per document: non-whitespace bytes
+  identical, parse5 tree identical after whitespace normalisation, the rendered
+  text of every block box identical under an **independently written** model of
+  CSS whitespace processing, and idempotence. **627 checks over 46 documents x
+  12 option combinations**, plus **700 over the site's own 175 built pages**,
+  plus negative controls proving each invariant fires — then the whole suite
+  re-run against a **terser-minified build**, so the bytes that ship are the
+  bytes tested. The invariants earned their keep, catching three real bugs: an
+  implicitly-closed element's source range ran past the tag that closed it and
+  emitted that tag twice; `<svg>` was classified block-level when it is inline
+  in HTML flow; and a whitespace-only line was left where an omitted end tag
+  would have gone. A fourth finding was a design one — a `trimText` switch
+  copied over from the XML formatter was **removed**, because in HTML the
+  whitespace at a block element's content edges is never rendered, so making the
+  trim optional bought nothing and made formatting non-idempotent. Browser
+  verification was **not** possible this run: dev servers and browser navigation
+  are both blocked in scheduled runs, so the minified-bundle suite stands in
+  for it
 - **XML to JSON + JSON to XML** (`fast-xml-parser`, MIT) — completes the
   data-format matrix with the existing JSON↔CSV / YAML→JSON
 - ~~**XML Formatter**~~ **SHIPPED 27 Aug 2026** (`/dev/xml-formatter`) — zero
@@ -298,15 +348,15 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 closed 24 Aug 2026 with Extract Images from PDF; PDF to PNG was ruled out as a
 duplicate rather than built). The daily-ship feature slot is now working
 through **Tier C** — half-day pair completions that also generate guide topics.
-JSON to YAML shipped 26 Aug, XML Formatter 27 Aug, the string escapers 30 Aug
-and the cron expression explainer 1 Sep, which **closes the FreeFormatter
-inheritance set** — XML formatter, string escapers and cron tools are all now
-live, and that keyword pool is the one actively losing its incumbent.
+JSON to YAML shipped 26 Aug, XML Formatter 27 Aug, the string escapers 30 Aug,
+the cron expression explainer 1 Sep and the HTML Beautifier 4 Sep, which
+**closes the FreeFormatter inheritance set** — XML formatter, string escapers,
+cron tools and the HTML formatter are all now live, and that keyword pool is
+the one actively losing its incumbent.
 **XML↔JSON is the cheapest remaining pair completion**, because `xmlFormat.js`
 already parses XML into a tree with attributes, CDATA and entities intact — a
 converter is an emitter over that tree rather than a new dependency. After it,
-HTML Beautifier (the reverse of the live HTML Minifier) and the HMAC/CRC32
-bolt-on to Hash Generator are the next cheapest.
+the HMAC/CRC32 bolt-on to Hash Generator is the next cheapest.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
