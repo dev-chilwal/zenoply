@@ -281,8 +281,47 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   418 zones, console clean, no mobile overflow
 - **HMAC generator** (WebCrypto `crypto.subtle.sign`, zero-dep) + **CRC32/file
   checksum** (`crc-32` Apache-2.0 or `hash-wasm` per-algorithm) — bolt onto Hash Generator
-- **Sort lines / alphabetizer + whitespace remover + HTML tag stripper** — pure
-  JS, complete the Remove Duplicate Lines / Remove Line Breaks cluster
+- ~~**Sort lines / alphabetizer**~~ **SHIPPED 4 Sep 2026** (`/text/sort-lines`)
+  — zero new deps. The tool's whole reason to exist is that the obvious
+  implementation is wrong: `items.sort()` compares UTF-16 code units, so every
+  ASCII capital sits below every lowercase letter (`Banana` before `apple`),
+  `item10` files before `item9`, and an accented word lands past Z. That is
+  what essentially every small online sorter ships, and it is not alphabetical
+  order in any language. Alphabetical mode therefore goes through
+  **`Intl.Collator`** — the platform's Unicode collation, the same table the OS
+  sorts a folder with — with `numeric: true` for natural order and
+  `sensitivity: "accent"` so case ties compare equal and, under a stable sort,
+  keep input order. A **Language** select is exposed rather than hidden,
+  because collation genuinely disagrees between languages: `Ängel/Bok/Zebra`
+  sorts A-first under `en` and `de` but Ä-last under `sv`, and picking wrong is
+  a silently wrong answer rather than an error. Code-point order survives as
+  its **own named mode**, since reproducing a shell `sort` under `LC_ALL=C` or
+  a binary `ORDER BY` is a real task — and that mode deliberately ignores the
+  case and article options, because anything that quietly rewrote the key would
+  defeat the point of asking for it. Three more decisions. (1) **Descending
+  negates the comparator instead of reversing the array**: `Array.sort` is
+  stable since ES2019, so negating keeps ties in input order, where reversing
+  would flip them and two lines differing only in case would swap on a
+  direction change. (2) **Options that decide what is *compared* never change
+  what is *emitted*** — ignoring case, ignoring a leading `The` (files *The
+  Godfather* under G), or reading a number out of a line all build a sort key
+  only; the only content changes are trimming, dropping blanks and removing
+  duplicates, and each is counted in the UI. Blank-dropping is not cosmetic:
+  nearly every pasted list ends in a newline, which code-point order would
+  otherwise place as an empty first row. (3) **Lines with no number are held
+  out of number mode** and appended in input order rather than given a value of
+  zero and scattered through the result. Comma mode exists because a list
+  pasted out of a sentence or a spreadsheet cell arrives as `banana, apple,
+  cherry`. Comparators live in `components/tools/sortText.js` — **not**
+  `sortLines.js`, which resolves to `SortLines.jsx` on a case-insensitive
+  filesystem and silently imports the wrong module (caught as a build warning
+  plus an `__next_error__` page, which is worth remembering as the failure
+  signature) — so they run in node, where **26 assertions** cover them. Also
+  driven end to end in a **real browser against the production build**: every
+  mode, both directions, comma mode, dedupe counts, the `en`/`sv` collation
+  difference, console clean. **Whitespace remover and HTML tag stripper remain
+  unbuilt** and stay in this bullet's cluster
+
 - **HTML entity encoder/decoder** (zero-dep via DOM) — sibling of URL Encoder/Base64
 - **Number base converter** (bin/oct/dec/hex, pure JS + BigInt) + **text↔binary**
 - **Markdown ↔ HTML** (`marked` + `dompurify` one way, `turndown` the other —
@@ -353,10 +392,17 @@ the cron expression explainer 1 Sep and the HTML Beautifier 4 Sep, which
 **closes the FreeFormatter inheritance set** — XML formatter, string escapers,
 cron tools and the HTML formatter are all now live, and that keyword pool is
 the one actively losing its incumbent.
+Sort Lines followed on 4 Sep, completing the Remove Duplicate Lines / Remove
+Line Breaks cluster.
 **XML↔JSON is the cheapest remaining pair completion**, because `xmlFormat.js`
 already parses XML into a tree with attributes, CDATA and entities intact — a
 converter is an emitter over that tree rather than a new dependency. After it,
 the HMAC/CRC32 bolt-on to Hash Generator is the next cheapest.
+**Correction to the 4 Sep note below on verification:** browser verification
+*is* available in scheduled runs. `next dev` is blocked, but `next build` plus
+a plain static server over `out/` (`python3 -m http.server`) opened fine in the
+Browser pane and was used to drive Sort Lines through every mode on the shipped
+bundle. Prefer that over minified-bundle-only checks in future runs.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
