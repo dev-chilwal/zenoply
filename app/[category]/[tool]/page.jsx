@@ -91,6 +91,7 @@ import XmlFormatter from "@/components/tools/XmlFormatter";
 import StringEscaper from "@/components/tools/StringEscaper";
 import CronExpressionGenerator from "@/components/tools/CronExpressionGenerator";
 import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
+import BaseConverter from "@/components/tools/BaseConverter";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -181,6 +182,7 @@ const REGISTRY = {
   "string-escaper": StringEscaper,
   "cron-expression-generator": CronExpressionGenerator,
   "html-beautifier": HtmlBeautifier,
+  "base-converter": BaseConverter,
 };
 
 export function generateStaticParams() {
