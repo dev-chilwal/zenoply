@@ -323,7 +323,40 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   unbuilt** and stay in this bullet's cluster
 
 - **HTML entity encoder/decoder** (zero-dep via DOM) — sibling of URL Encoder/Base64
-- **Number base converter** (bin/oct/dec/hex, pure JS + BigInt) + **text↔binary**
+- ~~**Number base converter**~~ **SHIPPED 5 Sep 2026** (`/convert/base-converter`)
+  — zero new deps. The whole reason it exists is that the one-line build of it
+  is wrong: `parseInt(text, from).toString(to)` routes every value through an
+  IEEE-754 double, which is exact for whole numbers only to 2^53, so
+  `parseInt("FFFFFFFFFFFFFFFF", 16).toString(2)` answers with a **1 followed by
+  64 zeros** where the answer is 64 ones — every bit wrong and one digit too
+  long, because the value was rounded up to the next power of two on the way in.
+  That range is most of what people actually paste into a base converter (64-bit
+  hashes, snowflake IDs, checksums, 128-bit UUIDs), so the integer path is
+  BigInt end to end. Fractions are exact rational arithmetic, not floats:
+  `(0.1).toString(2)` prints a *terminating* 55-digit number, which is the
+  expansion of the nearest double rather than of a tenth, and a tenth has no
+  terminating binary form at all — here a fraction is a reduced BigInt
+  numerator/denominator expanded by repeated multiplication, with a **repeated
+  remainder** (not an iteration count) marking where the cycle starts, so 0.1
+  renders `0.0(0011)`. Three smaller calls: a base prefix that disagrees with
+  the selected base is an **error rather than a silent override** (`0x1F` at
+  base 10 and at base 16 are both defensible readings, and guessing produces a
+  wrong answer that looks right); two's complement is offered at 8/16/32/64 bits
+  for negative whole numbers with an out-of-range width **reported rather than
+  wrapped**; and the `0x` prefix stays lowercase while the digits uppercase,
+  since every language prints `0xFF`. Logic lives in
+  `components/tools/baseConvert.js` (the `sortText.js` pattern) — **538
+  assertions** against Python's arbitrary-precision ints and exact `Fraction`
+  arithmetic, each checked by a *different derivation* than the one that
+  produced it: integer part vs Python's own int-to-base rendering, the printed
+  text **read back as a Fraction** and required to equal the input exactly
+  (closed form `(bc-b)/(B^(|b|+|c|) - B^|b|)` for a repeating expansion),
+  termination vs the number-theoretic rule, and cycle length vs the
+  multiplicative order of the base mod the denominator's base-coprime part. The
+  same module then produced **byte-identical output in a real browser**
+  (matching SHA-256 over all 538 cases) — dev servers are blocked in scheduled
+  runs, so the component is covered by a clean static prerender instead.
+  **text↔binary remains unbuilt** and stays in this bullet's cluster
 - **Markdown ↔ HTML** (`marked` + `dompurify` one way, `turndown` the other —
   self-completing pair from day one)
 - **Roman numerals** (clones Number to Words template)
