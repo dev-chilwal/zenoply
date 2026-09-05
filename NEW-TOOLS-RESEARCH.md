@@ -153,8 +153,63 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   verification was **not** possible this run: dev servers and browser navigation
   are both blocked in scheduled runs, so the minified-bundle suite stands in
   for it
-- **XML to JSON + JSON to XML** (`fast-xml-parser`, MIT) — completes the
-  data-format matrix with the existing JSON↔CSV / YAML→JSON
+- ~~**XML to JSON**~~ **SHIPPED 6 Sep 2026** (`/convert/xml-to-json`) — zero
+  new deps; `fast-xml-parser` was **not** needed, because `xmlFormat.js`
+  already parses XML into a tree with attributes, CDATA and entities intact, so
+  the converter is an emitter over that tree. Logic lives in
+  `components/tools/xmlJson.js` (the `jsonYaml.js` pattern) so it runs in node,
+  which is where it is tested. There is no canonical XML→JSON mapping — XML has
+  attributes, ordered mixed content, comments and namespaces and JSON has none
+  of them — so every design decision here is about making a loss **loud rather
+  than silent**, and each one is surfaced in the UI as a warning. Four things
+  drove it. (1) **Entities must be decoded, which is the one thing
+  `xmlFormat.js` deliberately does not do** — JSON has no entity syntax, so
+  leaving `&amp;` in a string is simply wrong. Decoding means enforcing what a
+  parser enforces: a numeric reference outside XML's legal Char range (`&#0;`,
+  `&#xD800;`, `&#xFFFE;`) is an **error, not a character**, and an undeclared
+  named entity — `&nbsp;` is the usual one, it is HTML's, not XML's — is
+  reported and left literal rather than guessed at from HTML's table. (2)
+  **Attribute-value normalisation and line-ending normalisation are real and
+  are usually skipped.** A parser turns a literal tab or newline inside an
+  attribute value into a space and CRLF into LF everywhere *before* the
+  application sees the value, while `&#9;` and `&#13;` survive — a converter
+  that ignores this disagrees with every XML parser on any document containing
+  either. (3) **A repeated element is an array and a single one is not**, which
+  is the bug that outlives the conversion: the output *shape* is decided by the
+  data rather than the schema, so `items.item.map()` breaks on the first record
+  whose list holds one entry. It cannot be fixed silently (both shapes are what
+  people ask for), so it is an option — "Always arrays" — and, whenever
+  repeat-counting actually decided a key's shape, a warning. (4) **Values stay
+  strings unless asked otherwise**, and type conversion only emits a number when
+  `String(Number(s)) === s`, so `007`, `1.50`, `+1` and anything past 2^53 stay
+  text where a `parseFloat` converter damages all four. Attributes get a `@`
+  prefix by default because an attribute and a child element may legally share a
+  name (`<book id="1"><id>2</id></book>`), and with an empty prefix the
+  collision is *reported* rather than silently resolved. Namespace stripping
+  also drops the now-meaningless `xmlns` declarations and reports names that
+  collide once their prefixes are gone. **Verified in three layers.** 336 node
+  assertions on the source, of which **234 are cross-checks against expat** via
+  `python3` — an independently written mapper consuming expat's event stream,
+  over 26 documents × 9 option sets, compared key-order-sensitively, so expat
+  rather than a second copy of the same guess decides what the entities,
+  attribute values and line endings resolve to. Four deliberate defects
+  (dropping attribute normalisation, CRLF folding, whitespace-run dropping, the
+  CDATA trim guard) each fail 8–12 assertions, so the suite demonstrably has
+  teeth. Then **638 assertions against the shipped minified bytes**, pulled out
+  of the built chunk with a webpack-runtime shim and driven through the *real*
+  component with stubbed hooks — so the path exercised is state → options →
+  conversion → OutputBox, not a re-import of the source — of which 624 compare
+  against expat. Finally the same shipped bytes run in a **real browser engine**
+  over all 624 cases with zero mismatches and zero throws. Worth recording for
+  future runs: `preview_start` is now blocked outright in scheduled runs (not
+  just `next dev`), so the static-server route noted below no longer works;
+  the browser check was done by inlining the two chunk modules into a
+  standalone page opened over `file://`. Two constraints there — the pane
+  converts the file to a `data:` URL, which is an **opaque origin and therefore
+  not a secure context, so `crypto.subtle` is undefined** (compare per-case
+  hashes with a plain JS function instead), and anything over roughly half a
+  megabyte fails to open at all. **JSON to XML remains unbuilt** and stays in
+  this bullet's cluster
 - ~~**XML Formatter**~~ **SHIPPED 27 Aug 2026** (`/dev/xml-formatter`) — zero
   new deps; `xml-formatter` was **not** used. The parser and emitter are
   hand-rolled in `components/tools/xmlFormat.js` (the `jsonYaml.js` pattern) so
@@ -427,15 +482,20 @@ cron tools and the HTML formatter are all now live, and that keyword pool is
 the one actively losing its incumbent.
 Sort Lines followed on 4 Sep, completing the Remove Duplicate Lines / Remove
 Line Breaks cluster.
-**XML↔JSON is the cheapest remaining pair completion**, because `xmlFormat.js`
-already parses XML into a tree with attributes, CDATA and entities intact — a
-converter is an emitter over that tree rather than a new dependency. After it,
-the HMAC/CRC32 bolt-on to Hash Generator is the next cheapest.
-**Correction to the 4 Sep note below on verification:** browser verification
-*is* available in scheduled runs. `next dev` is blocked, but `next build` plus
-a plain static server over `out/` (`python3 -m http.server`) opened fine in the
-Browser pane and was used to drive Sort Lines through every mode on the shipped
-bundle. Prefer that over minified-bundle-only checks in future runs.
+XML to JSON shipped 6 Sep on exactly that reasoning — `xmlFormat.js`'s tree
+made it an emitter rather than a dependency. **JSON to XML is now the cheapest
+remaining pair completion** (it needs an escaper and a name-validity check, not
+a parser), with the HMAC/CRC32 bolt-on to Hash Generator next after it.
+**Verification in scheduled runs, corrected again (6 Sep):** the 5 Sep note
+below said a static server over `out/` works. It no longer does — `preview_start`
+itself is refused in unattended runs whatever it would launch, so there is no
+http origin available. What *does* work is `file://`: open a standalone page in
+the Browser pane with the built chunk's modules inlined, and drive them there.
+Two constraints, both learned the hard way: the pane rewrites the file into a
+`data:` URL, so the page is an opaque origin, **not a secure context, and
+`crypto.subtle` is undefined** — hash with a plain JS function; and a page much
+over 500 KB will not open at all, so inline per-case hashes rather than a full
+expected transcript. Prefer this over minified-bundle-only checks.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
