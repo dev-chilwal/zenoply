@@ -208,8 +208,8 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   converts the file to a `data:` URL, which is an **opaque origin and therefore
   not a secure context, so `crypto.subtle` is undefined** (compare per-case
   hashes with a plain JS function instead), and anything over roughly half a
-  megabyte fails to open at all. **JSON to XML remains unbuilt** and stays in
-  this bullet's cluster
+  megabyte fails to open at all. **JSON to XML shipped 7 Sep 2026**
+  (`/convert/json-to-xml`), closing the pair — see the bullet below
 - ~~**XML Formatter**~~ **SHIPPED 27 Aug 2026** (`/dev/xml-formatter`) — zero
   new deps; `xml-formatter` was **not** used. The parser and emitter are
   hand-rolled in `components/tools/xmlFormat.js` (the `jsonYaml.js` pattern) so
@@ -377,6 +377,58 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   difference, console clean. **Whitespace remover and HTML tag stripper remain
   unbuilt** and stay in this bullet's cluster
 
+- ~~**JSON to XML**~~ **SHIPPED 7 Sep 2026** (`/convert/json-to-xml`) — zero new
+  deps, and it needed neither a parser nor an escaper library: `jsonYaml.js`
+  already parses JSON losslessly and `xmlFormat.js` already carries the XML Name
+  production, so this is an emitter over both. Logic lives in
+  `components/tools/jsonXml.js` (the `xmlJson.js` pattern) so it runs in node,
+  which is where it is tested. This is the **harder direction** — XML constrains
+  what JSON does not — and five things drove it. (1) **A JSON key is not an XML
+  name.** `"first name"`, `"2024"` and `""` are all legal keys and none is a
+  legal element name, so renaming is unavoidable and every rename is listed. The
+  case that matters more is two **sibling** keys sanitising to the same name:
+  read back that is a two-item array rather than two fields, so it is reported
+  separately — and collision detection is **scoped to siblings**, since the same
+  name under two different parents is not a collision at all and a document-wide
+  map generates false positives. Two *attributes* that collide are worse than a
+  shape change — a duplicate attribute name is a **well-formedness error** — so
+  there the later one is dropped rather than emitted. (2) **Numbers are
+  re-emitted as their original text**, which is why `parseJson` is used instead
+  of `JSON.parse`: the quick build rounds anything past 2^53 and rewrites `1.50`
+  as `1.5`, damaging exactly the IDs, version pins and money people paste in.
+  (3) **The escape set is not the obvious one.** `>` is escaped everywhere, not
+  for symmetry but because `]]>` is a hard parse error in content (confirmed
+  against both expat and xmllint); a carriage return is written `&#13;` and a
+  tab or newline inside an attribute `&#9;`/`&#10;`, because line-ending and
+  attribute-value normalisation turn the literal characters into line feeds and
+  spaces *before* the application sees them — the same lesson `escapeString.js`
+  learned, and the loss only appears on the far side of a parser. Characters XML
+  1.0 cannot hold at all (most control codes, unpaired surrogates) are refused
+  with a message naming the character, and stripped only on request.
+  (4) **Indentation is not free** — a newline beside character data becomes part
+  of that data — so only an element whose content is entirely child elements is
+  broken across lines, the same contract as `xmlFormat.js`. (5) **An array
+  nested directly inside another must be wrapped, not expanded again**, or two
+  levels of nesting silently flatten into one; empty arrays produce nothing and
+  nulls get a three-way choice (empty tag, `xsi:nil` with the declaration added
+  **once** to the root, or omitted), each reported. **Verified in two layers.**
+  562 node assertions, of which 175 documents (25 inputs × 7 option sets) go
+  through both **xmllint** and **expat**, with an independently written
+  expat-based mapper — not a second copy of the emitter's assumptions — deciding
+  what the escapes and normalisation resolve to, plus a round trip through the
+  site's own XML to JSON, itself expat-verified. Six deliberate defects each
+  fail 12–253 assertions, so the suite demonstrably has teeth. Then **689
+  assertions against the shipped minified bytes**: webpack scope-hoists
+  `jsonXml.js` into the component, so the built bundle was driven through the
+  *real* component with React's **hook dispatcher** stubbed
+  (`ReactCurrentDispatcher.current`) — state → options → conversion → OutputBox
+  — including byte-identity with the source output on all 175 documents and
+  every option wired through. Worth recording for future runs: swapping the
+  React *module's* exports is not enough, because the component reaches React
+  through a wrapper and **two React copies are bundled**, so the dispatcher must
+  be set on every internals object present. That technique replaces the
+  `file://` workaround noted above and is cheaper. **HMAC/CRC32 on Hash
+  Generator is now the cheapest remaining Tier C item**
 - **HTML entity encoder/decoder** (zero-dep via DOM) — sibling of URL Encoder/Base64
 - ~~**Number base converter**~~ **SHIPPED 5 Sep 2026** (`/convert/base-converter`)
   — zero new deps. The whole reason it exists is that the one-line build of it
@@ -483,9 +535,11 @@ the one actively losing its incumbent.
 Sort Lines followed on 4 Sep, completing the Remove Duplicate Lines / Remove
 Line Breaks cluster.
 XML to JSON shipped 6 Sep on exactly that reasoning — `xmlFormat.js`'s tree
-made it an emitter rather than a dependency. **JSON to XML is now the cheapest
-remaining pair completion** (it needs an escaper and a name-validity check, not
-a parser), with the HMAC/CRC32 bolt-on to Hash Generator next after it.
+made it an emitter rather than a dependency. JSON to XML followed on 7 Sep and closed that pair — needing
+neither the escaper nor the parser the note above predicted, since
+`xmlFormat.js` already carries the Name production. **The HMAC/CRC32 bolt-on to
+Hash Generator is now the cheapest remaining Tier C item**, with the whitespace
+remover, HTML tag stripper, HTML entity encoder and text↔binary behind it.
 **Verification in scheduled runs, corrected again (6 Sep):** the 5 Sep note
 below said a static server over `out/` works. It no longer does — `preview_start`
 itself is refused in unattended runs whatever it would launch, so there is no
