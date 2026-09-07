@@ -93,6 +93,7 @@ import CronExpressionGenerator from "@/components/tools/CronExpressionGenerator"
 import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
 import BaseConverter from "@/components/tools/BaseConverter";
 import XmlToJson from "@/components/tools/XmlToJson";
+import JsonToXml from "@/components/tools/JsonToXml";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -150,6 +151,7 @@ const REGISTRY = {
   "yaml-to-json": YamlToJson,
   "json-to-yaml": JsonToYaml,
   "xml-to-json": XmlToJson,
+  "json-to-xml": JsonToXml,
   "merge-pdf": MergePdf,
   "split-pdf": SplitPdf,
   "compress-pdf": CompressPdf,
