@@ -334,8 +334,47 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   build** (dev servers are blocked in scheduled runs): all three flavours, both
   Explain and Build modes, every error path, `Intl.supportedValuesOf` giving
   418 zones, console clean, no mobile overflow
-- **HMAC generator** (WebCrypto `crypto.subtle.sign`, zero-dep) + **CRC32/file
-  checksum** (`crc-32` Apache-2.0 or `hash-wasm` per-algorithm) — bolt onto Hash Generator
+- ~~**HMAC generator**~~ **SHIPPED 8 Sep 2026** (`/dev/hmac-generator`) — zero
+  new deps, but built as its own tool rather than bolted onto Hash Generator
+  (separate URL for the "hmac sha256 generator" query), and **not** on
+  `crypto.subtle.sign` as this bullet planned. Two things ruled the plan out.
+  (1) **WebCrypto refuses a zero-length key** — `importKey` throws DataError
+  "Zero-length key is not supported" — while RFC 2104 defines it and OpenSSL,
+  Node, Python and Go all compute it. A tool whose job is to reproduce the
+  signature some other stack produced cannot have a hole exactly where that
+  stack has a value, so the ipad/opad construction is written out over the hash
+  primitives. (2) That same path yields **HMAC-MD5**, which WebCrypto has no
+  primitive for at all and which older payment, telecom and AWS SigV2
+  integrations still sign with. Key handling per RFC 2104 (over-block-size key
+  replaced by its own digest, shorter zero-padded) is therefore ours to get
+  right, and is asserted directly.
+  The differentiator is not the MAC but the **mismatch sweep**: given a
+  signature you were sent, it tries every algorithm × every reading of the
+  secret × the ways a body changes in transit (trailing newline gained or lost,
+  CRLF, surrounding whitespace, the message itself read as hex/Base64 bytes) and
+  names the combination that reproduces it. That targets the actual query
+  behind the keyword — "my signature does not match" — and no competitor does
+  it. Supporting decisions: the **key encoding is an explicit choice, never
+  guessed**, since `2f8a1d4b` is 8 bytes as text and 4 as hex and the two are
+  unrelated keys with no signal saying which; signatures are compared **as
+  bytes**, so hex case, Base64 vs Base64url and stripped padding stop being
+  four spurious mismatches; and the **digest length is surfaced as an
+  algorithm fingerprint** (64 hex chars can only be SHA-256), which settles more
+  reports than the sweep does. Prefix stripping for GitHub `sha256=` and Stripe
+  `t=,v1=` needs a real guard, not a split on `=`: a 16-byte digest in Base64
+  ends in `==`, so a naive `name=value` rule eats an HMAC-MD5 signature whole —
+  the scheme name is capped at 20 chars and the character after `=` may not be
+  `=`. Logic in `components/tools/hmac.js`. **Verified at three levels**: 3008
+  node assertions against OpenSSL plus the RFC 4231 and RFC 2202 vectors, with
+  six deliberate defects each failing 2–1253 of them (the first cut of the
+  Base64-padding guard passed the suite, which is what forced the adversarial
+  signature cases — digests that begin with a letter and hold no `+` or `/`);
+  361 assertions in Chrome against **its own native `subtle.sign` HMAC** across
+  288 key/message length combinations, re-confirming in-browser that it still
+  refuses the zero-length key; and 542 assertions driven through the **shipped
+  minified bundle**, located in the chunk by shape rather than by name, which
+  also covers the sweep. **CRC32 / file checksum remains unbuilt** and stays in
+  this bullet's cluster (`crc-32` Apache-2.0 or `hash-wasm`)
 - ~~**Sort lines / alphabetizer**~~ **SHIPPED 4 Sep 2026** (`/text/sort-lines`)
   — zero new deps. The tool's whole reason to exist is that the obvious
   implementation is wrong: `items.sort()` compares UTF-16 code units, so every
@@ -427,8 +466,8 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   React *module's* exports is not enough, because the component reaches React
   through a wrapper and **two React copies are bundled**, so the dispatcher must
   be set on every internals object present. That technique replaces the
-  `file://` workaround noted above and is cheaper. **HMAC/CRC32 on Hash
-  Generator is now the cheapest remaining Tier C item**
+  `file://` workaround noted above and is cheaper. **HMAC shipped 8 Sep 2026; the cheapest remaining Tier C items are now
+  CRC32/file checksum and the HTML entity encoder/decoder**
 - **HTML entity encoder/decoder** (zero-dep via DOM) — sibling of URL Encoder/Base64
 - ~~**Number base converter**~~ **SHIPPED 5 Sep 2026** (`/convert/base-converter`)
   — zero new deps. The whole reason it exists is that the one-line build of it
@@ -537,19 +576,36 @@ Line Breaks cluster.
 XML to JSON shipped 6 Sep on exactly that reasoning — `xmlFormat.js`'s tree
 made it an emitter rather than a dependency. JSON to XML followed on 7 Sep and closed that pair — needing
 neither the escaper nor the parser the note above predicted, since
-`xmlFormat.js` already carries the Name production. **The HMAC/CRC32 bolt-on to
-Hash Generator is now the cheapest remaining Tier C item**, with the whitespace
-remover, HTML tag stripper, HTML entity encoder and text↔binary behind it.
-**Verification in scheduled runs, corrected again (6 Sep):** the 5 Sep note
-below said a static server over `out/` works. It no longer does — `preview_start`
-itself is refused in unattended runs whatever it would launch, so there is no
-http origin available. What *does* work is `file://`: open a standalone page in
-the Browser pane with the built chunk's modules inlined, and drive them there.
-Two constraints, both learned the hard way: the pane rewrites the file into a
-`data:` URL, so the page is an opaque origin, **not a secure context, and
-`crypto.subtle` is undefined** — hash with a plain JS function; and a page much
-over 500 KB will not open at all, so inline per-case hashes rather than a full
-expected transcript. Prefer this over minified-bundle-only checks.
+`xmlFormat.js` already carries the Name production. HMAC shipped 8 Sep as its
+own tool at `/dev/hmac-generator` rather than as a bolt-on, for the URL.
+**CRC32 / file checksum is now the cheapest remaining Tier C item**, with the
+whitespace remover, HTML tag stripper, HTML entity encoder and text↔binary
+behind it.
+**Verification in scheduled runs, corrected a third time (8 Sep):** the 5 Sep
+note said a static server over `out/` works and the 6 Sep note said `file://`
+works. Neither does now. `preview_start` is refused in unattended runs whatever
+it would launch, so there is no local http origin; and a `file://` page opens as
+a **static snapshot** whose scripts never run — the page tools refuse it with
+"this tab shows a local file". Two things do work, and together they are
+stronger than either previous approach:
+1. **Evaluate against the live site's own origin.** Navigate a fresh tab to any
+   existing `https://zenoply.com/...` page and drive `javascript_tool` there.
+   That is a real secure context, so `crypto.subtle` and the rest of the
+   platform are present, and the browser's own implementation is available as an
+   independent reference to check yours against (here: `subtle.sign("HMAC")`
+   over 288 key/message length combinations). Keep the payload small — send a
+   self-contained snippet, not the whole module inlined, or the source comes
+   back through the transcript twice.
+2. **Drive the shipped minified bundle in node.** Read the chunk, run it under a
+   four-line webpack shim (`self.webpackChunk_N_E.push` collecting factories),
+   then re-invoke the target factory with `new Function` and a trailing
+   `return {…}` of the identifiers you want. Two gotchas: the factory's *own*
+   parameters are minified, so bind the names parsed out of its signature rather
+   than `(module, exports, __webpack_require__)`; and locate the internals **by
+   shape, not by name** (the async function that xors a key block with `54`, the
+   one whose body holds `1732584193`), since the minifier renames them on every
+   build. Stub the require with a Proxy so React imports do not have to resolve.
+   This covers the real built bytes end to end, including the async paths.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
