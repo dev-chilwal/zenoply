@@ -36,6 +36,7 @@ import Base64Encoder from "@/components/tools/Base64Encoder";
 import UrlEncoder from "@/components/tools/UrlEncoder";
 import UuidGenerator from "@/components/tools/UuidGenerator";
 import HashGenerator from "@/components/tools/HashGenerator";
+import HmacGenerator from "@/components/tools/HmacGenerator";
 import EpochConverter from "@/components/tools/EpochConverter";
 import RemoveLineBreaks from "@/components/tools/RemoveLineBreaks";
 import RemoveDuplicateLines from "@/components/tools/RemoveDuplicateLines";
@@ -129,6 +130,7 @@ const REGISTRY = {
   "url-encoder": UrlEncoder,
   "uuid-generator": UuidGenerator,
   "hash-generator": HashGenerator,
+  "hmac-generator": HmacGenerator,
   "epoch-converter": EpochConverter,
   "remove-line-breaks": RemoveLineBreaks,
   "remove-duplicate-lines": RemoveDuplicateLines,
