@@ -466,9 +466,46 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   React *module's* exports is not enough, because the component reaches React
   through a wrapper and **two React copies are bundled**, so the dispatcher must
   be set on every internals object present. That technique replaces the
-  `file://` workaround noted above and is cheaper. **HMAC shipped 8 Sep 2026; the cheapest remaining Tier C items are now
-  CRC32/file checksum and the HTML entity encoder/decoder**
-- **HTML entity encoder/decoder** (zero-dep via DOM) — sibling of URL Encoder/Base64
+  `file://` workaround noted above and is cheaper. **HMAC shipped 8 Sep 2026 and the HTML entity encoder 9 Sep 2026; the
+  cheapest remaining Tier C items are now CRC32/file checksum and Roman numerals**
+- ~~**HTML entity encoder/decoder**~~ **SHIPPED 9 Sep 2026**
+  (`/dev/html-entity-encoder`) — zero new deps, and the DOM was **not** used.
+  `components/tools/htmlEntities.js` hand-rolls both directions so they run in
+  node, which is where they were tested, and so the two rules a
+  `div.innerHTML` round-trip cannot express could be implemented at all. It
+  imports the named table from `escapeString.js` rather than re-typing it, so
+  the String Escaper and this tool cannot drift on what `&hellip;` means.
+  **Overlap with the String Escaper's HTML mode is deliberate and shallow**:
+  that tool escapes for eight targets, this one is about the entity system —
+  named-entity *encoding* (the escaper only ever emits numeric above ASCII),
+  the semicolon-less legacy set, and a searchable table, which is its own
+  search intent. Four things drove it. (1) **Decoding has to follow the
+  tokenizer, not a regex.** 106 names are valid without their closing
+  semicolon — exactly the 96 Latin-1 names, `amp`/`lt`/`gt`/`quot` and six
+  all-caps aliases, derived from the code points rather than re-typed, and
+  notably *not* `apos` — which is why `?a=1&copy=2` renders as `?a=1©=2`.
+  (2) **That consumption is context-dependent**, and it is the tool's headline
+  feature: inside an attribute value a semicolon-less name followed by `=` or
+  an alphanumeric is not consumed at all, which is the entire reason a query
+  string survives in an `href` and mangles itself as page text. Verified
+  against Chrome's own parser. (3) **Where the table is a subset, refuse
+  rather than guess.** A reference closing with a semicolon but naming
+  something outside the table is passed through and reported; a longest-prefix
+  fallback would answer `&notin;` with `¬in;`, which is confidently wrong
+  where "I do not know this one" is correct. (4) The differential run exposed
+  a real gap in the *existing* table: `escapeString.js` was missing **38 of
+  HTML 4.01's symbol names** (`&rArr;`, `&isin;`, `&sube;`, `&oplus;`,
+  `&lang;`, `&there4;` …), so the String Escaper had been silently passing
+  those through since it shipped. Fixed here, with `lang`/`rang` following
+  HTML5's U+27E8/U+27E9 rather than HTML 4.01's U+2329/U+232A, because that is
+  what browsers resolve them to. Also decodes the Windows-1252 replacement
+  table (`&#151;` is an em dash), detects double encoding and offers repeated
+  decoding, and names invisible characters with their code points. Verified by
+  42 assertions in node plus **419 inputs diffed against python's
+  `html.unescape`** with a single divergence — `&#1114111;`, a noncharacter,
+  which python drops and we emit; a real browser emits it too, so ours matches
+  the WHATWG spec and python does not. Driven end to end on the production
+  build (`next build` + static serve of `out/`), console clean
 - ~~**Number base converter**~~ **SHIPPED 5 Sep 2026** (`/convert/base-converter`)
   — zero new deps. The whole reason it exists is that the one-line build of it
   is wrong: `parseInt(text, from).toString(to)` routes every value through an
