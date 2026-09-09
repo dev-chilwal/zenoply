@@ -95,6 +95,7 @@ import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
 import BaseConverter from "@/components/tools/BaseConverter";
 import XmlToJson from "@/components/tools/XmlToJson";
 import JsonToXml from "@/components/tools/JsonToXml";
+import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -189,6 +190,7 @@ const REGISTRY = {
   "cron-expression-generator": CronExpressionGenerator,
   "html-beautifier": HtmlBeautifier,
   "base-converter": BaseConverter,
+  "html-entity-encoder": HtmlEntityEncoder,
 };
 
 export function generateStaticParams() {
