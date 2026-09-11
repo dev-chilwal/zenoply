@@ -96,6 +96,7 @@ import BaseConverter from "@/components/tools/BaseConverter";
 import XmlToJson from "@/components/tools/XmlToJson";
 import JsonToXml from "@/components/tools/JsonToXml";
 import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
+import RomanNumerals from "@/components/tools/RomanNumerals";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -191,6 +192,7 @@ const REGISTRY = {
   "html-beautifier": HtmlBeautifier,
   "base-converter": BaseConverter,
   "html-entity-encoder": HtmlEntityEncoder,
+  "roman-numerals": RomanNumerals,
 };
 
 export function generateStaticParams() {
