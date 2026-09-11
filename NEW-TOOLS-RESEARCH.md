@@ -466,8 +466,9 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   React *module's* exports is not enough, because the component reaches React
   through a wrapper and **two React copies are bundled**, so the dispatcher must
   be set on every internals object present. That technique replaces the
-  `file://` workaround noted above and is cheaper. **HMAC shipped 8 Sep 2026 and the HTML entity encoder 9 Sep 2026; the
-  cheapest remaining Tier C items are now CRC32/file checksum and Roman numerals**
+  `file://` workaround noted above and is cheaper. **HMAC shipped 8 Sep 2026, the HTML entity encoder 9 Sep 2026 and Roman
+  numerals 11 Sep 2026; the cheapest remaining Tier C item is now CRC32/file
+  checksum**
 - ~~**HTML entity encoder/decoder**~~ **SHIPPED 9 Sep 2026**
   (`/dev/html-entity-encoder`) — zero new deps, and the DOM was **not** used.
   `components/tools/htmlEntities.js` hand-rolls both directions so they run in
@@ -542,7 +543,29 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   **text↔binary remains unbuilt** and stays in this bullet's cluster
 - **Markdown ↔ HTML** (`marked` + `dompurify` one way, `turndown` the other —
   self-completing pair from day one)
-- **Roman numerals** (clones Number to Words template)
+- ~~**Roman numerals**~~ **SHIPPED 11 Sep 2026** (`/convert/roman-numerals`) —
+  zero new deps. Did not clone the Number to Words template in the end: the
+  demand is mostly *dates* (tattoos, anniversaries, cornerstones), so the tool
+  is three tabs and the third one writes a calendar date as three numerals with
+  a choice of field order and separator. Two decisions worth reusing. **Reading
+  is separated from judging**: the parser is deliberately lenient and
+  canonicality is decided by re-encoding the value and comparing, so IIII
+  returns 4 *and* is told to be non-standard — competitors either accept it
+  silently or refuse it, and both throw away what the reader wants.
+  Round-tripping is also the only definition of "standard form" that cannot
+  drift from the encoder, because it is the encoder. **Subtraction is grouped,
+  not pairwise**, so the attested inscriptional forms read correctly (XXC = 80,
+  IIC = 98, where the letter-at-a-time rule gives 100 for both) while canonical
+  numerals are unaffected. Above 3,999 a vinculum multiplies by 1,000 (4,000 is
+  a barred IV, not MMMM), drawn with a CSS overline but copied as U+0305, which
+  is the form that survives a paste. All 3,999,999 values round-trip to their
+  canonical spelling, verified in node. **One trap for future runs: the helper
+  is `romanConvert.js`, not `romanNumerals.js`** — the latter differs from
+  `RomanNumerals.jsx` only by case, which collides on a case-insensitive
+  filesystem and silently resolved the component import to the wrong module,
+  leaving the page prerendering as a 404 stub with a clean build. Keep helper
+  names distinct from their component, as `baseConvert.js` and `htmlEntities.js`
+  already do
 - **Image ↔ Base64** (FileReader; bridges image + dev clusters)
 - **JSON to TypeScript interface** (`json-to-ts`, MIT) — transform.tools' niche
 - **SVG to PNG/JPG** (native: SVG blob → canvas; 4 competitors)
