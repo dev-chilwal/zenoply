@@ -373,8 +373,68 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   288 key/message length combinations, re-confirming in-browser that it still
   refuses the zero-length key; and 542 assertions driven through the **shipped
   minified bundle**, located in the chunk by shape rather than by name, which
-  also covers the sweep. **CRC32 / file checksum remains unbuilt** and stays in
-  this bullet's cluster (`crc-32` Apache-2.0 or `hash-wasm`)
+  also covers the sweep. ~~**CRC32 / file checksum**~~ **SHIPPED 13 Sep 2026**
+  (`/dev/file-checksum`) — see the bullet below
+- ~~**CRC32 / file checksum**~~ **SHIPPED 13 Sep 2026** (`/dev/file-checksum`) —
+  zero new deps; neither `crc-32` nor `hash-wasm` was needed. Shipped as a
+  **file** tool rather than a CRC32 box, because the query behind "checksum" is
+  almost always "is this download the file they published" — and the existing
+  `/dev/hash-generator` already covers text, so a text CRC page would have been
+  a thin duplicate. Logic lives in `components/tools/checksum.js` (the
+  `hmac.js` pattern) so it runs in node, which is where it is tested.
+  The decision that shapes the whole file: **every algorithm is written out as
+  an incremental state, including the three WebCrypto already has.**
+  `crypto.subtle.digest` takes one ArrayBuffer and there is **no incremental
+  WebCrypto API at all**, so the three-line build of this tool holds the entire
+  file in memory — and the canonical use is a 4 GB ISO, where that either fails
+  or thrashes the machine. Chunks of 4 MB from `blob.slice().arrayBuffer()` are
+  fed into every selected state and dropped, so memory is flat at one chunk and
+  the file is read **once** rather than once per algorithm. Three supporting
+  calls. (1) **SHA-512 runs on hi/lo 32-bit halves, not BigInt** — BigInt is
+  correct and unusable at this scale (80 rounds of allocation per 128-byte
+  block); the carry test is `(lo>>>0) < (addend>>>0)`. (2) **The K and H tables
+  are derived, not re-typed**: `floor(root(p) * 2^b)` is exactly the integer
+  kth root of `p << b*k`, so BigInt reproduces the published constants with no
+  transcription step across 80 64-bit values. MD5 is the exception — its rounds
+  are copied verbatim from `hmac.js`, already verified against OpenSSL, rather
+  than re-derived from `sin`, whose last bit is not guaranteed identical across
+  engines. (3) **The bit length needs its high word**: past 512 MB the length
+  field exceeds 32 bits, and `bitLen >>> 0` is ToUint32 (i.e. mod 2^32) which
+  is right for the low word only — the defect run below shows this is the one
+  bug no ordinary test file catches.
+  The differentiator is the **compare box**, not the digest: it takes a bare
+  digest, a coreutils `<hex>  name` line, the BSD `SHA256 (name) = <hex>` form,
+  a Base64 digest (what S3 and Azure report in Content-MD5), or an entire
+  SHA256SUMS file — matching each dropped file to the line filed under its
+  name, because picking a row out of a twelve-release sums file by anything but
+  its name yields a confident verdict about the wrong file. A **single** pasted
+  checksum is used even when its name differs (people rename downloads) and the
+  difference is reported. The algorithm is identified by **digest length alone**
+  (every length here is unique), and comparison is on bytes, so uppercase hex
+  and Base64 are not three spurious mismatches. Two files sharing a SHA-256 are
+  reported as identical, which answers "are these the same download" with no
+  published value at all. Deliberately does **not** use `PdfDropzone`: its qpdf
+  password gate rewrites PDF bytes, and a checksum of rewritten bytes answers
+  the wrong question. `zip.js` gained `crc32Update` with `crc32` defined in
+  terms of it, so there is one CRC table and the two cannot drift.
+  **Verified in two layers.** 3121 node assertions against `node:crypto` and
+  `zlib.crc32` — the published empty/`abc`/`123456789` vectors, **every length
+  0..600** (covering all block-boundary residues for both the 64- and 128-byte
+  families several times over), nine streaming partitions, `hashBlob` over a
+  real Blob, and a **600 MiB run** fed as repeated 1 MiB slices to push the bit
+  length past 2^32. Seven deliberate defects each fail 4–2426 assertions, and
+  the spread is the point: the forgotten high word fails **only 4**, all of them
+  in the 600 MiB case, so without that one test it ships silently. Then **3059
+  assertions against the shipped minified bundle**, collected out of the built
+  chunk under a real (tiny) `__webpack_require__` so the shipped `zip.js` CRC
+  table and `hmac.js` codecs are the ones exercised rather than stubs. Worth
+  recording: webpack **scope-hoists `checksum.js` into the component**, and the
+  minifier then **inlines `parseExpected`, `entryForFile` and `verdictFor`**
+  into the JSX — only `ALGOS` and `hashBlob` survive as callable bindings, so
+  they were located **by shape** (`let X=[{id:"CRC32"`, and the async function
+  whose body reaches `arrayBuffer()`) and the factory body re-run with an
+  appended `return`. Browser verification was not possible this run: dev servers
+  and `preview_start` are both blocked in scheduled runs
 - ~~**Sort lines / alphabetizer**~~ **SHIPPED 4 Sep 2026** (`/text/sort-lines`)
   — zero new deps. The tool's whole reason to exist is that the obvious
   implementation is wrong: `items.sort()` compares UTF-16 code units, so every
@@ -638,9 +698,12 @@ made it an emitter rather than a dependency. JSON to XML followed on 7 Sep and c
 neither the escaper nor the parser the note above predicted, since
 `xmlFormat.js` already carries the Name production. HMAC shipped 8 Sep as its
 own tool at `/dev/hmac-generator` rather than as a bolt-on, for the URL.
-**CRC32 / file checksum is now the cheapest remaining Tier C item**, with the
-whitespace remover, HTML tag stripper, HTML entity encoder and text↔binary
-behind it.
+CRC32 shipped 13 Sep as `/dev/file-checksum` — a file tool rather than a text
+CRC box, since `/dev/hash-generator` already covers text and the search intent
+is download verification. **The cheapest remaining Tier C items are now the
+whitespace remover and the HTML tag stripper**, with text↔binary, Markdown↔HTML,
+image↔Base64, JSON to TypeScript, SVG to PNG and the age/date-difference
+calculators behind them.
 **Verification in scheduled runs, corrected a third time (8 Sep):** the 5 Sep
 note said a static server over `out/` works and the 6 Sep note said `file://`
 works. Neither does now. `preview_start` is refused in unattended runs whatever

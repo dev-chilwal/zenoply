@@ -1,6 +1,6 @@
 # Zenoply — Post-Launch Growth Roadmap
 
-_Goal: grow organic search traffic. Last updated: 11 September 2026 (Phase 1 complete; Phase 2 complete — 94 tools live, 0 stubs remaining; Phase 3 advancing — 84 guides live; full SEO audit run 5 Jul — see below)._
+_Goal: grow organic search traffic. Last updated: 13 September 2026 (Phase 1 complete; Phase 2 complete — 95 tools live, 0 stubs remaining; Phase 3 advancing — 85 guides live; full SEO audit run 5 Jul — see below)._
 
 The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-chilwal/zenoply` → push to `main` rebuilds). The sitemap is verified and read successfully in Google Search Console (under the `zenoply.team@gmail.com` account). The growth model for a utility-tool site is simple: **every live tool and every guide is a separate page that can rank for its own search query.** More quality pages + clean on-page SEO + indexing = more traffic. This roadmap is ordered by impact-per-effort.
 
@@ -8,7 +8,7 @@ The site is live at zenoply.com on Cloudflare Pages with git auto-deploy (`dev-c
 
 ## Current state (updated 15 Jul 2026)
 
-**94 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **84 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 9 live tools still lack a guide — that is the remaining Phase 3 backlog.
+**95 tools now built and live in code, across 6 categories** (up from 9 at launch, 23 on 10 Jun, 43 on 25 Jun, 59 on 15 Jul). Each has an h1, meta description, FAQ block (feeds FAQ structured data), and is in the sitemap automatically. **85 guides are also live** under `/guides`. **No `coming soon` stubs remain — the catalog is fully live.** 9 live tools still lack a guide — that is the remaining Phase 3 backlog.
 
 - **Text (9):** Word Counter, Case Converter, Remove Line Breaks, Remove Duplicate Lines, Sort Lines, Find & Replace, Lorem Ipsum Generator, Slug Generator, Text Reverser
 - **Dev (15):** JSON Formatter, Base64 Encoder/Decoder, URL Encoder/Decoder, UUID Generator, Hash Generator (MD5/SHA-1/256/512), HMAC Generator (SHA-256/SHA-1/SHA-384/SHA-512/MD5), JWT Decoder, SQL Formatter, HTML Minifier, HTML Beautifier, XML Formatter, QR Code Generator, LLM Token Counter, String Escaper & Unescaper, Cron Expression Generator & Explainer
@@ -39,14 +39,14 @@ Notable build notes:
 
 ## SEO audit (5 Jul 2026) — verdict: technical SEO is done; the levers left are content, backlinks and time
 
-A full codebase audit found **no critical technical SEO gaps**: all ~94 pages have unique titles/descriptions/canonicals, JSON-LD (SoftwareApplication, Article, BreadcrumbList, FAQPage) everywhere, verified sitemap, clean internal linking, 99 PageSpeed. Stop optimizing the tech. What actually moves rankings from here:
+A full codebase audit found **no critical technical SEO gaps**: all ~95 pages have unique titles/descriptions/canonicals, JSON-LD (SoftwareApplication, Article, BreadcrumbList, FAQPage) everywhere, verified sitemap, clean internal linking, 99 PageSpeed. Stop optimizing the tech. What actually moves rankings from here:
 
 1. **Ride out the new-domain cold-start.** ~1 month into Google's evaluation period; expect 3–6+ months before meaningful rankings regardless of quality. The best signal during this window is a **steady publishing cadence** — don't pause the guide-per-day rhythm.
 2. **Close the guide gap, GSC-ordered** (Phase 3). 9 tools still lack guides; write them in the order GSC impressions suggest, not alphabetically.
 3. **Target long-tail question queries, not head terms** (Phase 3). "SIP calculator" is owned by Groww/ClearTax/ET Money — a new domain won't crack it soon. Question-shaped queries ("is gratuity taxable after 5 years", "PPF vs FD which is better", "how much SIP for 1 crore in 15 years") are winnable now and funnel to the calculators. Add comparison/scenario guides, not just formula explainers.
 4. **Backlinks — the completely untouched lever** (Phase 5). A technically perfect site with zero referring domains stays in the sandbox longer. This is now the biggest gap.
 5. **Weekly GSC feedback loop** (rhythm table). Impressions-without-guides → next guide; guides ranking positions 8–20 → expand/refresh (small gains there move to page 1). Bump the guide's `updated` date on real revisions — the sitemap reports true lastmod, so Google recrawls.
-6. **Housekeeping:** GSC last showed 48 discovered pages; the site has ~94 now — re-check/resubmit the sitemap count.
+6. **Housekeeping:** GSC last showed 48 discovered pages; the site has ~95 now — re-check/resubmit the sitemap count.
 
 Minor/optional from the audit: per-page OG images (social nicety, not a ranking factor); a table of contents on long guides (H2 ids already exist); Organization schema at the site root.
 
@@ -92,7 +92,7 @@ Tools win the "[thing] calculator" query; **guides win the "how/what/why" querie
 
 **✅ Live (26):**
 - _Finance:_ SIP → SIP Calculator · EMI → EMI Calculator · GST → GST Calculator · Mortgage Principal vs Interest → Mortgage Calculator · Percentage Increase → Percentage Calculator · What Is Compound Interest? → Compound Interest Calculator · How Is FD Interest Calculated? → FD Calculator · How Is PPF Interest Calculated? → PPF Calculator · Old vs New Tax Regime → Income Tax Calculator · How Is HRA Exemption Calculated? → HRA Calculator · How Is In-Hand Salary Calculated From CTC? → In-Hand Salary Calculator
-- _Dev:_ What Is Base64 Encoding? → Base64 Encoder · What's Inside a JWT? → JWT Decoder · MD5 vs SHA-256 → Hash Generator · What Is JSON? → JSON Formatter · What Is a UUID? → UUID Generator · What Is URL Encoding? → URL Encoder · Do QR Codes Expire? → QR Code Generator · What Is a Token in an LLM? → Token Counter
+- _Dev:_ What Is Base64 Encoding? → Base64 Encoder · What's Inside a JWT? → JWT Decoder · MD5 vs SHA-256 → Hash Generator · What Is JSON? → JSON Formatter · What Is a UUID? → UUID Generator · What Is URL Encoding? → URL Encoder · Do QR Codes Expire? → QR Code Generator · What Is a Token in an LLM? → Token Counter · How to Verify a File Checksum → File Checksum Calculator
 - _Convert:_ What Is a Unix Timestamp? → Unix Timestamp Converter
 - _PDF:_ How to Merge PDF Files → Merge PDF · How to Split a PDF → Split PDF · How to Compress a PDF → Compress PDF · How to Convert JPG to PDF → JPG to PDF · How to Convert PDF to JPG → PDF to JPG
 - _Image:_ PNG vs JPG vs WebP → Image Converter · How to Make a Passport Photo at Home → Passport Photo Maker · How to Crop an Image → Crop Image
@@ -168,4 +168,4 @@ The "do after 20+ tools live" gate is cleared (56 live). With technical SEO done
 | Quarterly | PageSpeed audit (next one should confirm the PDF deps are clean); review tool meta descriptions by GSC data |
 | Yearly | Refresh the tax/salary calculators (Income Tax, In-Hand Salary) when FY slabs change; update the "last updated" notes |
 
-**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 94 tools + 84 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
+**The one habit that matters most:** ship pages consistently and watch Search Console. Traffic on a tools site compounds — 95 tools + 85 guides today, each one earning its own trickle of search traffic that adds up. The next lever is **content (guides) and SEO polish**, not more easy tools.
