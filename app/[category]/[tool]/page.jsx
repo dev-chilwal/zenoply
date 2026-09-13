@@ -97,6 +97,7 @@ import XmlToJson from "@/components/tools/XmlToJson";
 import JsonToXml from "@/components/tools/JsonToXml";
 import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
 import RomanNumerals from "@/components/tools/RomanNumerals";
+import FileChecksum from "@/components/tools/FileChecksum";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -193,6 +194,7 @@ const REGISTRY = {
   "base-converter": BaseConverter,
   "html-entity-encoder": HtmlEntityEncoder,
   "roman-numerals": RomanNumerals,
+  "file-checksum": FileChecksum,
 };
 
 export function generateStaticParams() {

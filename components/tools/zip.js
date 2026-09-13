@@ -20,10 +20,19 @@ const CRC_TABLE = /* @__PURE__ */ (() => {
   return table;
 })();
 
-export function crc32(bytes) {
-  let c = 0xffffffff;
+// The running form, exported so the file-checksum tool can carry a CRC across
+// chunks of a file far too large to hold in memory. `crc32` is written in terms
+// of it so the two cannot drift, and so there is only ever one table.
+// The register is the raw one: pre-conditioned with all ones by the caller and
+// post-conditioned by complementing it, per IEEE 802.3 / zip / gzip / PNG.
+export function crc32Update(crc, bytes) {
+  let c = crc;
   for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
-  return (c ^ 0xffffffff) >>> 0;
+  return c >>> 0;
+}
+
+export function crc32(bytes) {
+  return (crc32Update(0xffffffff, bytes) ^ 0xffffffff) >>> 0;
 }
 
 // ZIP keeps timestamps in the MS-DOS format: two 16-bit words, seconds at two-
