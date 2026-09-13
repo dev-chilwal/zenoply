@@ -628,7 +628,51 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   already do
 - **Image ↔ Base64** (FileReader; bridges image + dev clusters)
 - **JSON to TypeScript interface** (`json-to-ts`, MIT) — transform.tools' niche
-- **SVG to PNG/JPG** (native: SVG blob → canvas; 4 competitors)
+- ~~**SVG to PNG/JPG**~~ **SHIPPED 13 Sep 2026** (`/image/svg-to-png`) — zero
+  new deps; native SVG blob → canvas as planned, but the plan's hard part was
+  not the canvas. **An SVG has no reliable intrinsic size, and `naturalWidth`
+  is the wrong thing to ask.** Measured in a real browser: a file with only
+  `viewBox="0 0 24 24"` reports **150×150**, because with no intrinsic size the
+  CSS default object size of 300×150 is fitted to the ratio; a 2:1 viewBox
+  reports 300×150; `width="10cm"` reports 378px; a file declaring nothing
+  reports 300×150. So every converter that loads the file and asks how big it
+  is rasterises a 24×24 icon off a 150px render — which is the blur users
+  report. `components/tools/svgRaster.js` resolves the size from the source
+  text instead, in priority order (both absolute lengths → one length plus the
+  viewBox ratio → the viewBox's own units → 300×150), and the UI names which
+  rule fired. Treating the viewBox units as "1×" is a deliberate departure from
+  what a browser would do, and the right one: 24 is the number the author was
+  thinking in.
+  Three more things drove the build. (1) **Absolute CSS units** — px/pt/pc/in/
+  cm/mm/Q are converted at 96dpi; %, em, ex, rem, vw and vh resolve against a
+  context an `<img>` does not have, so they count as "no absolute size" rather
+  than being guessed at. (2) **Rescaling needs a viewBox.** Without one the
+  user coordinate system is pinned 1:1 to px, so rewriting width/height grows
+  the canvas around an unchanged drawing — verified by checking that a green
+  rect still fills the pixel at (120, 60) of a 4× export from a 100×50
+  no-viewBox source. One is synthesised when absent. (3) **A missing `xmlns`
+  makes the blob parse as generic XML and render nothing**, which is the state
+  of any SVG copied out of an HTML page; it is added when absent, verified by
+  converting a namespace-less file and reading the red fill back off the
+  output. Rendering goes through an SVG rewritten to declare exactly the
+  target size rather than letting `drawImage` resample a smaller raster, so an
+  upscale is genuinely re-rasterised. `.svgz` is unpacked with
+  `DecompressionStream` (zero deps). Canvas guard at 16,384px/side and 40 Mpx.
+  `svgRaster.js` is pure string work so it runs in node — **118 assertions**
+  covering unit parsing, viewBox parsing, root-tag scanning past comments,
+  doctypes with internal subsets, PIs and `>` inside attribute values,
+  splice-based attribute rewriting (values like `style='font-family:"Inter"'`
+  cannot be re-emitted in double quotes), and a round-trip property: normalised
+  output must always re-resolve to exactly the size requested, for 8 source
+  shapes × 4 target sizes. **One bug the node tests could not reach and the
+  browser pass caught:** dropping a second file while a result was on screen
+  crashed the page, because `onFiles` nulls `source` while the result block
+  still reads `source.name` — the invalidation `useEffect` runs a render too
+  late. Fixed by clearing the result synchronously and gating the block on
+  `source`. Worth remembering as a pattern: any "new input clears old output"
+  effect has a render window where old output meets null input.
+  **Remaining in this bullet's cluster: image↔Base64, JSON to TypeScript,
+  Markdown↔HTML, age/date-difference.**
 - **Age calculator + date difference** (pure Date math; huge volume, contested
   head — worth having for the cluster, not as a primary bet)
 
@@ -702,8 +746,10 @@ CRC32 shipped 13 Sep as `/dev/file-checksum` — a file tool rather than a text
 CRC box, since `/dev/hash-generator` already covers text and the search intent
 is download verification. **The cheapest remaining Tier C items are now the
 whitespace remover and the HTML tag stripper**, with text↔binary, Markdown↔HTML,
-image↔Base64, JSON to TypeScript, SVG to PNG and the age/date-difference
-calculators behind them.
+image↔Base64, JSON to TypeScript and the age/date-difference calculators behind
+them. SVG to PNG shipped 13 Sep as `/image/svg-to-png` — filed under image
+rather than convert because it outputs a raster and sits next to the other
+Canvas tools for internal linking.
 **Verification in scheduled runs, corrected a third time (8 Sep):** the 5 Sep
 note said a static server over `out/` works and the 6 Sep note said `file://`
 works. Neither does now. `preview_start` is refused in unattended runs whatever
