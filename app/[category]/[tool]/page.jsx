@@ -98,6 +98,7 @@ import JsonToXml from "@/components/tools/JsonToXml";
 import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
 import RomanNumerals from "@/components/tools/RomanNumerals";
 import FileChecksum from "@/components/tools/FileChecksum";
+import SvgToPng from "@/components/tools/SvgToPng";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -195,6 +196,7 @@ const REGISTRY = {
   "html-entity-encoder": HtmlEntityEncoder,
   "roman-numerals": RomanNumerals,
   "file-checksum": FileChecksum,
+  "svg-to-png": SvgToPng,
 };
 
 export function generateStaticParams() {
