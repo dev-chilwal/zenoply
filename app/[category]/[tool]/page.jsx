@@ -99,6 +99,7 @@ import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
 import RomanNumerals from "@/components/tools/RomanNumerals";
 import FileChecksum from "@/components/tools/FileChecksum";
 import SvgToPng from "@/components/tools/SvgToPng";
+import ImageToBase64 from "@/components/tools/ImageToBase64";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -197,6 +198,7 @@ const REGISTRY = {
   "roman-numerals": RomanNumerals,
   "file-checksum": FileChecksum,
   "svg-to-png": SvgToPng,
+  "image-to-base64": ImageToBase64,
 };
 
 export function generateStaticParams() {
