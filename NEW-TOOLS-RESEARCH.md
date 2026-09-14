@@ -626,7 +626,43 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   leaving the page prerendering as a 404 stub with a clean build. Keep helper
   names distinct from their component, as `baseConvert.js` and `htmlEntities.js`
   already do
-- **Image ↔ Base64** (FileReader; bridges image + dev clusters)
+- ~~**Image ↔ Base64**~~ **SHIPPED 14 Sep 2026** (`/dev/image-to-base64`) — zero
+  new deps. Filed under `dev` rather than `image` so it clusters with the
+  Base64 encoder, which is where its audience already is. Three things drove
+  the build. (1) **The 33% overhead is a disk figure and the entire topic is
+  argued from it.** Base64 uses only 64 of 256 byte values, so a third of every
+  byte is predictable and gzip takes most of it back: measured on `og.png`,
+  79,049 B → 105,400 chars (+33.3%) on disk but 69,900 → 74,333 gzipped, **+6.3%
+  over the wire**. So the tool measures gzip with `CompressionStream` per file
+  and says plainly that the reason not to inline is caching — a data URI has no
+  URL, no ETag and no cache entry, is re-sent inside every document carrying it,
+  and lands in the render-blocking file. The inline budget is set at 4 KB, below
+  the folklore figure, because that advice predates HTTP/2 making the saved
+  request cheap. (2) **SVG should not be Base64 at all**, being the one image
+  format that is already text. A percent-encoded data URI measured **846 B
+  gzipped against 1,581 B** for the Base64 form of `og.svg` — 46% smaller — and
+  stays editable in the stylesheet. Raw character count is a genuine toss-up
+  (whitespace becomes `%20`), so both encodings are computed and the numbers
+  shown rather than a claim made; the guarded minifier (prolog, comments,
+  inter-tag whitespace, quote swap to single) is skipped entirely when the file
+  has `<text>`/`<tspan>`/`xml:space`, where whitespace and quotes are rendered.
+  The apostrophe is deliberately left unescaped — it is what the quote swap
+  produces — so output is always wrapped in double quotes. (3) **The decode side
+  is where every competitor breaks**: real strings arrive wrapped at 76 columns,
+  in the URL-safe alphabet, unpadded, or still inside `url("…")`/`src="…"`.
+  The subtle one is that the wrapper must be cut **before** non-alphabet
+  stripping — in `<img src="…" alt="logo">` the trailing `alt="logo"` is itself
+  Base64 characters, so strip-then-decode swallows `altlogo` into the payload
+  and returns a corrupted file rather than an error (caught by the test suite,
+  not by inspection). Format is sniffed from magic bytes, not the declared MIME,
+  which a data URI routinely lies about. Encoding rules live in
+  `components/tools/imageBase64.js`, React- and browser-global-free, covered by
+  **51 node assertions** — agreement with node's own encoder at every padding
+  remainder, a 3 MB file through the chunked encoder (the usual
+  spread-into-`fromCharCode` idiom overflows the stack there, verified), byte-
+  for-byte round trips, all ten signatures, and the malformed-input set — then
+  driven end to end in a real browser against the production build (`next build`
+  + static serve of `out/`), console clean
 - **JSON to TypeScript interface** (`json-to-ts`, MIT) — transform.tools' niche
 - ~~**SVG to PNG/JPG**~~ **SHIPPED 13 Sep 2026** (`/image/svg-to-png`) — zero
   new deps; native SVG blob → canvas as planned, but the plan's hard part was
