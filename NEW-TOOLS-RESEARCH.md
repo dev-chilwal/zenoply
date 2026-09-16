@@ -709,8 +709,34 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   effect has a render window where old output meets null input.
   **Remaining in this bullet's cluster: image↔Base64, JSON to TypeScript,
   Markdown↔HTML, age/date-difference.**
-- **Age calculator + date difference** (pure Date math; huge volume, contested
-  head — worth having for the cluster, not as a primary bet)
+- ~~**Age calculator + date difference**~~ **SHIPPED 16 Sep 2026**
+  (`/convert/age-calculator`) — zero new deps, and the plan's "pure Date math"
+  was the one thing not to do. `new Date("2000-01-01")` is parsed as **UTC
+  midnight** by the ISO branch of the spec, so `getDate()` returns the previous
+  day for anyone west of Greenwich: an age tool built on Date disagrees with
+  itself by region, which is the single most common defect in the incumbents.
+  `components/tools/dateCalc.js` carries no Date at all except to read today off
+  the local clock; dates are `{y,m,d}` records over Hinnant's `days_from_civil`
+  integer day number, which is exact for the whole proleptic Gregorian calendar
+  and makes the module node-testable — **167,755 assertions**, including a round
+  trip of every day from 1800 to 2200 (also cross-checked against `Date.UTC`
+  and `getUTCDay` at sampled dates) and a sweep of diffYMD invariants from six
+  awkward start dates. Two further decisions. **Months are counted by
+  anniversary, not by borrowing**: the usual implementation (and
+  `java.time.Period`) subtracts day-of-month and borrows the preceding month's
+  length, which is *not monotone* across a month end — for a 31 January birth it
+  reports "28 days" on 28 February and jumps straight to "1 month 1 day" on
+  1 March, so "1 month" is a figure that never appears. Defining the month count
+  as the largest k with `addMonths(start, k) <= end` costs one comparison and is
+  monotone by construction. **The short-month clamp is reported rather than
+  applied silently**, since "one month after the 31st" has a convention and not
+  an answer, and the same clamp is why adding a month twice (28 March) differs
+  from adding two months (31 March). Three modes on one page — age as of any
+  date, span between two dates, add/subtract days/weeks/months/years — and the
+  span mode gives the gap, the count including both dates and a weekday/weekend
+  split, because leave and notice periods mean different things by the same
+  phrase. A 29 February birth is aged on 28 February with 1 March named as the
+  alternative convention rather than hidden.
 
 ## Tier D — viable with caveats
 
