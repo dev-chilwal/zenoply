@@ -663,7 +663,63 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   for-byte round trips, all ten signatures, and the malformed-input set — then
   driven end to end in a real browser against the production build (`next build`
   + static serve of `out/`), console clean
-- **JSON to TypeScript interface** (`json-to-ts`, MIT) — transform.tools' niche
+- ~~**JSON to TypeScript interface**~~ **SHIPPED 16 Sep 2026**
+  (`/dev/json-to-typescript`) — zero new deps; `json-to-ts` was **not** used,
+  and the lossless JSON parser in `jsonYaml.js` is reused instead, so a 20-digit
+  ID and a version pin of `1.50` are read as their original digits rather than
+  through `JSON.parse`. Generation lives in `components/tools/jsonTypes.js` (the
+  `jsonYaml.js` pattern) so it runs in node, which is where it is tested — and
+  the oracle is the **real TypeScript compiler** (5.6.3, installed outside the
+  project): for every fixture, `const x: Root = <the original JSON>` must
+  compile under `--strict`, so tsc rather than a second copy of the same
+  guesswork decides whether a generated type is right. Three things drove the
+  build. (1) **Every element of an array is read, not just the first.** A field
+  that first appears in the second record vanishes entirely from a
+  first-element type, and the property you needed becomes a compile error on
+  valid data; object shapes **merge** rather than union, because a union of a
+  dozen near-identical interfaces is useless. (2) **A missing key and a null
+  value are two different facts and both survive.** Absent from some records is
+  `name?: string`, present holding null is `name: string | null`, both is
+  `name?: string | null` — collapsing them (which emitting `any`, or a bare `?`,
+  does) throws away exactly the half `strictNullChecks` exists to catch. It is
+  asserted in **both** directions, since only one of them is the obvious test:
+  an optional-only field must *reject* `null`, and a nullable-only field must
+  still be *required*. (3) **Interfaces are matched on a structural signature
+  with keys sorted**, so field order never fragments a type, and names — being
+  derived from keys rather than being keys — are PascalCased, singularised for
+  arrays (`users` → `User[]`) and **pre-taken against the lib type names**,
+  because `interface Object {}` merges with the standard library rather than
+  shadowing it and breaks the file in a way the error message does not explain.
+  Supporting decisions: non-identifier keys are quoted rather than renamed
+  (renaming produces a type that no longer matches the data); an empty object
+  becomes `Record<string, unknown>` rather than `{}`, which in TypeScript means
+  any non-null value; integers past 2^53 are reported instead of silently typed
+  `number`; and string literal unions are an **option, off by default**,
+  inferred only on evidence of a closed set (3+ records, ≤12 distinct values,
+  at least one repeat) — three rows with three values is no evidence of an enum,
+  and a union guessed from a thin sample rejects valid data in week one.
+  Singularisation is deliberately conservative (`status`, `alias`, `news`,
+  `series` and short acronyms are left alone; a bare `-men` suffix is not
+  matched, or `specimen` becomes `speciman`) because a wrong interface name is
+  worse than an unsingularised one. **Verified:** 574 node assertions over 33
+  fixtures × 7 option sets (245 tsc programs), plus a **1,050-program property
+  fuzzer** over randomly shaped documents, plus **845 assertions against the
+  shipped minified bytes** — webpack scope-hoists the module into the component,
+  so there is no separate module to import: the built chunks are loaded with a
+  webpack-runtime shim and the **real component** driven with stubbed hooks,
+  its output compared byte-for-byte with the source and re-checked by tsc, error
+  path included. Four **injected defects** (required-only properties,
+  first-element-only array reads, unquoted keys, unparenthesised array unions)
+  each fail the fuzzer immediately, so the suite demonstrably has teeth.
+  **One trap worth recording for any future run that wants tsc as an oracle:**
+  `lib.es2020.d.ts` and the `.full` variants are nothing but
+  `/// <reference lib>` directives, which a minimal compiler host does not
+  resolve — the program then has no `Array` and no `Record`, every assignment
+  silently passes, and the oracle reports success while checking nothing. Use
+  `lib.es5.d.ts`, which is standalone, and assert the lib actually loaded.
+  Browser verification was **not** possible (dev servers and `preview_start`
+  are blocked in scheduled runs); the shipped-bundle suite stands in for it, and
+  the page's initial render is in the static HTML
 - ~~**SVG to PNG/JPG**~~ **SHIPPED 13 Sep 2026** (`/image/svg-to-png`) — zero
   new deps; native SVG blob → canvas as planned, but the plan's hard part was
   not the canvas. **An SVG has no reliable intrinsic size, and `naturalWidth`
