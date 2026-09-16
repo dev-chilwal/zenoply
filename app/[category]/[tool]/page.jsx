@@ -101,6 +101,7 @@ import FileChecksum from "@/components/tools/FileChecksum";
 import SvgToPng from "@/components/tools/SvgToPng";
 import ImageToBase64 from "@/components/tools/ImageToBase64";
 import AgeCalculator from "@/components/tools/AgeCalculator";
+import JsonToTypescript from "@/components/tools/JsonToTypescript";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -201,6 +202,7 @@ const REGISTRY = {
   "svg-to-png": SvgToPng,
   "image-to-base64": ImageToBase64,
   "age-calculator": AgeCalculator,
+  "json-to-typescript": JsonToTypescript,
 };
 
 export function generateStaticParams() {
