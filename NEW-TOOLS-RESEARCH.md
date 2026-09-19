@@ -473,8 +473,37 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   signature) — so they run in node, where **26 assertions** cover them. Also
   driven end to end in a **real browser against the production build**: every
   mode, both directions, comma mode, dedupe counts, the `en`/`sv` collation
-  difference, console clean. **Whitespace remover and HTML tag stripper remain
-  unbuilt** and stay in this bullet's cluster
+  difference, console clean. The whitespace remover shipped 19 Sep from this
+  cluster; **the HTML tag stripper remains unbuilt**
+
+- ~~**Whitespace remover**~~ **SHIPPED 19 Sep 2026** (`/text/whitespace-remover`)
+  — zero new deps. The tool exists because the obvious implementation is the
+  wrong one: `replace(/ +/g, " ")` handles the case a user could have fixed by
+  hand and does nothing to the case that sent them looking, since text out of
+  Word, a PDF, a spreadsheet or a web page is padded with **no-break, figure,
+  thin, narrow-no-break and ideographic spaces** rather than U+0020. A tool
+  built on that search reports "no extra spaces found" over a visibly doubled
+  gap, which is worse than no tool — it tells the user the problem is elsewhere.
+  All sixteen Zs characters are normalised to U+0020 **before** anything
+  collapses, and the findings are reported **by name** ("2 no-break spaces
+  (U+00A0), 2 tabs"), because the diagnosis is the product: it is what explains
+  the CSV column that would not parse.
+  Three decisions beyond that. (1) **Zero-width characters are deleted, not
+  spaced** — a ZWSP inside a word is a line-break hint, so mapping it to U+0020
+  splits the word. (2) **ZWJ/ZWNJ are exempt and opt-in**, against what every
+  "remove invisible characters" tool does: a family emoji is three emoji bound
+  by U+200D, and in Devanagari and Perso-Arabic the pair decides ligature vs
+  half-form, so the usual sweep corrupts Hindi, Arabic and Persian silently.
+  (3) **Order is load-bearing** — line endings, then invisibles, then exotic
+  normalisation, then the collapse; collapsing before deleting a ZWSP leaves the
+  two spaces around it behind, which is the failure that looks like success.
+  A lone tab collapses too (`[ \t]+`, not `[ \t]{2,}`), otherwise the findings
+  report claims a removal it did not make. Tables and cleaning live in
+  `components/tools/whitespace.js` so they run in node: **65 assertions** over
+  the character classes, ordering, CRLF/U+2028, emoji and Devanagari
+  preservation, stats arithmetic and idempotence. Then driven **in a real
+  browser against the production build** — see the corrected verification note
+  at the end of this file
 
 - ~~**JSON to XML**~~ **SHIPPED 7 Sep 2026** (`/convert/json-to-xml`) — zero new
   deps, and it needed neither a parser nor an escaper library: `jsonYaml.js`
@@ -862,19 +891,24 @@ neither the escaper nor the parser the note above predicted, since
 own tool at `/dev/hmac-generator` rather than as a bolt-on, for the URL.
 CRC32 shipped 13 Sep as `/dev/file-checksum` — a file tool rather than a text
 CRC box, since `/dev/hash-generator` already covers text and the search intent
-is download verification. **The cheapest remaining Tier C items are now the
-whitespace remover and the HTML tag stripper**, with text↔binary, Markdown↔HTML,
-image↔Base64, JSON to TypeScript and the age/date-difference calculators behind
-them. SVG to PNG shipped 13 Sep as `/image/svg-to-png` — filed under image
+is download verification. The whitespace remover shipped 19 Sep (see its bullet above), so
+**the cheapest remaining Tier C item is now the HTML tag stripper**, with
+text↔binary and Markdown↔HTML behind it; image↔Base64, JSON to TypeScript and
+the age/date-difference calculators have all since shipped. SVG to PNG shipped 13 Sep as `/image/svg-to-png` — filed under image
 rather than convert because it outputs a raster and sits next to the other
 Canvas tools for internal linking.
-**Verification in scheduled runs, corrected a third time (8 Sep):** the 5 Sep
-note said a static server over `out/` works and the 6 Sep note said `file://`
-works. Neither does now. `preview_start` is refused in unattended runs whatever
-it would launch, so there is no local http origin; and a `file://` page opens as
-a **static snapshot** whose scripts never run — the page tools refuse it with
-"this tab shows a local file". Two things do work, and together they are
-stronger than either previous approach:
+**Verification in scheduled runs, corrected a fourth time (19 Sep):** the local
+static server is back. `python3 -m http.server` over `out/` in the background,
+then `preview_start` with that `http://localhost:PORT/...` URL, was **not**
+refused this run — the page hydrated, `javascript_tool` drove the real component
+through React's own `onChange`, and `read_console_messages` and the mobile
+viewport check both worked. That is the cheapest full-stack check available and
+should be tried first, since it exercises the shipped bundle *and* the React
+wiring, which node tests cannot reach: it is what caught this run's two UI
+defects (a findings filter that hid tabs, contradicting the guide, and an
+ungrammatical "1 lines out"). If it is refused again, the two fallbacks below
+still hold and remain stronger than a `file://` snapshot, whose scripts never
+run at all:
 1. **Evaluate against the live site's own origin.** Navigate a fresh tab to any
    existing `https://zenoply.com/...` page and drive `javascript_tool` there.
    That is a real secure context, so `crypto.subtle` and the rest of the
