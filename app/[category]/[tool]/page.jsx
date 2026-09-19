@@ -103,6 +103,7 @@ import SvgToPng from "@/components/tools/SvgToPng";
 import ImageToBase64 from "@/components/tools/ImageToBase64";
 import AgeCalculator from "@/components/tools/AgeCalculator";
 import JsonToTypescript from "@/components/tools/JsonToTypescript";
+import RemoveHtmlTags from "@/components/tools/RemoveHtmlTags";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -144,6 +145,7 @@ const REGISTRY = {
   "remove-duplicate-lines": RemoveDuplicateLines,
   "sort-lines": SortLines,
   "whitespace-remover": WhitespaceRemover,
+  "remove-html-tags": RemoveHtmlTags,
   "lorem-ipsum-generator": LoremIpsumGenerator,
   "find-and-replace": FindAndReplace,
   "slug-generator": SlugGenerator,

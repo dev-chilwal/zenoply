@@ -29,7 +29,7 @@
 // --------------------------------------------------------------------------
 
 // No end tag, ever.
-const VOID = new Set([
+export const VOID = new Set([
   "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
   "param", "source", "track", "wbr", "basefont", "bgsound", "frame", "keygen",
 ]);
@@ -37,7 +37,7 @@ const VOID = new Set([
 // Contents are not markup — the tokenizer must scan straight to the end tag.
 // (`noscript` belongs here because browsers, and parse5 by default, tokenize it
 // as raw text when scripting is enabled.)
-const RAW_TEXT = new Set([
+export const RAW_TEXT = new Set([
   "script", "style", "xmp", "iframe", "noembed", "noframes", "noscript",
   "textarea", "title",
 ]);
@@ -46,11 +46,11 @@ const RAW_TEXT = new Set([
 const ESCAPABLE_RAW = new Set(["textarea", "title"]);
 
 // Whitespace inside these is rendered exactly as written.
-const PRESERVE_WS = new Set(["pre", "textarea", "listing", "plaintext"]);
+export const PRESERVE_WS = new Set(["pre", "textarea", "listing", "plaintext"]);
 
 // Default display is block / list-item / table-*, so whitespace at their edges
 // is dropped by the whitespace-processing model and a line break is free.
-const BLOCK = new Set([
+export const BLOCK = new Set([
   "html", "body", "head", "address", "article", "aside", "blockquote", "center",
   "details", "dialog", "dd", "dir", "div", "dl", "dt", "fieldset", "figcaption",
   "figure", "footer", "form", "frameset", "h1", "h2", "h3", "h4", "h5", "h6",
@@ -63,7 +63,7 @@ const BLOCK = new Set([
 // Renders nothing at all. Safe to break around only when nothing beside it in
 // the same parent is rendered inline — `a<script></script>b` is "ab", and
 // splitting it across lines would make it "a b".
-const NOT_RENDERED = new Set([
+export const NOT_RENDERED = new Set([
   "head", "script", "style", "link", "meta", "base", "title", "template",
   "datalist", "noscript", "param", "source", "track", "rp",
 ]);
