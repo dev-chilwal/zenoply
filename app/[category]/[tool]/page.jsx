@@ -51,6 +51,7 @@ import CompressImageToSize from "@/components/tools/CompressImageToSize";
 import PassportPhotoMaker from "@/components/tools/PassportPhotoMaker";
 import ExamPhotoResizer from "@/components/tools/ExamPhotoResizer";
 import TextReverser from "@/components/tools/TextReverser";
+import WhitespaceRemover from "@/components/tools/WhitespaceRemover";
 import NumberToWords from "@/components/tools/NumberToWords";
 import CsvToJson from "@/components/tools/CsvToJson";
 import JsonToCsv from "@/components/tools/JsonToCsv";
@@ -142,6 +143,7 @@ const REGISTRY = {
   "remove-line-breaks": RemoveLineBreaks,
   "remove-duplicate-lines": RemoveDuplicateLines,
   "sort-lines": SortLines,
+  "whitespace-remover": WhitespaceRemover,
   "lorem-ipsum-generator": LoremIpsumGenerator,
   "find-and-replace": FindAndReplace,
   "slug-generator": SlugGenerator,
