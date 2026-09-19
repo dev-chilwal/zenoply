@@ -473,8 +473,8 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   signature) — so they run in node, where **26 assertions** cover them. Also
   driven end to end in a **real browser against the production build**: every
   mode, both directions, comma mode, dedupe counts, the `en`/`sv` collation
-  difference, console clean. The whitespace remover shipped 19 Sep from this
-  cluster; **the HTML tag stripper remains unbuilt**
+  difference, console clean. The whitespace remover shipped 19 Sep and the HTML
+  tag stripper 20 Sep, which closes this cluster
 
 - ~~**Whitespace remover**~~ **SHIPPED 19 Sep 2026** (`/text/whitespace-remover`)
   — zero new deps. The tool exists because the obvious implementation is the
@@ -504,6 +504,46 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   preservation, stats arithmetic and idempotence. Then driven **in a real
   browser against the production build** — see the corrected verification note
   at the end of this file
+
+- ~~**HTML tag stripper**~~ **SHIPPED 20 Sep 2026** (`/text/remove-html-tags`)
+  — zero new deps; `components/tools/htmlStrip.js` reuses `htmlFormat.js`'s
+  tokenizer and element tables (now exported) and `htmlEntities.js`'s decoder,
+  so the three HTML tools cannot drift on what a tag, a raw-text block or an
+  entity means. The tool exists because `replace(/<[^>]*>/g, "")` — which is
+  the answer every search returns — is wrong four separate ways, and all four
+  fire on the first real page. (1) **Script and style hold character data, not
+  markup.** A regex deletes their tags and leaves the bundle and the style sheet
+  in the output, which is why a stripped page routinely comes out *longer* than
+  it went in; raw-text and not-rendered elements are dropped whole, as are
+  `hidden` and inline `display: none` boxes. (2) **Deleting a tag deletes the
+  boundary it stood for.** `<p>one</p><p>two</p>` regexes to `onetwo` and a
+  table becomes one word — but inserting whitespace at every tag instead turns
+  `<b>c</b>at` into `c at`, which is the same mistake in the other direction.
+  Breaks follow CSS rather than tags: a block box gets a line (paragraph-level
+  ones a blank line), a table cell gets a tab so a row still pastes into a
+  spreadsheet as a row, an inline element gets nothing, and `<pre>` keeps its
+  own spacing. (3) **`>` is legal inside an attribute value and inside a
+  comment**, so `[^>]*` stops early on `<a title="a > b">` and leaks the rest.
+  (4) **Order is load-bearing: tags first, entities second.** Decoding first
+  turns an escaped `&lt;script&gt;` — text a browser shows literally, and what
+  any page *about* HTML is full of — into a real tag the strip step then eats;
+  and each chunk is decoded in its own context, so a kept `href` reads
+  `?a=1&copy=2` the way a browser does rather than as a copyright sign. Three
+  layout modes (readable / one line / every byte outside a tag left where it
+  is), plus optional link URLs and image alt text; no-break spaces are folded
+  and counted; the copy says plainly that a stripper is **not** a sanitiser and
+  points at DOMPurify, since that is the most common reason people arrive and
+  the one case where the answer is "do not". Verified against **Chrome's own
+  `innerText`** as an independent oracle — 30 fixtures written into an iframe
+  with no stylesheet, compared on whitespace-separated token sequence (which
+  catches a missing break *and* a spurious one, where a whitespace-stripped
+  comparison catches only the first): **0 mismatches, 26/29 byte-identical**,
+  the three differences being deliberate (a blank line between consecutive
+  headings and around a nested list, and the double space Chrome keeps where an
+  `<img>` was removed). Then driven end to end in a real browser against the
+  production build — every layout mode, both keep options, the notes, the
+  mobile viewport — console clean; and a real 40KB built page strips to 5.6KB
+  of text in 3ms with no script, CSS or entity leakage
 
 - ~~**JSON to XML**~~ **SHIPPED 7 Sep 2026** (`/convert/json-to-xml`) — zero new
   deps, and it needed neither a parser nor an escaper library: `jsonYaml.js`
@@ -891,9 +931,9 @@ neither the escaper nor the parser the note above predicted, since
 own tool at `/dev/hmac-generator` rather than as a bolt-on, for the URL.
 CRC32 shipped 13 Sep as `/dev/file-checksum` — a file tool rather than a text
 CRC box, since `/dev/hash-generator` already covers text and the search intent
-is download verification. The whitespace remover shipped 19 Sep (see its bullet above), so
-**the cheapest remaining Tier C item is now the HTML tag stripper**, with
-text↔binary and Markdown↔HTML behind it; image↔Base64, JSON to TypeScript and
+is download verification. The whitespace remover shipped 19 Sep and the HTML tag
+stripper 20 Sep (see their bullets above), so **the cheapest remaining Tier C
+items are now text↔binary and Markdown↔HTML**; image↔Base64, JSON to TypeScript and
 the age/date-difference calculators have all since shipped. SVG to PNG shipped 13 Sep as `/image/svg-to-png` — filed under image
 rather than convert because it outputs a raster and sits next to the other
 Canvas tools for internal linking.
