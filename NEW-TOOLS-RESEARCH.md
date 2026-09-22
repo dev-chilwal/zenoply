@@ -670,8 +670,61 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   (matching SHA-256 over all 538 cases) — dev servers are blocked in scheduled
   runs, so the component is covered by a clean static prerender instead.
   **text↔binary remains unbuilt** and stays in this bullet's cluster
-- **Markdown ↔ HTML** (`marked` + `dompurify` one way, `turndown` the other —
-  self-completing pair from day one)
+- **Markdown → HTML** — ~~**SHIPPED 22 Sep 2026**~~ (`/convert/markdown-to-html`).
+  One new dep: `marked` 18.0.14 (MIT, zero deps of its own), pinned and lazily
+  imported into its own 44 KB chunk so no other tool page pays for it.
+  `dompurify` was **not** added: the preview runs in an `<iframe sandbox="">`,
+  which blocks scripts and same-origin access outright, and that is a stronger
+  guarantee than sanitising a copy — it also means the preview shows the raw
+  HTML exactly as a browser renders it rather than a cleaned version of it.
+  Hand-rolling the parser was considered and rejected: CommonMark has 650+
+  spec cases and shipping a subtly wrong Markdown parser is worse than a
+  well-tested MIT dependency. Everything *around* the parse is in
+  `components/tools/markdownHtml.js` so it runs in node, which is where it is
+  tested, and that is where the tool earns its keep. Four decisions.
+  (1) **The output is indented through the site's own beautifier**, which only
+  moves whitespace a browser does not render — marked writes a table across
+  many lines and runs a raw HTML block straight into the paragraph after it,
+  which is the unindented state nearly every online converter ships. (2)
+  **Heading ids match GitHub's exactly**, and are slugged from the *rendered*
+  text rather than the raw Markdown, so `# A [link](x)` gives `link` and not
+  `linkurl`. GitHub does not collapse runs of spaces and does not trim, so
+  neither does this; the one divergence is a heading with no slug-able
+  characters, where GitHub emits `id=""` and this emits `section`. Matching
+  matters because a README's own cross-references already use that rule. (3)
+  **Raw HTML can be kept, escaped or removed**, and the two untrusted modes
+  also disable `javascript:`-style link and image URLs written in plain
+  Markdown syntax — `[click](javascript:alert(1))` is a valid Markdown link
+  and never passes through the raw-HTML branch, so a converter that only
+  strips tags leaves it live. Risky raw HTML is named in a warning, because an
+  unescaped `<script>` *mentioned in prose* opens a raw-text element and
+  swallows the rest of the document; that is not hypothetical, it is what
+  `ZENOPLY-GROWTH-ROADMAP.md` itself does, and it is how the verification
+  suite found it. (4) **marked mis-decodes the Windows-1252 numeric
+  references**: it resolves `&#151;` with `String.fromCharCode` to U+0097, the
+  C1 control the reference literally names, which renders as nothing — every
+  browser, and HTML5 itself, map 0x80-0x9F to the Windows-1252 character, so
+  `&#151;` is an em dash. Text pasted out of Word is full of them. Repaired
+  using the table already in `htmlEntities.js` (now exported), and reported.
+  Only decoded inline text can hold a raw C1 character: a code block keeps the
+  reference escaped and a raw HTML block hands it to the browser intact.
+  **Verified in three layers**: 26 whole-document cross-checks against
+  `commonmark` 0.31.2 — the reference implementation — compared as parse5
+  trees rather than strings, which required modelling raw-text elements
+  correctly (inside a `<script>`, commonmark's `&quot;` and marked's `"` are
+  different characters, and `<hr />` and `<hr>` are different bytes); the
+  beautifier's byte / tree / idempotence invariants over 29 documents
+  including the repo's own five markdown files; `github-slugger` 2.0.0 as the
+  heading-id oracle, fed plain text extracted independently via commonmark +
+  parse5; and negative controls proving each invariant can fail. 221
+  assertions, then driven end to end in a real browser against the production
+  build (`next build` + static serve of `out/`, since dev servers are blocked
+  in scheduled runs), desktop and mobile — all six options, both views, the
+  warnings, the sandboxed preview, console clean.
+  **HTML → Markdown remains unbuilt** and completes the pair; `turndown` (MIT)
+  is the candidate, though `htmlFormat.js` already parses HTML into a tree, so
+  an emitter over that tree may be the cheaper route — the same reasoning that
+  made `xmlJson.js` zero-dep
 - ~~**Roman numerals**~~ **SHIPPED 11 Sep 2026** (`/convert/roman-numerals`) —
   zero new deps. Did not clone the Number to Words template in the end: the
   demand is mostly *dates* (tattoos, anniversaries, cornerstones), so the tool
