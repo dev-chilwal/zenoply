@@ -94,6 +94,7 @@ import StringEscaper from "@/components/tools/StringEscaper";
 import CronExpressionGenerator from "@/components/tools/CronExpressionGenerator";
 import HtmlBeautifier from "@/components/tools/HtmlBeautifier";
 import BaseConverter from "@/components/tools/BaseConverter";
+import TextToBinary from "@/components/tools/TextToBinary";
 import XmlToJson from "@/components/tools/XmlToJson";
 import JsonToXml from "@/components/tools/JsonToXml";
 import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
@@ -202,6 +203,7 @@ const REGISTRY = {
   "cron-expression-generator": CronExpressionGenerator,
   "html-beautifier": HtmlBeautifier,
   "base-converter": BaseConverter,
+  "text-to-binary": TextToBinary,
   "html-entity-encoder": HtmlEntityEncoder,
   "roman-numerals": RomanNumerals,
   "file-checksum": FileChecksum,
