@@ -669,7 +669,18 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   same module then produced **byte-identical output in a real browser**
   (matching SHA-256 over all 538 cases) — dev servers are blocked in scheduled
   runs, so the component is covered by a clean static prerender instead.
-  **text↔binary remains unbuilt** and stays in this bullet's cluster
+  **Text ↔ binary SHIPPED 23 Sep 2026** (`/convert/text-to-binary`) — zero new
+  deps. Always through UTF-8 (the charCodeAt build prints é as its Latin-1 byte
+  11101001, which no UTF-8 decoder reads back, and emoji as surrogate halves);
+  also writes/reads hex and decimal bytes. Decoder takes spaced, comma'd or
+  run-together bytes, 0b/0x/\x prefixes and 7-bit ASCII (a run divisible by 7
+  but not 8; a 56-bit run takes the 7-bit reading only if it alone is all
+  printable), and on invalid UTF-8 names the first bad byte and shows a Latin-1
+  reading. Logic in `textBinary.js`: 38k+ node assertions vs Python's UTF-8
+  encoder, round trips across every format/separator, and a hand-rolled
+  first-invalid-offset checked against the strict TextDecoder over 20k random
+  byte strings. Driven end to end on the production build (static serve of
+  `out/`), desktop and mobile, console clean
 - **Markdown → HTML** — ~~**SHIPPED 22 Sep 2026**~~ (`/convert/markdown-to-html`).
   One new dep: `marked` 18.0.14 (MIT, zero deps of its own), pinned and lazily
   imported into its own 44 KB chunk so no other tool page pays for it.
@@ -986,7 +997,7 @@ CRC32 shipped 13 Sep as `/dev/file-checksum` — a file tool rather than a text
 CRC box, since `/dev/hash-generator` already covers text and the search intent
 is download verification. The whitespace remover shipped 19 Sep and the HTML tag
 stripper 20 Sep (see their bullets above), so **the cheapest remaining Tier C
-items are now text↔binary and Markdown↔HTML**; image↔Base64, JSON to TypeScript and
+items are now text↔binary and Markdown↔HTML** (Markdown → HTML shipped 22 Sep and text↔binary 23 Sep, so **HTML → Markdown is the last Tier C item**); image↔Base64, JSON to TypeScript and
 the age/date-difference calculators have all since shipped. SVG to PNG shipped 13 Sep as `/image/svg-to-png` — filed under image
 rather than convert because it outputs a raster and sits next to the other
 Canvas tools for internal linking.
