@@ -732,10 +732,54 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   build (`next build` + static serve of `out/`, since dev servers are blocked
   in scheduled runs), desktop and mobile — all six options, both views, the
   warnings, the sandboxed preview, console clean.
-  **HTML → Markdown remains unbuilt** and completes the pair; `turndown` (MIT)
-  is the candidate, though `htmlFormat.js` already parses HTML into a tree, so
-  an emitter over that tree may be the cheaper route — the same reasoning that
-  made `xmlJson.js` zero-dep
+  ~~**HTML → Markdown**~~ **SHIPPED 24 Sep 2026** (`/convert/html-to-markdown`)
+  — completes the pair, zero new deps: `turndown` was **not** used; an emitter
+  over the tree `htmlFormat.js` already builds (the `xmlJson.js` reasoning),
+  in `components/tools/htmlMarkdown.js` so it runs in node. The hard part of
+  this direction is that **Markdown gives ordinary characters meaning by
+  position**, so a tag-swapping converter silently rewrites text. Five
+  decisions. (1) **Context escaping, not wholesale**: `_` only when not
+  between two alphanumerics (snake_case stays clean), `*` bare only when
+  flanked by spaces *inside* the same run (a space at a run edge may later be
+  moved outside a `*` span — the fuzzer found `* ` + `*` fusing into `**`),
+  line-start `#`/`>`/`-`/`+`/`=`/`1.` escaped per line after hard breaks, and
+  entity-shaped `&` written `&amp;` rather than `\&` because marked decodes
+  `\&copy;` inside image alt text. (2) **Emphasis is emitted as placeholders
+  and checked against CommonMark's flanking rules** once the paragraph is
+  assembled; where `**` would not parse (`<b>"Free"</b>forever`) it becomes
+  `<strong>`, counted. No-break space counts as Unicode whitespace for this;
+  an opener that is also right-flanking inside an open `*` span is refused
+  (it would close the outer span — found by fuzzing); `**a**` + `**b**` seams
+  are removed. (3) **Adjacent lists switch marker** (`-`→`*`, `.`→`)`) or
+  Markdown merges them; adjacent `<code>`s are merged before fencing, since
+  `` `a` `` + `` `b` `` fuses into an unclosable run. (4) **What Markdown cannot
+  say is kept as HTML or flattened, and counted**: `<sup>`/`<u>`/`<kbd>`,
+  iframes/video/SVG (aria-hidden icons dropped as decoration), merged-cell or
+  multi-header tables (raw HTML block with blank lines stripped so the block
+  does not end early), `<details>` in GitHub's tags-on-own-lines pattern.
+  GFM tables promote a missing header row (reported), pad columns, keep
+  align/text-align, escape `|` including inside code spans. (5) **Real-world
+  input**: pasting formatted text takes the clipboard's `text/html`; Google
+  Docs' `<span style="font-weight:700">` bold and `<b style="font-weight:
+  normal">` wrapper are read from styles; "Main content only" converts just
+  `<main>` or a lone `<article>`; a link wrapping a heading (blog cards) is
+  pushed inside it. Deep nesting throws a readable error — the browser stack
+  overflows earlier than node's, inside `parseHtml`'s own measuring pass, so
+  the guard wraps the whole conversion (caught in the browser pass, not in
+  node). **Verified** by rendering every result back to HTML with
+  `commonmark` 0.31.2 (reference) and `marked` 18 and comparing normalised
+  parse5 trees: 64 fixtures × GFM on/off (121/128 pass; the 7 are intended —
+  javascript: links removed, invalid `<ul>`-in-`<ul>` attached to the prior
+  item, link pushed inside a heading, GFM bare-URL autolinking), 768-run
+  option sweep with no placeholder leaks, and **10,000+ fuzzed documents**
+  over hostile tokens; the residual diffs were classified and are harness
+  normalisation (a `<br>` moved outside an emphasis edge, merged adjacent
+  `<em>`s), invisible block-edge whitespace, or **marked bugs** confirmed
+  against the reference (`**` next to `~~` in punctuation-dense runs).
+  Then driven end to end on the production build (`next build` + static
+  serve of `out/`), desktop and 375px mobile: conversion, synthetic paste of
+  Google-Docs-shaped clipboard HTML, GFM toggle, the nesting error, no
+  horizontal overflow, console clean. 170 KB of HTML converts in ~30 ms
 - ~~**Roman numerals**~~ **SHIPPED 11 Sep 2026** (`/convert/roman-numerals`) —
   zero new deps. Did not clone the Number to Words template in the end: the
   demand is mostly *dates* (tattoos, anniversaries, cornerstones), so the tool
@@ -997,7 +1041,7 @@ CRC32 shipped 13 Sep as `/dev/file-checksum` — a file tool rather than a text
 CRC box, since `/dev/hash-generator` already covers text and the search intent
 is download verification. The whitespace remover shipped 19 Sep and the HTML tag
 stripper 20 Sep (see their bullets above), so **the cheapest remaining Tier C
-items are now text↔binary and Markdown↔HTML** (Markdown → HTML shipped 22 Sep and text↔binary 23 Sep, so **HTML → Markdown is the last Tier C item**); image↔Base64, JSON to TypeScript and
+items are now text↔binary and Markdown↔HTML** (Markdown → HTML shipped 22 Sep, text↔binary 23 Sep and HTML → Markdown 24 Sep, so **Tier C is now closed** and the feature slot moves to Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder); image↔Base64, JSON to TypeScript and
 the age/date-difference calculators have all since shipped. SVG to PNG shipped 13 Sep as `/image/svg-to-png` — filed under image
 rather than convert because it outputs a raster and sits next to the other
 Canvas tools for internal linking.
