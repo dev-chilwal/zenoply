@@ -106,6 +106,7 @@ import AgeCalculator from "@/components/tools/AgeCalculator";
 import JsonToTypescript from "@/components/tools/JsonToTypescript";
 import RemoveHtmlTags from "@/components/tools/RemoveHtmlTags";
 import MarkdownToHtml from "@/components/tools/MarkdownToHtml";
+import HtmlToMarkdown from "@/components/tools/HtmlToMarkdown";
 
 const REGISTRY = {
   "word-counter": WordCounter,
@@ -168,6 +169,7 @@ const REGISTRY = {
   "xml-to-json": XmlToJson,
   "json-to-xml": JsonToXml,
   "markdown-to-html": MarkdownToHtml,
+  "html-to-markdown": HtmlToMarkdown,
   "merge-pdf": MergePdf,
   "split-pdf": SplitPdf,
   "compress-pdf": CompressPdf,

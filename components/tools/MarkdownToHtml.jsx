@@ -145,7 +145,8 @@ export default function MarkdownToHtml() {
 
       <p className="muted small">
         Markdown is parsed to the CommonMark rules, with GitHub&apos;s extras on top when that box
-        is ticked. Everything runs in your browser. Need it the other way round? The{" "}
+        is ticked. Everything runs in your browser. Need it the other way round? Use{" "}
+        <a href="/convert/html-to-markdown">HTML to Markdown</a>; the{" "}
         <a href="/dev/html-beautifier">HTML Beautifier</a> and{" "}
         <a href="/text/remove-html-tags">HTML tag remover</a> handle HTML you already have.
       </p>
