@@ -77,6 +77,7 @@ import RemoveBlankPages from "@/components/tools/RemoveBlankPages";
 import ImageToText from "@/components/tools/ImageToText";
 import OcrPdf from "@/components/tools/OcrPdf";
 import CropImage from "@/components/tools/CropImage";
+import RotateImage from "@/components/tools/RotateImage";
 import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
@@ -189,6 +190,7 @@ const REGISTRY = {
   "image-to-text": ImageToText,
   "ocr-pdf": OcrPdf,
   "crop-image": CropImage,
+  "rotate-image": RotateImage,
   "exif-viewer": ExifViewer,
   "heic-to-jpg": HeicToJpg,
   "qr-code-generator": QrCodeGenerator,

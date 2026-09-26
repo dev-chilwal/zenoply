@@ -515,6 +515,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   background-position: 0 0, 9px 9px;
 }
 .svg-stage img { display: block; max-width: 100%; max-height: 420px; height: auto; width: auto; }
+/* Rotate image previews on the same stage; the canvas keeps its own aspect ratio. */
+.rotate-canvas { display: block; max-width: 100%; max-height: 420px; height: auto; width: auto; }
 
 /* ---------- QR code generator: live preview + colour pickers ---------- */
 /* The stage keeps its height whether or not a code is rendered, so typing into
