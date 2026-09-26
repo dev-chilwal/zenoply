@@ -187,7 +187,21 @@ equivalent. These four are the cheap end — plain Canvas, no new deps.
       fit as expected (1:1 → 300×300 at x=50, 16:9 → 400×225 at y=38,
       9:16 → 169×300 at x=116); an NW-handle drag holds the opposite edges
       ([0,0,220,180] + (50,40) → [50,40,170,140]); the box clamps in bounds.
-- [ ] Rotate / flip image (`rotate-image`)
+- [x] Rotate / flip image (`rotate-image`) — shipped 26 Sep 2026. Quarter
+      turns, 180°, horizontal/vertical flips and a free angle (slider plus a
+      0.1° number field) with a corner choice: grow the canvas and fill the
+      corners (transparent/white/custom), or crop to the largest upright
+      rectangle inside the tilted picture (the two-regime max-area formula,
+      floored so no background sliver shows). Flips act on what you see — a
+      flip after a turn negates the angle — and flip pairs simplify to 180°.
+      Right-angle turns switch smoothing off, so they are a lossless pixel
+      shuffle. **Verified on the production build**: a 12-step rotate/flip
+      sequence on an odd-sized 5x3 PNG with a unique colour per pixel matched
+      an independent reference implementation pixel for pixel at every step;
+      400x300 at 30° gives 496x460 expanded / 300x173 cropped with no fill
+      pixel on the crop border; JPG default for JPG input. Geometry is in
+      `imageRotate.js` (not `rotateImage.js` — case collision with the
+      component) and node-tested.
 - [ ] Watermark image (`watermark-image`)
 - [ ] Meme generator (`meme-generator`)
 

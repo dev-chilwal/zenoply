@@ -1041,7 +1041,7 @@ CRC32 shipped 13 Sep as `/dev/file-checksum` — a file tool rather than a text
 CRC box, since `/dev/hash-generator` already covers text and the search intent
 is download verification. The whitespace remover shipped 19 Sep and the HTML tag
 stripper 20 Sep (see their bullets above), so **the cheapest remaining Tier C
-items are now text↔binary and Markdown↔HTML** (Markdown → HTML shipped 22 Sep, text↔binary 23 Sep and HTML → Markdown 24 Sep, so **Tier C is now closed** and the feature slot moves to Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder); image↔Base64, JSON to TypeScript and
+items are now text↔binary and Markdown↔HTML** (Markdown → HTML shipped 22 Sep, text↔binary 23 Sep and HTML → Markdown 24 Sep, so **Tier C is now closed** and the feature slot moves to Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder — Rotate / Flip Image shipped 26 Sep as the first of those, leaving watermark image and the meme generator in Tier 3); image↔Base64, JSON to TypeScript and
 the age/date-difference calculators have all since shipped. SVG to PNG shipped 13 Sep as `/image/svg-to-png` — filed under image
 rather than convert because it outputs a raster and sits next to the other
 Canvas tools for internal linking.
