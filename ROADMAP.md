@@ -53,7 +53,10 @@ depletion all confirmed against a worked example).
 - [x] Step-up / top-up SIP — annual step-up field on the SIP calc (0 = regular)
       AND a dedicated /step-up-sip-calculator page (own SEO) sharing the component
 - [ ] SIP / FD / CI inflation-adjusted ("real") returns
-- [ ] Lumpsum-vs-SIP comparison
+- [x] Lumpsum-vs-SIP comparison — dedicated /finance/lumpsum-vs-sip-calculator
+      (28 Sep 2026): same total both routes, same effective annual rate (SIP uses
+      (1+r)^(1/12)-1, not r/12), waiting cash earns a user-set rate, break-even
+      return shown. MiniChart gained an optional dashed second series.
 - [x] EMI / mortgage prepayment — extra monthly payment, with interest &
       time saved (shared `lib/amortization.js`). One-time/lump-sum mode pending.
 - [x] EMI / mortgage full amortization schedule (year-by-year table) + balance chart
