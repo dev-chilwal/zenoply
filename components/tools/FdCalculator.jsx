@@ -2,12 +2,13 @@
 import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
-  ResultStatement, MiniChart, SplitBar, Legend,
+  ResultStatement, MiniChart, SplitBar, Legend, SumRows, SumRow,
   RailNote, RailStat, RailFormula,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE, COMPOUND_LABEL } from "@/lib/locales";
+import { depositAfterTax } from "@/lib/depositTax";
 
 export default function FdCalculator() {
   const reg = useRegion();
@@ -19,6 +20,7 @@ export default function FdCalculator() {
   const [principal, setPrincipal] = useState(range.default);
   const [rate, setRate] = useState(7);
   const [years, setYears] = useState(5);
+  const [taxPct, setTaxPct] = useState(0);
 
   useEffect(() => { setPrincipal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -33,8 +35,12 @@ export default function FdCalculator() {
       { length: Math.max(1, Math.round(years)) + 1 },
       (_, i) => principal * Math.pow(1 + rate / 100 / n, n * i)
     );
-    return { amount, interest, pPct, iPct, series };
-  }, [principal, rate, years, reg.fdCompounding]);
+    const after = depositAfterTax({
+      invested: principal, interest, taxPct,
+      effRatePct: (Math.pow(1 + rate / 100 / n, n) - 1) * 100,
+    });
+    return { amount, interest, pPct, iPct, series, after };
+  }, [principal, rate, years, taxPct, reg.fdCompounding]);
 
   const yearsLabel = `${years} ${years === 1 ? "year" : "years"}`;
   const freqLabel = COMPOUND_LABEL[reg.fdCompounding] || "quarterly";
@@ -57,9 +63,15 @@ export default function FdCalculator() {
           suffix="yrs" value={years} onChange={setYears}
           min={1} max={20} step={1}
         />
+        <NumberInput
+          label="Tax on interest" hint="Your income-tax slab rate. Leave at 0 to see pre-tax figures only."
+          suffix="%" value={taxPct} onChange={setTaxPct}
+          min={0} max={50} step={1}
+        />
 
         <ResultStatement>
-          After {yearsLabel}, your deposit grows to <span className="pop">{fmt(r.amount)}</span>.
+          After {yearsLabel}, your deposit grows to <span className="pop">{fmt(r.amount)}</span>
+          {taxPct > 0 && <> — <span className="pop">{fmt(r.after.net)}</span> after {taxPct}% tax on the interest</>}.
         </ResultStatement>
 
         <MiniChart
@@ -71,8 +83,19 @@ export default function FdCalculator() {
         <SplitBar a={r.pPct} b={r.iPct} />
         <Legend left={{ k: "Invested", v: fmt(principal) }} right={{ k: `Interest · ${Math.round(r.iPct)}%`, v: fmt(r.interest) }} />
 
+        {taxPct > 0 && (
+          <SumRows>
+            <SumRow label="Interest before tax" value={fmt(r.interest)} />
+            <SumRow label={`Tax at ${taxPct}%`} value={fmt(r.after.tax)} />
+            <SumRow label="Interest after tax" value={fmt(r.after.netInterest)} />
+            <SumRow label="Post-tax rate (p.a.)" value={`${r.after.netYield.toFixed(2)}%`} />
+          </SumRows>
+        )}
+
         <p className="muted small" style={{ marginTop: ".75rem" }}>
           Assumes {freqLabel} compounding{reg.code === "IN" ? ", as used by most Indian banks" : ""}.
+          {taxPct > 0 && " Tax is taken on the total interest and assumed paid from other income, so the deposit compounds in full."}
+          {reg.code === "IN" && " Banks deduct 10% TDS once your interest from that bank passes ₹50,000 in a financial year (₹1 lakh for senior citizens; 20% without a PAN). TDS is an advance — what you finally owe is set by your slab rate."}
         </p>
       </CalcMain>
 
@@ -90,10 +113,19 @@ export default function FdCalculator() {
           value={fmt(r.interest)}
           sub={`${Math.round(r.iPct)}% of the maturity value`}
         />
+        {taxPct > 0 && (
+          <RailStat
+            label="Post-tax maturity" tone="data"
+            value={fmt(r.after.net)}
+            sub={`${r.after.netYield.toFixed(2)}% a year after tax — compare with tax-free rates`}
+          />
+        )}
         <RailFormula
           label="The calculation"
           formula={<>A = P × (1 + r/n)<sup>n·t</sup></>}
-          note="Maturity = principal × (1 + rate/freq) ^ (freq × years)"
+          note={taxPct > 0
+            ? "Maturity = principal × (1 + rate/freq) ^ (freq × years); after tax = principal + interest × (1 − tax rate)"
+            : "Maturity = principal × (1 + rate/freq) ^ (freq × years)"}
         />
       </CalcRail>
     </CalcGrid>

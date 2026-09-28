@@ -8,6 +8,7 @@ import {
 import { useRegion } from "@/components/LocaleContext";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
+import { depositAfterTax } from "@/lib/depositTax";
 
 const DEPOSIT_BASE = { min: 500, max: 100000, step: 500, default: 5000 };
 
@@ -21,6 +22,7 @@ export default function RdCalculator() {
   const [deposit, setDeposit] = useState(range.default);
   const [rate, setRate] = useState(7.2);
   const [months, setMonths] = useState(24);
+  const [taxPct, setTaxPct] = useState(0);
 
   useEffect(() => { setDeposit(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -49,8 +51,9 @@ export default function RdCalculator() {
         : deposit * (Math.pow(1 + i, nq) - 1) / (1 - Math.pow(1 + i, -1 / 3));
       series.push(mat);
     }
-    return { maturity, invested, interest, pPct, iPct, series };
-  }, [deposit, rate, months]);
+    const after = depositAfterTax({ invested, interest, taxPct });
+    return { maturity, invested, interest, pPct, iPct, series, after };
+  }, [deposit, rate, months, taxPct]);
 
   const monthsLabel = `${months} ${months === 1 ? "month" : "months"}`;
 
@@ -72,9 +75,15 @@ export default function RdCalculator() {
           suffix="months" value={months} onChange={setMonths}
           min={3} max={120} step={3}
         />
+        <NumberInput
+          label="Tax on interest" hint="Your income-tax slab rate. Leave at 0 to see pre-tax figures only."
+          suffix="%" value={taxPct} onChange={setTaxPct}
+          min={0} max={50} step={1}
+        />
 
         <ResultStatement>
-          After {monthsLabel}, your recurring deposit matures to <span className="pop">{fmt(r.maturity)}</span>.
+          After {monthsLabel}, your recurring deposit matures to <span className="pop">{fmt(r.maturity)}</span>
+          {taxPct > 0 && <> — <span className="pop">{fmt(r.after.net)}</span> after {taxPct}% tax on the interest</>}.
         </ResultStatement>
 
         <MiniChart
@@ -89,10 +98,14 @@ export default function RdCalculator() {
         <SumRows>
           <SumRow label="Total invested" value={fmt(r.invested)} />
           <SumRow label="Interest earned" value={fmt(r.interest)} />
+          {taxPct > 0 && <SumRow label={`Tax at ${taxPct}%`} value={fmt(r.after.tax)} />}
+          {taxPct > 0 && <SumRow label="Maturity after tax" value={fmt(r.after.net)} />}
         </SumRows>
 
         <p className="calc-disclaimer">
           Assumes quarterly compounding, as used by most Indian banks. Tenure is set in multiples of 3 months to match quarterly interest credits.
+          {taxPct > 0 && " Tax is taken on the total interest and assumed paid from other income, so the deposit compounds in full."}
+          {reg.code === "IN" && " RD interest counts towards the same per-bank TDS threshold as FDs: 10% is deducted once it passes ₹50,000 in a financial year (₹1 lakh for senior citizens). TDS is an advance — what you finally owe is set by your slab rate."}
         </p>
       </CalcMain>
 
@@ -110,6 +123,13 @@ export default function RdCalculator() {
           value={fmt(r.interest)}
           sub={`${Math.round(r.iPct)}% of maturity`}
         />
+        {taxPct > 0 && (
+          <RailStat
+            label="Maturity after tax" tone="data"
+            value={fmt(r.after.net)}
+            sub={`${fmt(r.after.tax)} goes in tax`}
+          />
+        )}
         <RailFormula
           label="The calculation"
           formula={<>M = P × [(1 + i)<sup>n</sup> − 1] ÷ (1 − (1 + i)<sup>−1/3</sup>)</>}
