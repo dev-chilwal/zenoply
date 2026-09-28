@@ -22,6 +22,7 @@ import MortgageCalculator from "@/components/tools/MortgageCalculator";
 import RdCalculator from "@/components/tools/RdCalculator";
 import PpfCalculator from "@/components/tools/PpfCalculator";
 import LumpsumCalculator from "@/components/tools/LumpsumCalculator";
+import LumpsumVsSipCalculator from "@/components/tools/LumpsumVsSipCalculator";
 import SwpCalculator from "@/components/tools/SwpCalculator";
 import CagrCalculator from "@/components/tools/CagrCalculator";
 import RoiCalculator from "@/components/tools/RoiCalculator";
@@ -129,6 +130,7 @@ const REGISTRY = {
   "rd-calculator": RdCalculator,
   "ppf-calculator": PpfCalculator,
   "lumpsum-calculator": LumpsumCalculator,
+  "lumpsum-vs-sip-calculator": LumpsumVsSipCalculator,
   "swp-calculator": SwpCalculator,
   "cagr-calculator": CagrCalculator,
   "roi-calculator": RoiCalculator,

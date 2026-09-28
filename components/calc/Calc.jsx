@@ -263,11 +263,12 @@ export function ScheduleTable({ rows, caption }) {
  * Flat SVG line chart, themed via CSS (.mini-chart classes).
  * series: array of numbers (one per x step, starting at index 0).
  * format: fn(number) -> label string for the y-axis.
+ * series2: optional second series of the same length, drawn dashed.
  */
-export function MiniChart({ series, format = (n) => n, caption }) {
+export function MiniChart({ series, series2, format = (n) => n, caption }) {
   const W = 640, H = 300, pad = { l: 56, r: 16, t: 16, b: 34 };
   const n = series.length - 1;
-  const max = Math.max(...series) * 1.05 || 1;
+  const max = Math.max(...series, ...(series2 || [])) * 1.05 || 1;
   const x = (i) => pad.l + (n ? (i / n) : 0) * (W - pad.l - pad.r);
   const y = (v) => H - pad.b - (v / max) * (H - pad.t - pad.b);
 
@@ -290,6 +291,9 @@ export function MiniChart({ series, format = (n) => n, caption }) {
       {caption && <p className="chart-caption">{caption}</p>}
       <svg className="mini-chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={caption || "Chart"}>
         {grid}{yLabels}{xLabels}
+        {series2 && (
+          <polyline className="line2" points={series2.map((v, i) => `${x(i)},${y(v)}`).join(" ")} />
+        )}
         <polyline className="line" points={points} />
         {dots}
       </svg>
