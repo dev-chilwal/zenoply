@@ -62,7 +62,10 @@ depletion all confirmed against a worked example).
 - [x] EMI / mortgage full amortization schedule (year-by-year table) + balance chart
 - [ ] Mortgage full-cost inputs: property tax, insurance, PMI, down payment,
       maintenance, one-time (stamp duty / registration) ✓
-- [ ] FD / RD post-tax returns (TDS on interest)
+- [x] FD / RD post-tax returns (TDS on interest) — 28 Sep 2026: "Tax on
+      interest" slab input on both calcs (default 0 = unchanged), tax / after-tax
+      maturity rows, FD post-tax rate = effective annual rate × (1 − tax); IN
+      region shows the per-bank TDS note (₹50k / ₹1L seniors). `lib/depositTax.js`.
 - [ ] GST CGST/SGST/IGST split (India) ✓
 
 ## Cross-cutting UX (all backend-free)
