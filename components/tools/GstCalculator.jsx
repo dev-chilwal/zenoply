@@ -21,12 +21,18 @@ export default function GstCalculator() {
   const [rate, setRate] = useState(reg.taxStandard);
   // mode: "add" = price is tax-exclusive, "remove" = price is tax-inclusive.
   const [mode, setMode] = useState(reg.taxInclusiveDefault ? "remove" : "add");
+  // India only: "intra" = sale within one state (CGST + SGST halves),
+  // "inter" = sale between states (one IGST line). Total tax is identical.
+  const [supply, setSupply] = useState("intra");
+  const isIndia = reg.code === "IN";
+  const half = rate / 2;
 
   // When the region/currency changes, reset amount, rate, and inclusive default.
   useEffect(() => {
     setAmount(range.default);
     setRate(reg.taxStandard);
     setMode(reg.taxInclusiveDefault ? "remove" : "add");
+    setSupply("intra");
   }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const r = useMemo(() => {
@@ -61,6 +67,14 @@ export default function GstCalculator() {
           onChange={setMode}
           options={[{ value: "add", label: `Add ${tax}` }, { value: "remove", label: `Remove ${tax}` }]}
         />
+        {isIndia && (
+          <Segmented
+            ariaLabel="Type of supply"
+            value={supply}
+            onChange={setSupply}
+            options={[{ value: "intra", label: "Within state" }, { value: "inter", label: "Between states" }]}
+          />
+        )}
 
         <ResultStatement>
           {mode === "add"
@@ -73,7 +87,12 @@ export default function GstCalculator() {
 
         <SumRows>
           <SumRow label="Base amount" value={fmt(r.base)} />
-          <SumRow label={`${tax} (${rate}%)`} value={fmt(r.tax)} />
+          {isIndia && supply === "intra" && <>
+            <SumRow label={`CGST (${half}%)`} value={fmt(r.tax / 2)} />
+            <SumRow label={`SGST (${half}%)`} value={fmt(r.tax / 2)} />
+          </>}
+          {isIndia && supply === "inter" && <SumRow label={`IGST (${rate}%)`} value={fmt(r.tax)} />}
+          <SumRow label={isIndia ? `Total GST (${rate}%)` : `${tax} (${rate}%)`} value={fmt(r.tax)} />
           <SumRow label={`Total (incl. ${tax})`} value={fmt(r.total)} />
         </SumRows>
       </CalcMain>
@@ -89,6 +108,13 @@ export default function GstCalculator() {
           value={fmt(r.tax)}
           sub={`at ${rate}%`}
         />
+        {isIndia && (
+          <RailNote title={supply === "intra" ? "CGST + SGST" : "IGST"}>
+            {supply === "intra"
+              ? `A sale within one state splits the ${rate}% equally: ${half}% CGST to the Centre and ${half}% SGST to the state (UTGST in a union territory without a legislature). An invoice rounds each line to the paisa, so the two can differ by a paisa from a single ${rate}% line.`
+              : `A sale to another state, an import or a supply to an SEZ carries the whole ${rate}% as one IGST line. The tax is the same as CGST + SGST — only who collects it changes.`}
+          </RailNote>
+        )}
         <RailStat
           label={mode === "add" ? `Total (incl. ${tax})` : `Base (excl. ${tax})`} tone="data"
           value={fmt(mode === "add" ? r.total : r.base)}
