@@ -66,7 +66,10 @@ depletion all confirmed against a worked example).
       interest" slab input on both calcs (default 0 = unchanged), tax / after-tax
       maturity rows, FD post-tax rate = effective annual rate × (1 − tax); IN
       region shows the per-bank TDS note (₹50k / ₹1L seniors). `lib/depositTax.js`.
-- [ ] GST CGST/SGST/IGST split (India) ✓
+- [x] GST CGST/SGST/IGST split (India) ✓ — 29 Sep 2026: with India selected a
+      "Within state / Between states" toggle shows CGST + SGST halves or one IGST
+      line (rail note: UTGST in UTs, per-line paisa rounding). India rate list
+      updated to GST 2.0 (0, 0.25, 3, 5, 18, 40% — 12%/28% abolished 22 Sep 2025).
 
 ## Cross-cutting UX (all backend-free)
 
@@ -78,4 +81,5 @@ depletion all confirmed against a worked example).
 - [ ] Shareable result URLs (encode inputs in query params via
       `encodeURIComponent`, rehydrate on load) ✓
 - [ ] PDF / CSV / print export (jsPDF / html2pdf, fully client-side) ✓
-- [ ] `SoftwareApplication` JSON-LD on every tool page ✓
+- [x] `SoftwareApplication` JSON-LD on every tool page ✓ — already live in
+      `lib/seo.js` (SoftwareApplication + BreadcrumbList + FAQPage)
