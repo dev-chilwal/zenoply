@@ -2,12 +2,13 @@
 import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
-  ResultStatement, MiniChart, SplitBar, Legend,
+  ResultStatement, MiniChart, SplitBar, Legend, SumRows, SumRow,
   RailNote, RailStat, RailFormula,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
+import { realTerms } from "@/lib/realReturn";
 
 // `defaultStepUp` lets the dedicated /step-up-sip-calculator page reuse this
 // same component with the annual step-up pre-filled. 0 = a plain SIP.
@@ -22,6 +23,7 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
   const [rate, setRate] = useState(12);
   const [years, setYears] = useState(10);
   const [stepUp, setStepUp] = useState(defaultStepUp);
+  const [inflPct, setInflPct] = useState(0);
 
   // Reset the currency-denominated amount when the region/currency changes.
   useEffect(() => { setAmount(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -60,6 +62,13 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
     return { fv: balance, invested, returns, rPct, iPct: 100 - rPct, series };
   }, [amount, rate, years, stepUp]);
 
+  // Real (today's-money) view. Monthly compounding at rate/12 gives an
+  // effective annual rate of (1 + i)^12 − 1; the Fisher real rate uses that.
+  const real = useMemo(() => realTerms({
+    future: r.fv, years, inflPct,
+    nominalRatePct: (Math.pow(1 + rate / 12 / 100, 12) - 1) * 100,
+  }), [r.fv, years, inflPct, rate]);
+
   const yearsLabel = years + (years === 1 ? " year" : " years");
 
   return (
@@ -85,6 +94,11 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
           suffix="%" value={stepUp} onChange={setStepUp}
           min={0} max={25} step={1}
         />
+        <NumberInput
+          label="Inflation (p.a.)" hint="Expected average price rise. Leave at 0 to see nominal figures only."
+          suffix="%" value={inflPct} onChange={setInflPct}
+          min={0} max={15} step={0.5}
+        />
 
         <ResultStatement>
           {stepUp > 0 ? (
@@ -93,6 +107,7 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
           ) : (
             <>After {yearsLabel}, your SIP could grow to <span className="pop">{fmt(r.fv)}</span>.</>
           )}
+          {inflPct > 0 && <> That buys what <span className="pop">{fmt(real.todayValue)}</span> buys today at {inflPct}% inflation.</>}
         </ResultStatement>
 
         <MiniChart
@@ -106,6 +121,14 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
           left={{ k: "Invested", v: fmt(r.invested) }}
           right={{ k: `Est. returns · ${Math.round(r.rPct)}%`, v: fmt(r.returns) }}
         />
+
+        {inflPct > 0 && (
+          <SumRows>
+            <SumRow label="Final value (nominal)" value={fmt(r.fv)} />
+            <SumRow label={`Worth in today's money`} value={fmt(real.todayValue)} />
+            <SumRow label="Real return (p.a.)" value={`${real.realRate.toFixed(2)}%`} />
+          </SumRows>
+        )}
       </CalcMain>
 
       <CalcRail>
@@ -124,12 +147,20 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
           value={fmt(r.returns)}
           sub={`${Math.round(r.rPct)}% of the final value`}
         />
+        {inflPct > 0 && (
+          <RailStat
+            label="In today's money" tone="data"
+            value={fmt(real.todayValue)}
+            sub={`${real.realRate.toFixed(2)}% a year after ${inflPct}% inflation`}
+          />
+        )}
         <RailFormula
           label="The calculation"
           formula={<>FV = P × ((1 + i)<sup>n</sup> − 1) / i × (1 + i)</>}
-          note={stepUp > 0
+          note={(stepUp > 0
             ? "Each year the monthly amount P rises by the step-up %, compounded month by month."
-            : "P = monthly amount, i = monthly rate, n = number of months"}
+            : "P = monthly amount, i = monthly rate, n = number of months")
+            + (inflPct > 0 ? " · Today's money = FV ÷ (1 + inflation)^years; real rate = (1 + annual return) ÷ (1 + inflation) − 1" : "")}
         />
       </CalcRail>
     </CalcGrid>

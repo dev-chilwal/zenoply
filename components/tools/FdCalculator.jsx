@@ -9,6 +9,7 @@ import { useRegion } from "@/components/LocaleContext";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE, COMPOUND_LABEL } from "@/lib/locales";
 import { depositAfterTax } from "@/lib/depositTax";
+import { realTerms } from "@/lib/realReturn";
 
 export default function FdCalculator() {
   const reg = useRegion();
@@ -21,6 +22,7 @@ export default function FdCalculator() {
   const [rate, setRate] = useState(7);
   const [years, setYears] = useState(5);
   const [taxPct, setTaxPct] = useState(0);
+  const [inflPct, setInflPct] = useState(0);
 
   useEffect(() => { setPrincipal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -35,12 +37,15 @@ export default function FdCalculator() {
       { length: Math.max(1, Math.round(years)) + 1 },
       (_, i) => principal * Math.pow(1 + rate / 100 / n, n * i)
     );
-    const after = depositAfterTax({
-      invested: principal, interest, taxPct,
-      effRatePct: (Math.pow(1 + rate / 100 / n, n) - 1) * 100,
+    const effRatePct = (Math.pow(1 + rate / 100 / n, n) - 1) * 100;
+    const after = depositAfterTax({ invested: principal, interest, taxPct, effRatePct });
+    // Real view is taken on what the saver keeps: post-tax when a tax rate is set.
+    const real = realTerms({
+      future: taxPct > 0 ? after.net : amount, years, inflPct,
+      nominalRatePct: taxPct > 0 ? after.netYield : effRatePct,
     });
-    return { amount, interest, pPct, iPct, series, after };
-  }, [principal, rate, years, taxPct, reg.fdCompounding]);
+    return { amount, interest, pPct, iPct, series, after, real };
+  }, [principal, rate, years, taxPct, inflPct, reg.fdCompounding]);
 
   const yearsLabel = `${years} ${years === 1 ? "year" : "years"}`;
   const freqLabel = COMPOUND_LABEL[reg.fdCompounding] || "quarterly";
@@ -68,10 +73,16 @@ export default function FdCalculator() {
           suffix="%" value={taxPct} onChange={setTaxPct}
           min={0} max={50} step={1}
         />
+        <NumberInput
+          label="Inflation (p.a.)" hint="Expected average price rise. Leave at 0 to see nominal figures only."
+          suffix="%" value={inflPct} onChange={setInflPct}
+          min={0} max={15} step={0.5}
+        />
 
         <ResultStatement>
           After {yearsLabel}, your deposit grows to <span className="pop">{fmt(r.amount)}</span>
           {taxPct > 0 && <> — <span className="pop">{fmt(r.after.net)}</span> after {taxPct}% tax on the interest</>}.
+          {inflPct > 0 && <> In today&apos;s money that is <span className="pop">{fmt(r.real.todayValue)}</span> at {inflPct}% inflation.</>}
         </ResultStatement>
 
         <MiniChart
@@ -89,6 +100,13 @@ export default function FdCalculator() {
             <SumRow label={`Tax at ${taxPct}%`} value={fmt(r.after.tax)} />
             <SumRow label="Interest after tax" value={fmt(r.after.netInterest)} />
             <SumRow label="Post-tax rate (p.a.)" value={`${r.after.netYield.toFixed(2)}%`} />
+          </SumRows>
+        )}
+
+        {inflPct > 0 && (
+          <SumRows>
+            <SumRow label={taxPct > 0 ? "Post-tax maturity in today's money" : "Maturity in today's money"} value={fmt(r.real.todayValue)} />
+            <SumRow label={taxPct > 0 ? "Real post-tax rate (p.a.)" : "Real rate (p.a.)"} value={`${r.real.realRate.toFixed(2)}%`} />
           </SumRows>
         )}
 
@@ -118,6 +136,15 @@ export default function FdCalculator() {
             label="Post-tax maturity" tone="data"
             value={fmt(r.after.net)}
             sub={`${r.after.netYield.toFixed(2)}% a year after tax — compare with tax-free rates`}
+          />
+        )}
+        {inflPct > 0 && (
+          <RailStat
+            label="In today's money" tone={r.real.realRate < 0 ? "loss" : "data"}
+            value={fmt(r.real.todayValue)}
+            sub={r.real.realRate < 0
+              ? `${r.real.realRate.toFixed(2)}% a year — losing purchasing power`
+              : `${r.real.realRate.toFixed(2)}% a year after ${inflPct}% inflation`}
           />
         )}
         <RailFormula

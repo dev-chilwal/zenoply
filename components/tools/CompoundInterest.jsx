@@ -8,6 +8,7 @@ import {
 import { useRegion } from "@/components/LocaleContext";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
+import { realTerms } from "@/lib/realReturn";
 
 const FREQ = { Annually: 1, "Half-yearly": 2, Quarterly: 4, Monthly: 12 };
 
@@ -22,6 +23,7 @@ export default function CompoundInterest() {
   const [rate, setRate] = useState(8);
   const [years, setYears] = useState(5);
   const [freq, setFreq] = useState("Annually");
+  const [inflPct, setInflPct] = useState(0);
 
   useEffect(() => { setPrincipal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -35,8 +37,12 @@ export default function CompoundInterest() {
       { length: years + 1 },
       (_, i) => principal * Math.pow(1 + rate / 100 / nfreq, nfreq * i)
     );
-    return { amount, interest, pPct, iPct, series };
-  }, [principal, rate, years, freq]);
+    const real = realTerms({
+      future: amount, years, inflPct,
+      nominalRatePct: (Math.pow(1 + rate / 100 / nfreq, nfreq) - 1) * 100,
+    });
+    return { amount, interest, pPct, iPct, series, real };
+  }, [principal, rate, years, freq, inflPct]);
 
   const yearsLabel = `${years} ${years === 1 ? "year" : "years"}`;
 
@@ -63,9 +69,15 @@ export default function CompoundInterest() {
             {Object.keys(FREQ).map((f) => <option key={f} value={f}>{f}</option>)}
           </select>
         </Field>
+        <NumberInput
+          label="Inflation (p.a.)" hint="Expected average price rise. Leave at 0 to see nominal figures only."
+          suffix="%" value={inflPct} onChange={setInflPct}
+          min={0} max={15} step={0.5}
+        />
 
         <ResultStatement>
           After {yearsLabel}, {fmt(principal)} grows to <span className="pop">{fmt(r.amount)}</span>.
+          {inflPct > 0 && <> In today&apos;s money that is <span className="pop">{fmt(r.real.todayValue)}</span> at {inflPct}% inflation.</>}
         </ResultStatement>
 
         <MiniChart
@@ -84,6 +96,8 @@ export default function CompoundInterest() {
           <SumRow label="Principal invested" value={fmt(principal)} />
           <SumRow label="Interest earned" value={fmt(r.interest)} />
           <SumRow label="Maturity value" value={fmt(r.amount)} />
+          {inflPct > 0 && <SumRow label="Maturity in today's money" value={fmt(r.real.todayValue)} />}
+          {inflPct > 0 && <SumRow label="Real return (p.a.)" value={`${r.real.realRate.toFixed(2)}%`} />}
         </SumRows>
       </CalcMain>
 
@@ -104,7 +118,8 @@ export default function CompoundInterest() {
         <RailFormula
           label="The calculation"
           formula={<>A = P × (1 + r/n)<sup>n·t</sup></>}
-          note="Amount = principal × (1 + rate/freq) ^ (freq × years)"
+          note={"Amount = principal × (1 + rate/freq) ^ (freq × years)"
+            + (inflPct > 0 ? " · Today's money = amount ÷ (1 + inflation)^years" : "")}
         />
       </CalcRail>
     </CalcGrid>
