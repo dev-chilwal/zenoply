@@ -52,7 +52,12 @@ depletion all confirmed against a worked example).
 
 - [x] Step-up / top-up SIP — annual step-up field on the SIP calc (0 = regular)
       AND a dedicated /step-up-sip-calculator page (own SEO) sharing the component
-- [ ] SIP / FD / CI inflation-adjusted ("real") returns
+- [x] SIP / FD / CI inflation-adjusted ("real") returns — 30 Sep 2026:
+      "Inflation (p.a.)" input on SIP (and the step-up page), FD and compound
+      interest (default 0 = unchanged). Shows value in today's money
+      (÷ (1 + inflation)^years) and the exact Fisher real rate
+      (1 + r)/(1 + π) − 1 on the effective annual rate; FD takes it on post-tax
+      figures when a tax rate is set. `lib/realReturn.js`.
 - [x] Lumpsum-vs-SIP comparison — dedicated /finance/lumpsum-vs-sip-calculator
       (28 Sep 2026): same total both routes, same effective annual rate (SIP uses
       (1+r)^(1/12)-1, not r/12), waiting cash earns a user-set rate, break-even
