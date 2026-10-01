@@ -65,8 +65,13 @@ depletion all confirmed against a worked example).
 - [x] EMI / mortgage prepayment — extra monthly payment, with interest &
       time saved (shared `lib/amortization.js`). One-time/lump-sum mode pending.
 - [x] EMI / mortgage full amortization schedule (year-by-year table) + balance chart
-- [ ] Mortgage full-cost inputs: property tax, insurance, PMI, down payment,
-      maintenance, one-time (stamp duty / registration) ✓
+- [x] Mortgage full-cost inputs ✓ — 1 Oct 2026: home price + down payment %
+      (loan derived), property tax (% of price p.a.), home insurance (p.a.),
+      PMI (% of original loan p.a., only under 20% down, stops when the balance
+      hits 78% of price — extra payments bring that forward), HOA / maintenance
+      (monthly), one-time costs (% of price; stamp duty + registration in IN).
+      All default 0. All-in monthly breakdown, cash upfront, all-in cost.
+      `lib/mortgageCost.js`; amortize() gained an optional threshold month.
 - [x] FD / RD post-tax returns (TDS on interest) — 28 Sep 2026: "Tax on
       interest" slab input on both calcs (default 0 = unchanged), tax / after-tax
       maturity rows, FD post-tax rate = effective annual rate × (1 − tax); IN
