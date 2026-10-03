@@ -215,7 +215,23 @@ equivalent. These four are the cheap end — plain Canvas, no new deps.
       margin; tiled pattern hits all 48 50px cells; a red logo at 25% composites
       to exactly (102,76,115) over #336699; PNG and JPG downloads at original
       size; no overflow at 375px; console clean.
-- [ ] Meme generator (`meme-generator`)
+- [x] Meme generator (`meme-generator`) — shipped 4 Oct 2026. Bring-your-own
+      picture (no template library, so no image licensing): classic top/bottom
+      text in Impact with a black outline (all strokes drawn before all fills,
+      so a line's outline never cuts into the line above), or a white caption
+      bar above the picture that grows with the caption. Captions greedy-wrap
+      (hard Enter breaks kept, over-long words broken by code point so emoji
+      never split) and shrink in 4% steps until they fit — a third of the
+      height per caption in classic mode, so top and bottom never meet — with
+      a 2.5%-of-width floor and an on-page note when a caption can't fit.
+      Missing Impact (Android/Linux/ChromeOS) is detected by width comparison
+      and stated. Layout in `memeLayout.js` (case collision again), **2,505
+      node assertions** incl. scale invariance of preview vs export.
+      **Verified on the production build**: 800x600 JPG → top caption in rows
+      43–114, bottom in 481–552, middle band untouched; overflow note fires on
+      a 400-word caption; caption-bar download 800x825 PNG with the picture
+      intact below the bar; JPG download 800x600 at q 0.92; no overflow at
+      375px; console clean. **Tier 3 is now closed.**
 
 ## Tier 4 — format conversion via @jsquash (lowest-risk image expansion)
 
