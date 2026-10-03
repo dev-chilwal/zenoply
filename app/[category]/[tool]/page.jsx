@@ -80,6 +80,7 @@ import OcrPdf from "@/components/tools/OcrPdf";
 import CropImage from "@/components/tools/CropImage";
 import RotateImage from "@/components/tools/RotateImage";
 import WatermarkImage from "@/components/tools/WatermarkImage";
+import MemeGenerator from "@/components/tools/MemeGenerator";
 import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
@@ -195,6 +196,7 @@ const REGISTRY = {
   "crop-image": CropImage,
   "rotate-image": RotateImage,
   "watermark-image": WatermarkImage,
+  "meme-generator": MemeGenerator,
   "exif-viewer": ExifViewer,
   "heic-to-jpg": HeicToJpg,
   "qr-code-generator": QrCodeGenerator,
