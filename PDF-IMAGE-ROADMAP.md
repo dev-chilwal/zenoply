@@ -202,7 +202,19 @@ equivalent. These four are the cheap end — plain Canvas, no new deps.
       pixel on the crop border; JPG default for JPG input. Geometry is in
       `imageRotate.js` (not `rotateImage.js` — case collision with the
       component) and node-tested.
-- [ ] Watermark image (`watermark-image`)
+- [x] Watermark image (`watermark-image`) — shipped 3 Oct 2026. Text or logo
+      mark; a single mark at one of nine anchors (the *rotated* bounding box is
+      kept inside the margin, so a tilted corner mark never pokes off the edge)
+      or a tiled brick pattern rotated about the centre over a square as wide as
+      the image diagonal, so it reaches every corner at any angle. Size, margin
+      and spacing are fractions of the image, so the preview is the export
+      pipeline at reduced scale. Geometry in `watermarkLayout.js` (case
+      collision again) and node-tested: 20k random points inside the diagonal
+      circle, 0 uncovered. **Verified on the production build**: single mark
+      120px wide on a 400x300 (30%) with its right edge exactly at the 9px (3%)
+      margin; tiled pattern hits all 48 50px cells; a red logo at 25% composites
+      to exactly (102,76,115) over #336699; PNG and JPG downloads at original
+      size; no overflow at 375px; console clean.
 - [ ] Meme generator (`meme-generator`)
 
 ## Tier 4 — format conversion via @jsquash (lowest-risk image expansion)
