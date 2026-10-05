@@ -252,8 +252,29 @@ mature).
 
 Split confirmed ✓:
 
-- [ ] Sign PDF (`sign-pdf`) — canvas-drawn / typed / uploaded signature,
-      stamped via pdf-lib. **Tractable.**
+- [x] Sign PDF (`sign-pdf`) — shipped 5 Oct 2026. Draw (pointer-capture
+      pad, midpoint-quadratic smoothing, undo/clear), type (Dancing Script /
+      Great Vibes / Caveat self-hosted via next/font with preload off, and an
+      explicit `document.fonts.load` before drawing — canvas silently falls back
+      otherwise) or upload (paper made transparent by a luma threshold with a
+      40-step alpha ramp so stroke edges do not fringe white). Every signature is
+      trimmed to its ink. Placements are display-space fractions over a pdf.js
+      preview — drag to move, corner to resize with the shape locked, "Add to
+      every page" for initials — mapped through pdfCrop's `displayToPage` and
+      drawn with `rotate = /Rotate`, so they land upright on rotated pages and
+      on offset/cropped boxes. Warns when the file already has a certificate
+      signature (`/ByteRange`), since pdf-lib's full re-save breaks it. Copy says
+      plainly it is visual-only. Geometry in `pdfSign.js` (case collision
+      again). **Verified**: 72 rotation x box x placement cases checked against
+      real pdf.js operator lists (439 assertions; three mutations each fail
+      104-192); on the production build, a mouse-drawn signature placed, moved
+      and resized by real drags (fractions exact to the pixel), copied to a
+      /Rotate 90 page with an offset MediaBox, and the downloaded bytes re-read in
+      pdf.js matched the on-screen boxes on both pages, upright; typed (all three
+      faces load) and uploaded (300x60 ink -> 312x72 with the paper alpha 0)
+      paths checked; no overflow at 375px; console clean. Limitation: one
+      signature image per pass (initials + full signature = two passes; the guide
+      says so).
 - [ ] ~~Certificate signing & signature validation~~ — **SKIP.** X.509,
       PKCS#12, AATL/EUTL trust lists, eIDAS, revocation checking. Not
       realistically client-side.

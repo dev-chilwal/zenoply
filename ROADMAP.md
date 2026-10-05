@@ -86,10 +86,17 @@ depletion all confirmed against a worked example).
 - [x] Year-by-year breakdown tables (Groww-standard) — `ScheduleTable`
       component, live in EMI & mortgage
 - [ ] Charts: growth line + donut breakdown (dwell-time boost)
+      — Mostly covered (checked 5 Oct 2026): MiniChart growth lines on 14 calcs
+      and SplitBar two-part breakdowns on 11; only a literal donut is missing.
 - [ ] Internal-linking calculator clusters (strongest verified SEO pattern) ✓
       — partly automatic via same-category related tools
 - [ ] Shareable result URLs (encode inputs in query params via
       `encodeURIComponent`, rehydrate on load) ✓
+      — Deferred 5 Oct 2026 (daily run picked Sign PDF instead): needs a
+      shared hook across ~20 calcs, AND every calc's `[reg.code]` reset effect
+      fires again when LocaleProvider applies the saved region after mount, which
+      would clobber URL-hydrated inputs — needs a `ready` flag in the context (or
+      a `region` param) first. Too large to finish and verify in one run.
 - [ ] PDF / CSV / print export (jsPDF / html2pdf, fully client-side) ✓
 - [x] `SoftwareApplication` JSON-LD on every tool page ✓ — already live in
       `lib/seo.js` (SoftwareApplication + BreadcrumbList + FAQPage)
