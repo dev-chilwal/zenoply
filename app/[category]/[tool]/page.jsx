@@ -91,6 +91,7 @@ import PdfMetadata from "@/components/tools/PdfMetadata";
 import PdfToText from "@/components/tools/PdfToText";
 import ResizePdfPages from "@/components/tools/ResizePdfPages";
 import CropPdf from "@/components/tools/CropPdf";
+import SignPdf from "@/components/tools/SignPdf";
 import ExtractPdfImages from "@/components/tools/ExtractPdfImages";
 import FillPdfForm from "@/components/tools/FillPdfForm";
 import XmlFormatter from "@/components/tools/XmlFormatter";
@@ -206,6 +207,7 @@ const REGISTRY = {
   "pdf-to-text": PdfToText,
   "resize-pdf-pages": ResizePdfPages,
   "crop-pdf": CropPdf,
+  "sign-pdf": SignPdf,
   "extract-images-from-pdf": ExtractPdfImages,
   "fill-pdf-form": FillPdfForm,
   "xml-formatter": XmlFormatter,

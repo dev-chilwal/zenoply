@@ -494,6 +494,23 @@ h2 { font-size: 1.35rem; margin: 1.75rem 0 .9rem; letter-spacing: -.01em; }
 .crop-handle-e, .crop-handle-w { cursor: ew-resize; }
 .crop-stage.dragging .crop-box { cursor: grabbing; }
 
+/* ---------- Sign PDF: signature pad + placements over the page preview ---------- */
+.sign-step { margin: 1.75rem 0 .5rem; font-size: 1rem; }
+/* The pad and the sample sit on white in both themes: ink is drawn dark, and
+   a signature has to be judged against the paper it will land on. */
+.sign-pad { display: block; width: 100%; aspect-ratio: 3 / 1; margin-top: .75rem; background: #fff; border: 1px dashed var(--line); border-radius: 10px; cursor: crosshair; touch-action: none; user-select: none; -webkit-user-select: none; }
+.sign-sample { display: flex; justify-content: center; margin-top: .75rem; padding: .75rem; background: #fff; border: 1px solid var(--line); border-radius: 10px; }
+.sign-sample img { max-width: 100%; max-height: 90px; }
+.sign-stage { overflow: visible; }
+.sign-place { position: absolute; box-sizing: border-box; border: 1px dashed transparent; cursor: move; }
+.sign-place:hover, .sign-place.selected { border-color: var(--accent); }
+.sign-place img { display: block; width: 100%; height: 100%; pointer-events: none; }
+.sign-place .crop-handle { display: none; }
+.sign-place.selected .crop-handle { display: block; }
+.sign-remove { position: absolute; top: -11px; right: -11px; width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--fg); font-size: 14px; line-height: 20px; cursor: pointer; display: none; }
+.sign-place:hover .sign-remove, .sign-place.selected .sign-remove { display: block; }
+.crop-stage.dragging .sign-place { cursor: grabbing; }
+
 input[type="range"] { width: 100%; accent-color: var(--accent); }
 .center { text-align: center; }
 
