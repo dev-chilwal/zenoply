@@ -240,7 +240,21 @@ repackaged from Squoosh, all built for browser + Web Worker ✓.
 
 - [ ] WebP to PNG / PNG to WebP (`webp-to-png`)
 - [ ] AVIF convert (`avif-converter`)
-- [ ] PNG optimiser (`png-optimizer`) — `@jsquash/oxipng`
+- [x] PNG optimiser — shipped 6 Oct 2026 as `/image/compress-png` (slug
+      chosen for the bigger keyword). `@jsquash/oxipng` 2.3.0, single-threaded
+      codec imported directly into a module worker (the package's optimise.js
+      switches to the rayon build inside a worker, which needs COOP/COEP);
+      webpack emits the 164 KB wasm as a hashed same-origin asset. Lossless
+      only — Fast/Better/Best = levels 2/3/4. Squoosh's build keeps every
+      chunk, so metadata stripping (tEXt/zTXt/iTXt/tIME/eXIf; colour chunks
+      always kept) is done in JS in `pngChunks.js`, which also pre-validates
+      input because a Rust panic poisons the wasm instance (worker is replaced
+      after any error) and refuses APNG. Verified on the production build:
+      decoded pixels identical on 3 inputs, chunk lists checked in node, ZIP
+      contents, no 375px overflow.
+- Note: WebP↔PNG is already covered by Image Converter (canvas), so a
+  separate `webp-to-png` page would duplicate a live tool; only AVIF remains
+  genuinely new in this tier.
 
 Caveats ✓: lazy-load/code-split codecs per format or the WASM bloats first
 load (<100KB gzip initial is achievable). AVIF **encode** is CPU-heavy and slow
