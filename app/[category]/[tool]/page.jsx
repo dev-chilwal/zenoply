@@ -87,6 +87,7 @@ import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
 import RupeesInWords from "@/components/tools/RupeesInWords";
 import TokenCounter from "@/components/tools/TokenCounter";
 import HeicToJpg from "@/components/tools/HeicToJpg";
+import CompressPng from "@/components/tools/CompressPng";
 import PdfMetadata from "@/components/tools/PdfMetadata";
 import PdfToText from "@/components/tools/PdfToText";
 import ResizePdfPages from "@/components/tools/ResizePdfPages";
@@ -200,6 +201,7 @@ const REGISTRY = {
   "meme-generator": MemeGenerator,
   "exif-viewer": ExifViewer,
   "heic-to-jpg": HeicToJpg,
+  "compress-png": CompressPng,
   "qr-code-generator": QrCodeGenerator,
   "cgpa-to-percentage": CgpaToPercentage,
   "token-counter": TokenCounter,

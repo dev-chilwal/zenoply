@@ -13,6 +13,7 @@
     "verify-tax": "node scripts/verify-tax.mjs"
   },
   "dependencies": {
+    "@jsquash/oxipng": "2.3.0",
     "@neslinesli93/qpdf-wasm": "0.3.0",
     "exifr": "^7.1.3",
     "gpt-tokenizer": "3.4.0",
