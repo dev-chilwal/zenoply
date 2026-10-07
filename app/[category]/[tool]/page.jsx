@@ -88,6 +88,7 @@ import RupeesInWords from "@/components/tools/RupeesInWords";
 import TokenCounter from "@/components/tools/TokenCounter";
 import HeicToJpg from "@/components/tools/HeicToJpg";
 import CompressPng from "@/components/tools/CompressPng";
+import FaviconGenerator from "@/components/tools/FaviconGenerator";
 import PdfMetadata from "@/components/tools/PdfMetadata";
 import PdfToText from "@/components/tools/PdfToText";
 import ResizePdfPages from "@/components/tools/ResizePdfPages";
@@ -202,6 +203,7 @@ const REGISTRY = {
   "exif-viewer": ExifViewer,
   "heic-to-jpg": HeicToJpg,
   "compress-png": CompressPng,
+  "favicon-generator": FaviconGenerator,
   "qr-code-generator": QrCodeGenerator,
   "cgpa-to-percentage": CgpaToPercentage,
   "token-counter": TokenCounter,
