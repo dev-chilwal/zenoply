@@ -973,7 +973,18 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 
 ## Tier D — viable with caveats
 
-- **Favicon generator** — hand-rolled ICO writer (~60 lines; modern ICO embeds
+- ~~**Favicon generator**~~ **SHIPPED 7 Oct 2026** (`/image/favicon-generator`) —
+  zero new deps, as planned: `favicon.js` writes the ICO (6-byte ICONDIR + 16-byte
+  entries + PNG payloads; 16/32/48) and the manifest/head snippet, and is node-
+  testable; `buildZip` from `zip.js` packs the set. Apple touch icon is always
+  flattened onto the background (iOS paints alpha black). Downscales halve in
+  stages before the final draw. **Gotcha found in verification:** `ImageDropzone`
+  decodes via `<img>` before the tool sees the file, so an SVG without `xmlns`
+  (markup copied out of HTML) is rejected outright — the tool uses `PdfDropzone`
+  and routes SVGs through `normalizeSvg` instead. Verified on the production
+  build: ICO directory + decoded entry sizes, zip contents, fit-mode band rows,
+  opaque Apple icon, viewBox-only SVG, 375px layout. Original note:
+  hand-rolled ICO writer (~60 lines; modern ICO embeds
   PNG) + fflate zip of all sizes + manifest. No maintained browser encoder
   exists and none is needed. Caveat: realfavicongenerator/favicon.io are
   entrenched dev brands → low-medium winnability despite S–M effort.
