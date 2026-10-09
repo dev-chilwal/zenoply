@@ -13,6 +13,7 @@
     "verify-tax": "node scripts/verify-tax.mjs"
   },
   "dependencies": {
+    "@jsquash/avif": "2.1.1",
     "@jsquash/oxipng": "2.3.0",
     "@neslinesli93/qpdf-wasm": "0.3.0",
     "exifr": "^7.1.3",
