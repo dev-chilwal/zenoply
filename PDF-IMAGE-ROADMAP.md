@@ -239,7 +239,18 @@ All 8 packages verified Apache-2.0 against the npm registry API, all
 repackaged from Squoosh, all built for browser + Web Worker ✓.
 
 - [ ] WebP to PNG / PNG to WebP (`webp-to-png`)
-- [ ] AVIF convert (`avif-converter`)
+- [x] AVIF convert — shipped 9 Oct 2026 as `/image/avif-converter`
+      (JPG/PNG/WebP/GIF/BMP → AVIF; AVIF → JPG/PNG stays with Image Converter,
+      since every current browser decodes AVIF natively). `@jsquash/avif`
+      2.1.1: `codec/enc/avif_enc.js` factory imported straight into a module
+      worker (encode.js would pick the threaded build → needs COOP/COEP);
+      webpack self-hosts the 3.4 MB wasm (~1.1 MB gz), fetched on first
+      Convert only. Two findings: quality 100 is only exactly lossless at
+      4:4:4 (4:2:0 changed pixels by up to 206), so subsample switches to 3
+      there; and an effort control was dropped after measuring a real photo —
+      speed 8 doubled the file, 4–5 cost 4.5–7.5× the time for 0–2%, so speed
+      is fixed at 6. Verified on the production build (static server):
+      batch, alpha kept, lossless pixel-exact, HEIC message, 375px.
 - [x] PNG optimiser — shipped 6 Oct 2026 as `/image/compress-png` (slug
       chosen for the bigger keyword). `@jsquash/oxipng` 2.3.0, single-threaded
       codec imported directly into a module worker (the package's optimise.js
@@ -253,8 +264,8 @@ repackaged from Squoosh, all built for browser + Web Worker ✓.
       decoded pixels identical on 3 inputs, chunk lists checked in node, ZIP
       contents, no 375px overflow.
 - Note: WebP↔PNG is already covered by Image Converter (canvas), so a
-  separate `webp-to-png` page would duplicate a live tool; only AVIF remains
-  genuinely new in this tier.
+  separate `webp-to-png` page would duplicate a live tool; only AVIF remained
+  genuinely new in this tier, and it shipped 9 Oct 2026 — Tier 4 is complete.
 
 Caveats ✓: lazy-load/code-split codecs per format or the WASM bloats first
 load (<100KB gzip initial is achievable). AVIF **encode** is CPU-heavy and slow
