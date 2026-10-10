@@ -996,7 +996,21 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 - **Zip / unzip** — `fflate` (MIT, 12KB gz, worker-parallel). Also upgrades
   every existing multi-file tool with "download all as zip". Highest-leverage
   infra pick even before the standalone tool.
-- **Color palette extractor** — `extract-colors` (MIT, ~5KB); extends color cluster.
+- ~~**Color palette extractor**~~ **SHIPPED 11 Oct 2026**
+  (`/image/color-palette-from-image`) — zero new deps; `extract-colors` was not
+  needed. `components/tools/palette.js` (node-tested) bins pixels at 5 bits per
+  channel keeping exact RGB sums, clusters in **Oklab** (RGB distance merges navy
+  into black), seeds by Wu-style divisive splits at the **SSE-optimal cut** over
+  all three axes, then Lloyd. **Finding:** a weighted-*median* split lands inside
+  the biggest mass and never isolates a small accent, and sqrt(count) "balanced"
+  weighting made it worse (noise spreads over many bins, so sqrt boosts noise).
+  The shipped **Distinct** mode over-segments to ~3k clusters and greedily picks by
+  (distance to nearest picked) × share^0.25, then reassigns every pixel so shares
+  still total 100% — a 1% red umbrella survives at k=4 where Dominant folds it into
+  the sand. Pixel picker reads the exact source pixel via a 1×1 drawImage, not the
+  scaled preview. Verified on the production build: synthetic image's exact
+  source colours and shares recovered, picker exact, transparent-image message,
+  12 colours at 375px with no overflow, console clean.
 - **Rent receipt generator (India)** — ClearTax/NoBroker own the head; winnable
   tail only (revenue stamp, bulk 12-month PDF). Fits finance cluster, Jan–Mar
   seasonal. Medium.
