@@ -90,6 +90,7 @@ import TokenCounter from "@/components/tools/TokenCounter";
 import HeicToJpg from "@/components/tools/HeicToJpg";
 import CompressPng from "@/components/tools/CompressPng";
 import AvifConverter from "@/components/tools/AvifConverter";
+import WebpConverter from "@/components/tools/WebpConverter";
 import FaviconGenerator from "@/components/tools/FaviconGenerator";
 import PdfMetadata from "@/components/tools/PdfMetadata";
 import PdfToText from "@/components/tools/PdfToText";
@@ -207,6 +208,7 @@ const REGISTRY = {
   "heic-to-jpg": HeicToJpg,
   "compress-png": CompressPng,
   "avif-converter": AvifConverter,
+  "webp-converter": WebpConverter,
   "favicon-generator": FaviconGenerator,
   "qr-code-generator": QrCodeGenerator,
   "cgpa-to-percentage": CgpaToPercentage,
