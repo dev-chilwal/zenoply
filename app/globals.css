@@ -1038,3 +1038,20 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 /* Opaque icons sit on a plain panel; transparent ones keep the checkerboard. */
 .fav-swatch:not(.svg-stage-alpha) { background: color-mix(in srgb, var(--fg) 4%, transparent); }
 .fav-swatch img { display: block; }
+
+/* ---------- Color palette from image ---------- */
+/* Chips flex in proportion to share; min-width keeps a 1% accent clickable and
+   wrapping stops a 12-colour strip overflowing a phone. */
+.palette-strip { display: flex; flex-wrap: wrap; gap: 4px; margin: 1rem 0 .75rem; border-radius: var(--radius-sm); overflow: hidden; }
+.palette-chip { flex-basis: 0; min-width: 72px; height: 96px; border: 0; padding: 0 0 .55rem; display: flex; align-items: flex-end; justify-content: center; cursor: pointer; font-size: .78rem; font-family: inherit; }
+.palette-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.palette-table-wrap { min-width: 0; overflow-x: auto; margin-top: .9rem; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.palette-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.palette-table th, .palette-table td { padding: .45rem .6rem; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.palette-table tr:last-child td { border-bottom: 0; }
+.palette-table th { font-weight: 600; font-size: .8rem; color: var(--muted); }
+.palette-dot { display: block; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); }
+.palette-copy { background: none; border: 0; padding: 0; color: inherit; cursor: pointer; font: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
+.palette-copy:hover { color: var(--accent); }
+.palette-sub { margin-top: 1.75rem; }
+.palette-pick { cursor: crosshair; }

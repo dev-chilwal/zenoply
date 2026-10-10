@@ -81,6 +81,7 @@ import CropImage from "@/components/tools/CropImage";
 import RotateImage from "@/components/tools/RotateImage";
 import WatermarkImage from "@/components/tools/WatermarkImage";
 import BlackAndWhiteImage from "@/components/tools/BlackAndWhiteImage";
+import ColorPaletteFromImage from "@/components/tools/ColorPaletteFromImage";
 import MemeGenerator from "@/components/tools/MemeGenerator";
 import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
@@ -204,6 +205,7 @@ const REGISTRY = {
   "watermark-image": WatermarkImage,
   "meme-generator": MemeGenerator,
   "black-and-white-image": BlackAndWhiteImage,
+  "color-palette-from-image": ColorPaletteFromImage,
   "exif-viewer": ExifViewer,
   "heic-to-jpg": HeicToJpg,
   "compress-png": CompressPng,
