@@ -80,6 +80,7 @@ import OcrPdf from "@/components/tools/OcrPdf";
 import CropImage from "@/components/tools/CropImage";
 import RotateImage from "@/components/tools/RotateImage";
 import WatermarkImage from "@/components/tools/WatermarkImage";
+import BlackAndWhiteImage from "@/components/tools/BlackAndWhiteImage";
 import MemeGenerator from "@/components/tools/MemeGenerator";
 import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
@@ -201,6 +202,7 @@ const REGISTRY = {
   "rotate-image": RotateImage,
   "watermark-image": WatermarkImage,
   "meme-generator": MemeGenerator,
+  "black-and-white-image": BlackAndWhiteImage,
   "exif-viewer": ExifViewer,
   "heic-to-jpg": HeicToJpg,
   "compress-png": CompressPng,
