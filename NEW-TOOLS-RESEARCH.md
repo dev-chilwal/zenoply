@@ -1002,8 +1002,27 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   seasonal. Medium.
 - **Unit converter family** — 4 competitors, pure math, huge long-tail (page per
   pair) but calculator.net/RapidTables entrenched — programmatic play, medium.
-- **Pixelate/blur-region, circle crop, border, grayscale, Instagram grid
+- **Pixelate/blur-region, circle crop, border, ~~grayscale~~, Instagram grid
   splitter** — trivial Canvas one-offs from the TinyWow catalog; batch as filler.
+  - ~~**Grayscale / black and white**~~ **SHIPPED 10 Oct 2026**
+    (`/image/black-and-white-image`) — zero new deps; pure pixel maths in
+    `components/tools/grayscale.js` (node-tested). Three conversions, because
+    "grayscale" is not one formula: Natural = Rec. 709 weights in **linear
+    light** (pure red → 127, the brightness it appears to have), Classic =
+    Rec. 601 luma on encoded bytes (red → 76, what most apps do, so offered for
+    matching), Average. **Gotcha:** a 4096-step linear→sRGB table was a byte off
+    for ~1 in 50 colours (the curve is steep near black); encode is now a binary
+    search over exact per-byte boundaries — 0 mismatches over 201k colours vs the
+    Math.pow path. Pure B&W: Otsu auto-threshold (alpha<128 excluded; takes the
+    **middle of a tie plateau**, else two clean tones cut hard against the dark
+    one), manual slider, or serpentine Floyd–Steinberg. **Finding in browser
+    verification:** error diffusion preserves mean tone whatever the cut (a
+    gradient dithered at t=200 kept 12.5/37.5/62.5/87.5% white per quarter), so
+    the threshold UI is hidden while dithering and brightness/contrast steer it.
+    Auto cut comes from the preview and is reused at full size so the download
+    matches the preview. Verified on the production build (static server on
+    `out/`): pixel values match the guide's numbers, binary output with alpha
+    kept, 12 MP JPG, no 375px overflow, console clean.
 - **Invoice generator (GST)** — strong finance-cluster synergy, but
   invoice-generator.com/Zoho/Canva own the head; India-GST angle only. M.
 - **Audio trim** — native OfflineAudioContext + hand-rolled WAV writer is
