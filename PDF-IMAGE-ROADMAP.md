@@ -238,7 +238,22 @@ equivalent. These four are the cheap end — plain Canvas, no new deps.
 All 8 packages verified Apache-2.0 against the npm registry API, all
 repackaged from Squoosh, all built for browser + Web Worker ✓.
 
-- [ ] WebP to PNG / PNG to WebP (`webp-to-png`)
+- [x] WebP convert — shipped 10 Oct 2026 as `/image/webp-converter`
+      (JPG/PNG/GIF/BMP/AVIF → WebP, lossy or lossless; WebP → PNG/JPG stays
+      with Image Converter, since every browser decodes WebP natively).
+      `@jsquash/webp` 1.5.0 (Apache-2.0): baseline `codec/enc/webp_enc.js`
+      imported straight into a module worker like AVIF (skips encode.js's
+      wasm-feature-detect); webpack self-hosts the 281 KB wasm, fetched on
+      first Convert only. The reason to bundle an encoder at all: Safari's
+      `toBlob("image/webp")` returns a PNG, and no browser exposes lossless.
+      Lossless finding: libwebp keeps every pixel with alpha > 0 exactly
+      (node round-trip, partial alpha included) and only rewrites colour
+      under alpha 0; in the browser, opaque pixels are bit-exact but partly
+      transparent ones come back ≤1 premultiplied level off because the
+      canvas decode stores them premultiplied — the copy says so rather than
+      claiming "every pixel". Verified on the production build: 2000×1054
+      JPG 515.5 KB → 92.2/127.9/270.2 KB at q50/75/90, 1.49 MB lossless;
+      logo PNG 19.8 → 4.6 KB lossless with alpha; no 375px overflow.
 - [x] AVIF convert — shipped 9 Oct 2026 as `/image/avif-converter`
       (JPG/PNG/WebP/GIF/BMP → AVIF; AVIF → JPG/PNG stays with Image Converter,
       since every current browser decodes AVIF natively). `@jsquash/avif`
