@@ -1018,6 +1018,21 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   pair) but calculator.net/RapidTables entrenched — programmatic play, medium.
 - **Pixelate/blur-region, circle crop, border, ~~grayscale~~, Instagram grid
   splitter** — trivial Canvas one-offs from the TinyWow catalog; batch as filler.
+  - ~~**Circle crop**~~ **SHIPPED 12 Oct 2026** (`/image/circle-crop-image`) —
+    zero new deps; reuses Crop Image's `crop-stage` pointer-capture drag with the
+    box rounded (`border-radius: 50%` makes the 9999px box-shadow dim a circle).
+    Grips sit on the circle at 45° rather than the square's corners so they stay
+    on the picture at the edges; grip drags project onto the diagonal and anchor
+    the opposite corner, the slider keeps the centre. Output is a square at the
+    crop's own size or 1024–128px. **Render order matters:** image → border ring
+    (overshooting the edge by 1px) → `destination-in` filled arc → optional
+    `destination-over` corner fill. Masking last gives one anti-aliased outer
+    edge; a ring stroked over an already-masked circle leaves a fringe of photo
+    pixels at partial alpha. `clip()` is avoided because it is not anti-aliased
+    in every browser. JPG offered only once corners have a fill. Verified on the
+    production build: corners alpha 0, 960 partial-alpha edge pixels at 320px,
+    0 of 1,181 edge pixels tinted by the photo with a 5% white border, JPG 512px
+    with white corners, drag/resize maths exact, no 375px overflow, console clean.
   - ~~**Grayscale / black and white**~~ **SHIPPED 10 Oct 2026**
     (`/image/black-and-white-image`) — zero new deps; pure pixel maths in
     `components/tools/grayscale.js` (node-tested). Three conversions, because
