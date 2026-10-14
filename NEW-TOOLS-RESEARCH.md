@@ -1016,8 +1016,25 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   seasonal. Medium.
 - **Unit converter family** — 4 competitors, pure math, huge long-tail (page per
   pair) but calculator.net/RapidTables entrenched — programmatic play, medium.
-- **~~Pixelate/blur-region~~, ~~circle crop~~, border, ~~grayscale~~, Instagram grid
+- **~~Pixelate/blur-region~~, ~~circle crop~~, ~~border~~, ~~grayscale~~, Instagram grid
   splitter** — trivial Canvas one-offs from the TinyWow catalog; batch as filler.
+  - ~~**Add border**~~ **SHIPPED 14 Oct 2026** (`/image/add-border-to-image`) —
+    zero new deps; geometry in `components/tools/borderLayout.js` (node-tested).
+    Width as % of the **shorter side** (default 5%) or px, converted when the unit
+    flips so the border does not jump; optional per-side widths (Polaroid-style
+    deep bottom); "Make it square" pads the shorter side in the border colour so a
+    landscape photo fits a square post uncropped (odd spare pixel to right/bottom);
+    rounded outer corners as % of the output's short side, capped at 50%. Paint
+    order: fill border colour → `clearRect` the picture's slot → draw picture at
+    natural size (never resampled, so a transparent PNG stays transparent inside the
+    frame) → `destination-in` rounded-rect mask last (one anti-aliased edge) → JPG
+    only: `destination-over` white. Preview is the full-size layout through
+    `setTransform`, so it is the download at reduced scale. Verified on the
+    production build (static server on `out/`): 400×300 at 5% → 430×330; square →
+    430×430 with exact edges at x=14/15, 414/415 and y=64/65 and the source's
+    transparent 10×10 corner still alpha 0; per-side bottom 20% → 60px, 430×375;
+    JPG corners white at 20% radius; %→px switch keeps 15/15/60/15; no 375px
+    overflow; console clean.
   - ~~**Pixelate / blur region**~~ **SHIPPED 14 Oct 2026** (`/image/blur-image`) —
     zero new deps; pixel maths in `components/tools/blurRegions.js` (node-tested;
     not `blurImage.js` — case collision with the component). Three effects over
