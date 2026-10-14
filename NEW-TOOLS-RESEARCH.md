@@ -1016,8 +1016,29 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   seasonal. Medium.
 - **Unit converter family** — 4 competitors, pure math, huge long-tail (page per
   pair) but calculator.net/RapidTables entrenched — programmatic play, medium.
-- **Pixelate/blur-region, circle crop, border, ~~grayscale~~, Instagram grid
+- **~~Pixelate/blur-region~~, ~~circle crop~~, border, ~~grayscale~~, Instagram grid
   splitter** — trivial Canvas one-offs from the TinyWow catalog; batch as filler.
+  - ~~**Pixelate / blur region**~~ **SHIPPED 14 Oct 2026** (`/image/blur-image`) —
+    zero new deps; pixel maths in `components/tools/blurRegions.js` (node-tested;
+    not `blurImage.js` — case collision with the component). Three effects over
+    any number of drawn rectangle/ellipse areas: Pixelate (exact **alpha-weighted**
+    block means laid out from the area's corner, so a transparent pixel's hidden
+    RGB cannot tint a block), Blur (Gaussian as three running-sum box passes each
+    way on **premultiplied** planes, cost independent of radius; reads a 3x-radius
+    margin of real surrounding pixels so the edge blends instead of seaming) and
+    Solid box. Strength is a % of the shorter side, so the ≤1000px preview is the
+    download at reduced scale. Drawing reuses the `crop-stage` / `sign-place`
+    markup with **one** pointer capture on the stage for draw/move/resize; a stray
+    click or a box shrunk under 4px is dropped. Copy steers sensitive text to the
+    solid box, since pixelated/lightly blurred text can be matched back (Depix).
+    Rect areas `clearRect` before compositing so a semi-transparent source never
+    shows through; ellipses use a `destination-in` mask (anti-aliased, unlike
+    `clip()`). Verified on the production build: drawn (100,100)-(140,140) area
+    pixelated with 0 mismatches vs independent block means and 0 changed pixels
+    outside; blur 1,598/1,600 changed inside, 0 outside; solid box 1,600/1,600
+    black; ellipse leaves corners untouched; move/corner-resize maths exact;
+    Delete removes the selected area; 12 MP whole-image blur (90px) downloads in
+    ~1.2s at 4000x3000 as JPG for JPG input; no 375px overflow; console clean.
   - ~~**Circle crop**~~ **SHIPPED 12 Oct 2026** (`/image/circle-crop-image`) —
     zero new deps; reuses Crop Image's `crop-stage` pointer-capture drag with the
     box rounded (`border-radius: 50%` makes the 9999px box-shadow dim a circle).
