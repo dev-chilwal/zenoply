@@ -79,6 +79,7 @@ import ImageToText from "@/components/tools/ImageToText";
 import OcrPdf from "@/components/tools/OcrPdf";
 import CropImage from "@/components/tools/CropImage";
 import CircleCropImage from "@/components/tools/CircleCropImage";
+import BlurImage from "@/components/tools/BlurImage";
 import RotateImage from "@/components/tools/RotateImage";
 import WatermarkImage from "@/components/tools/WatermarkImage";
 import BlackAndWhiteImage from "@/components/tools/BlackAndWhiteImage";
@@ -203,6 +204,7 @@ const REGISTRY = {
   "ocr-pdf": OcrPdf,
   "crop-image": CropImage,
   "circle-crop-image": CircleCropImage,
+  "blur-image": BlurImage,
   "rotate-image": RotateImage,
   "watermark-image": WatermarkImage,
   "meme-generator": MemeGenerator,

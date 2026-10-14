@@ -498,6 +498,14 @@ h2 { font-size: 1.35rem; margin: 1.75rem 0 .9rem; letter-spacing: -.01em; }
 .crop-circle { border-radius: 50%; }
 .crop-circle::before, .crop-circle::after { display: none; }
 
+/* Blur Image: the stage shows the processed preview canvas; drag on it to draw
+   areas. Unselected areas keep a faint outline so they can be found again. */
+.blur-stage { cursor: crosshair; }
+.blur-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.blur-preview { display: block; width: 100%; height: auto; }
+.blur-region { border-color: rgba(255,255,255,.75); box-shadow: 0 0 0 1px rgba(0,0,0,.35); }
+.blur-ellipse { border-radius: 50%; }
+
 /* ---------- Sign PDF: signature pad + placements over the page preview ---------- */
 .sign-step { margin: 1.75rem 0 .5rem; font-size: 1rem; }
 /* The pad and the sample sit on white in both themes: ink is drawn dark, and
