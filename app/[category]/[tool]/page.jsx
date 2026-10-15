@@ -81,6 +81,7 @@ import CropImage from "@/components/tools/CropImage";
 import CircleCropImage from "@/components/tools/CircleCropImage";
 import BlurImage from "@/components/tools/BlurImage";
 import AddBorderToImage from "@/components/tools/AddBorderToImage";
+import SplitImage from "@/components/tools/SplitImage";
 import RotateImage from "@/components/tools/RotateImage";
 import WatermarkImage from "@/components/tools/WatermarkImage";
 import BlackAndWhiteImage from "@/components/tools/BlackAndWhiteImage";
@@ -207,6 +208,7 @@ const REGISTRY = {
   "circle-crop-image": CircleCropImage,
   "blur-image": BlurImage,
   "add-border-to-image": AddBorderToImage,
+  "split-image": SplitImage,
   "rotate-image": RotateImage,
   "watermark-image": WatermarkImage,
   "meme-generator": MemeGenerator,

@@ -1067,3 +1067,20 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .palette-copy:hover { color: var(--accent); }
 .palette-sub { margin-top: 1.75rem; }
 .palette-pick { cursor: crosshair; }
+
+/* ---------- Split image: tiles laid out as the grid they came from ---------- */
+/* minmax(0, 1fr) tracks (set inline per column count) so a 10-column split
+   shrinks to fit a phone instead of overflowing it. */
+.split-grid { display: grid; gap: 6px; margin-top: 1rem; }
+.split-tile {
+  position: relative; display: block; min-width: 0; padding: 0; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+  background: color-mix(in srgb, var(--fg) 4%, transparent);
+}
+.split-tile:hover, .split-tile:focus-visible { border-color: var(--accent); }
+.split-tile canvas { display: block; width: 100%; height: auto; }
+.split-num {
+  position: absolute; top: 4px; left: 4px; min-width: 1.4em; padding: 0 .3em;
+  border-radius: 4px; font-size: .72rem; line-height: 1.4; text-align: center;
+  color: #fff; background: rgba(0, 0, 0, .6);
+}
