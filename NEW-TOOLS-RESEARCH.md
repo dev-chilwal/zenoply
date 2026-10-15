@@ -1016,8 +1016,29 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   seasonal. Medium.
 - **Unit converter family** — 4 competitors, pure math, huge long-tail (page per
   pair) but calculator.net/RapidTables entrenched — programmatic play, medium.
-- **~~Pixelate/blur-region~~, ~~circle crop~~, ~~border~~, ~~grayscale~~, Instagram grid
-  splitter** — trivial Canvas one-offs from the TinyWow catalog; batch as filler.
+- **~~Pixelate/blur-region~~, ~~circle crop~~, ~~border~~, ~~grayscale~~, ~~Instagram grid
+  splitter~~** — trivial Canvas one-offs from the TinyWow catalog; batch as filler.
+  **All five now shipped.**
+  - ~~**Instagram grid splitter**~~ **SHIPPED 15 Oct 2026** (`/image/split-image`) —
+    zero new deps; geometry in `components/tools/gridSplit.js` (node-tested, 416
+    assertions; not `splitImage.js` — case collision with the component). Any grid
+    up to 10×10 with 1×3 carousel / 3×3 / 2×3 / 2×2 presets. **Whole image** cuts at
+    `round(i·len/n)`, so remainders spread one pixel at a time (1000/3 →
+    333/334/333) and neighbours share edges — no pixel lost or duplicated.
+    **Square / 4:5 / 3:4** trim to the largest identical whole-pixel tile
+    (`tw = floor(min(w/cols, (h/rows)·aw/ah))`) with a Keep slider along the trimmed
+    axis; 3:4 because Instagram's profile grid moved to 3:4 thumbnails in early 2025,
+    4:5 for the tallest feed/carousel slide. Optional **Instagram posting order**
+    numbering (bottom-right tile = 1, since the newest post lands top left); names
+    are `base-NN-rRcC.ext`, zero-padded so they sort in upload order. Preview dims
+    the trimmed area and draws cut lines; the tile grid below mirrors the layout
+    with `minmax(0,1fr)` tracks and each tile downloads on its own. ZIP via
+    `buildZip` (stored), tiles encoded sequentially on one reused canvas. Verified
+    on the production build (static server on `out/`) with a coordinate-encoded
+    1000×600 source: 3×3 square → nine 200×200 tiles, every pixel matching its
+    source coordinate, centred trim at x=200, posting-order names 09…01; Keep=0
+    single-tile download starts at (0,0); whole-image 1×3 → 333/334/333 at x=0/333/667;
+    10×10 at 375px with no overflow; console clean.
   - ~~**Add border**~~ **SHIPPED 14 Oct 2026** (`/image/add-border-to-image`) —
     zero new deps; geometry in `components/tools/borderLayout.js` (node-tested).
     Width as % of the **shorter side** (default 5%) or px, converted when the unit
