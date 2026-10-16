@@ -63,7 +63,10 @@ depletion all confirmed against a worked example).
       (1+r)^(1/12)-1, not r/12), waiting cash earns a user-set rate, break-even
       return shown. MiniChart gained an optional dashed second series.
 - [x] EMI / mortgage prepayment — extra monthly payment, with interest &
-      time saved (shared `lib/amortization.js`). One-time/lump-sum mode pending.
+      time saved (shared `lib/amortization.js`). One-time/lump-sum mode ✓ —
+      16 Oct 2026, dedicated /finance/loan-prepayment-calculator: one-time or
+      yearly part payment, reduce-tenure vs reduce-EMI side by side
+      (`lib/prepayment.js`).
 - [x] EMI / mortgage full amortization schedule (year-by-year table) + balance chart
 - [x] Mortgage full-cost inputs ✓ — 1 Oct 2026: home price + down payment %
       (loan derived), property tax (% of price p.a.), home insurance (p.a.),
