@@ -14,6 +14,7 @@ import ColorConverter from "@/components/tools/ColorConverter";
 import SipCalculator from "@/components/tools/SipCalculator";
 import StepUpSipCalculator from "@/components/tools/StepUpSipCalculator";
 import EmiCalculator from "@/components/tools/EmiCalculator";
+import LoanPrepaymentCalculator from "@/components/tools/LoanPrepaymentCalculator";
 import GstCalculator from "@/components/tools/GstCalculator";
 import CompoundInterest from "@/components/tools/CompoundInterest";
 import FdCalculator from "@/components/tools/FdCalculator";
@@ -135,6 +136,7 @@ const REGISTRY = {
   "sip-calculator": SipCalculator,
   "step-up-sip-calculator": StepUpSipCalculator,
   "emi-calculator": EmiCalculator,
+  "loan-prepayment-calculator": LoanPrepaymentCalculator,
   "gst-calculator": GstCalculator,
   "compound-interest-calculator": CompoundInterest,
   "fd-calculator": FdCalculator,

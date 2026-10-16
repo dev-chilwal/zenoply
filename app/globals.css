@@ -958,6 +958,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .sched td.r, .sched th.r { text-align: right; font-variant-numeric: tabular-nums; }
 .sched tbody tr:last-child td { border-bottom: 0; }
 .sched tbody tr:hover { background: var(--tag-bg); }
+/* Side-by-side comparison (Loan Prepayment): figures must never be clipped, so
+   the table sizes to its content and the wrap scrolls sideways if it must. */
+.sched.cmp { table-layout: auto; }
+.sched.cmp th, .sched.cmp td { overflow: visible; text-overflow: clip; padding: .55rem .6rem; }
+.sched.cmp thead th, .sched.cmp td:first-child { white-space: normal; width: auto; }
+@media (max-width: 480px) {
+  .sched.cmp { font-size: .82rem; }
+  .sched.cmp th, .sched.cmp td { padding: .5rem .4rem; }
+}
 
 /* right rail */
 .rail-block { padding-bottom: 1.4rem; margin-bottom: 1.4rem; border-bottom: 1px solid var(--line); }
