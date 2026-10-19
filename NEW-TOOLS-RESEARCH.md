@@ -1029,9 +1029,26 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   scaled preview. Verified on the production build: synthetic image's exact
   source colours and shares recovered, picker exact, transparent-image message,
   12 colours at 375px with no overflow, console clean.
-- **Rent receipt generator (India)** — ClearTax/NoBroker own the head; winnable
-  tail only (revenue stamp, bulk 12-month PDF). Fits finance cluster, Jan–Mar
-  seasonal. Medium.
+- ~~**Rent receipt generator (India)**~~ **SHIPPED 19 Oct 2026**
+  (`/finance/rent-receipt-generator`) — zero new deps (pdf-lib + the existing
+  `rupeesWords.js`). Schedule and PDF writer in `components/tools/rentReceipts.js`
+  (node-tested, 40 assertions). Any period up to 24 months, defaulting to the
+  visitor's current April–March FY (set in an effect after mount so prerendered
+  HTML and hydration agree); monthly / quarterly / one-for-the-period, a short
+  final quarter gets its own receipt; dated on the rent day of the first month,
+  clamped to month length (31 → 30 Apr). Three receipts per A4 page with dashed
+  cut lines. PAN prompt once annual rent > ₹1,00,000 (CBDT Circ. 8/2013);
+  revenue-stamp box defaults on for cash receipts > ₹5,000, user-overridable.
+  **Gotcha:** the standard PDF fonts are WinAnsi only — `₹` is written as "Rs."
+  and anything else outside the font's character set (Devanagari etc.) is
+  reported by name instead of letting pdf-lib throw mid-save. Landlord line
+  auto-shrinks to fit beside the stamp/signature. Verified on the production
+  build (static server on `out/`): the guide's worked example reproduced exactly
+  (12 receipts / 4 pages / ₹3,00,000, PAN prompt), downloaded PDF re-read with
+  pdf-lib + pdftotext, quarterly/cash/day-31/Devanagari paths, 375px layout
+  (a squeezed landlord column was found and fixed), console clean. Original
+  note: ClearTax/NoBroker own the head; winnable tail only (revenue stamp, bulk
+  12-month PDF). Fits finance cluster, Jan–Mar seasonal.
 - **Unit converter family** — 4 competitors, pure math, huge long-tail (page per
   pair) but calculator.net/RapidTables entrenched — programmatic play, medium.
 - **~~Pixelate/blur-region~~, ~~circle crop~~, ~~border~~, ~~grayscale~~, ~~Instagram grid
