@@ -628,6 +628,20 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   .gif-frames .file-name { min-width: 0; flex-basis: calc(100% - 44px - 1.5rem - 5rem); }
   .gif-frames .file-ctrl { margin-left: auto; }
 }
+/* Rent receipt preview — a paper-like card mirroring one PDF receipt. */
+.month-pick { display: flex; gap: .5rem; }
+.month-pick .inp { flex: 1; min-width: 0; }
+.rent-receipt {
+  border: 1px solid var(--fg); border-radius: 4px; background: var(--surface);
+  padding: 1rem 1.1rem; margin-top: .35rem; font-size: .92rem; line-height: 1.55; overflow-wrap: anywhere;
+}
+.rent-receipt p { margin: .6rem 0 1.4rem; }
+.rr-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.rr-head span { text-align: right; font-size: .82rem; color: var(--muted); }
+.rr-foot { display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap; font-size: .82rem; }
+.rr-foot > span:first-child { flex: 1 1 12rem; min-width: 0; }
+.rr-stamp { width: 3.4rem; height: 3.4rem; border: 1px dashed var(--muted-2); color: var(--muted); font-size: .62rem; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
+.rr-sign { border-top: 1px solid var(--fg); padding-top: .2rem; min-width: 10rem; color: var(--muted); }
 
 /* ============================================================
    FINANCE LANDING — the redesign
