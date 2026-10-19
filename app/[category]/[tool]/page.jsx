@@ -88,6 +88,7 @@ import WatermarkImage from "@/components/tools/WatermarkImage";
 import BlackAndWhiteImage from "@/components/tools/BlackAndWhiteImage";
 import ColorPaletteFromImage from "@/components/tools/ColorPaletteFromImage";
 import MemeGenerator from "@/components/tools/MemeGenerator";
+import GifMaker from "@/components/tools/GifMaker";
 import ExifViewer from "@/components/tools/ExifViewer";
 import QrCodeGenerator from "@/components/tools/QrCodeGenerator";
 import CgpaToPercentage from "@/components/tools/CgpaToPercentage";
@@ -214,6 +215,7 @@ const REGISTRY = {
   "rotate-image": RotateImage,
   "watermark-image": WatermarkImage,
   "meme-generator": MemeGenerator,
+  "gif-maker": GifMaker,
   "black-and-white-image": BlackAndWhiteImage,
   "color-palette-from-image": ColorPaletteFromImage,
   "exif-viewer": ExifViewer,

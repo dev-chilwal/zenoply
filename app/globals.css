@@ -621,6 +621,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   width: 44px; height: 44px; flex-shrink: 0; object-fit: cover;
   border-radius: 6px; border: 1px solid var(--line-soft); background: var(--surface);
 }
+/* GIF maker frame rows carry a thumbnail and three buttons; on a phone the
+   buttons drop to their own line instead of pushing the row off screen. */
+@media (max-width: 560px) {
+  .gif-frames .file-item { flex-wrap: wrap; }
+  .gif-frames .file-name { min-width: 0; flex-basis: calc(100% - 44px - 1.5rem - 5rem); }
+  .gif-frames .file-ctrl { margin-left: auto; }
+}
 
 /* ============================================================
    FINANCE LANDING — the redesign
