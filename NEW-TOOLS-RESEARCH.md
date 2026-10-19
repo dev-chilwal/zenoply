@@ -988,8 +988,26 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   PNG) + fflate zip of all sizes + manifest. No maintained browser encoder
   exists and none is needed. Caveat: realfavicongenerator/favicon.io are
   entrenched dev brands → low-medium winnability despite S–M effort.
-- **GIF maker (images → GIF)** — `gifenc` (MIT, tiny) or `modern-gif` (MIT,
-  active, also decodes → bonus GIF-splitter). Skip `gif.js` (dead since 2016).
+- ~~**GIF maker (images → GIF)**~~ **SHIPPED 19 Oct 2026** (`/image/gif-maker`) —
+  `gifenc` 1.0.3 (MIT, ~8 KB), lazy-loaded on first build; logic in
+  `components/tools/gifFrames.js` (node-tested). Per-frame palettes, delay in
+  centiseconds floored at 2 (browsers slow 0–1 cs to 10 cs), loop forever / N
+  times (NETSCAPE count = N−1, "once" = no NETSCAPE block), contain or cover
+  fit, background colour or 1-bit transparency (alpha ≥ 128 kept). **Findings:**
+  (1) gifenc's quantizer bins at rgb565 and averages each bin, so even a flat
+  frame with a few colours comes out shifted (pure blue decoded as 11,11,255) —
+  frames with ≤ N distinct colours now get an exact palette, verified byte for
+  byte through ffmpeg. (2) Disposal 2 alone is not enough for transparency:
+  ffmpeg (and some viewers) clear to the opaque background colour unless the
+  disposed frame itself declares a transparent index, so in transparent mode
+  every frame gets disposal 2 *and* a transparent index (a slot is reserved).
+  (3) ffmpeg needs `-fps_mode passthrough` to decode GIF frames 1:1. Size
+  numbers for the guide measured on 12 grainy 480×360 frames: 830 KB at 256
+  colours, 453 KB at 64, 230 KB at 240×180. Verified on the production build
+  in Chrome via `ImageDecoder` (frame count, sizes, durations, repetitionCount,
+  exact colours, transparent clear, cover fill), no overflow at 375px, console
+  clean. Original note: `modern-gif` (MIT) also decodes → bonus GIF-splitter.
+  Skip `gif.js` (dead since 2016).
 - **Image to SVG vectorizer** — `imagetracerjs` (Unlicense) is the ONLY
   permissive option; posterized color tracing, manage quality expectations.
   Every potrace derivative is GPL — do not ship.
