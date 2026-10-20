@@ -1011,9 +1011,37 @@ Cheapest wins first — each completes an existing cluster and cross-links:
 - **Image to SVG vectorizer** — `imagetracerjs` (Unlicense) is the ONLY
   permissive option; posterized color tracing, manage quality expectations.
   Every potrace derivative is GPL — do not ship.
-- **Zip / unzip** — `fflate` (MIT, 12KB gz, worker-parallel). Also upgrades
-  every existing multi-file tool with "download all as zip". Highest-leverage
-  infra pick even before the standalone tool.
+- ~~**Zip / unzip**~~ **Unzip SHIPPED 20 Oct 2026** (`/dev/unzip-files`) —
+  zero new deps; `fflate` was not needed. `components/tools/unzip.js` reads the
+  archive the way the format intends, from the back: one `Blob.slice` for the
+  end record, one for the central directory, so a 70,000-entry Zip64 archive
+  lists in ~0.8s and nothing is loaded whole. Each entry streams from its own
+  slice through native `DecompressionStream("deflate-raw")` and a transform
+  that checks CRC-32 **and** declared size (errors past it, so a bomb cannot
+  inflate beyond its own claim). Handles Zip64 (locator + extra field),
+  self-extractor stubs (offset shift detected by probing for the directory
+  signature both ways), the Info-ZIP Unicode Path extra (trusted only while its
+  CRC matches the header name), extended-timestamp mtime. **Finding:** macOS
+  Info-ZIP writes UTF-8 names *without* the UTF-8 flag, so a spec-strict reader
+  (Python's zipfile) shows `cafe` as CP437 mojibake; names that decode as strict
+  UTF-8 are taken as UTF-8, else the CP437 table (verified against Python's
+  codec for all 128 high bytes). **Gotcha:** `new Response(stream).arrayBuffer()`
+  in Chrome turns any stream error into a bare "Failed to fetch", swallowing
+  the CRC message — read with a plain reader instead. Encrypted / BZIP2 / LZMA
+  / Deflate64 / split archives are named, not failed; RAR/7z/gzip/tar sniffed
+  by magic. Extract-all uses `showDirectoryPicker` (Chromium desktop only),
+  streams each entry to `createWritable`, writes into a folder named after the
+  zip, removes a file whose CRC fails, flattens `..`/absolute/drive paths and
+  replaces Windows-illegal characters and device names (CON → _CON). macOS
+  `__MACOSX` / `.DS_Store` hidden by default. Node-tested (226 assertions)
+  against Info-ZIP and Python zipfile fixtures, every extracted byte SHA-256
+  matched. Verified on the production build (static server on `out/`): listing,
+  download hash, text view, truncated / RAR / encrypted / bad-CRC / SFX / zip
+  slip messages, extract-all through an OPFS-backed stub of the picker (same
+  `FileSystemDirectoryHandle` API) including all 70,000 files, 375px layout,
+  console clean. Still open: a standalone **Zip files** (create) tool —
+  `CompressionStream("deflate-raw")` would give real Deflate for `zip.js`'s
+  writer, which today only stores.
 - ~~**Color palette extractor**~~ **SHIPPED 11 Oct 2026**
   (`/image/color-palette-from-image`) — zero new deps; `extract-colors` was not
   needed. `components/tools/palette.js` (node-tested) bins pixels at 5 bits per
