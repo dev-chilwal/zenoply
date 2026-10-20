@@ -118,6 +118,7 @@ import JsonToXml from "@/components/tools/JsonToXml";
 import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
 import RomanNumerals from "@/components/tools/RomanNumerals";
 import FileChecksum from "@/components/tools/FileChecksum";
+import UnzipFiles from "@/components/tools/UnzipFiles";
 import SvgToPng from "@/components/tools/SvgToPng";
 import ImageToBase64 from "@/components/tools/ImageToBase64";
 import AgeCalculator from "@/components/tools/AgeCalculator";
@@ -245,6 +246,7 @@ const REGISTRY = {
   "html-entity-encoder": HtmlEntityEncoder,
   "roman-numerals": RomanNumerals,
   "file-checksum": FileChecksum,
+  "unzip-files": UnzipFiles,
   "svg-to-png": SvgToPng,
   "image-to-base64": ImageToBase64,
   "age-calculator": AgeCalculator,

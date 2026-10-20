@@ -628,6 +628,16 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   .gif-frames .file-name { min-width: 0; flex-basis: calc(100% - 44px - 1.5rem - 5rem); }
   .gif-frames .file-ctrl { margin-left: auto; }
 }
+/* Unzip: inline preview of one entry under its row, and on a phone the
+   View/Download buttons drop to their own line so a long path keeps the width. */
+.unzip-preview { margin: .5rem 0 .25rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: .6rem; }
+.unzip-preview img { display: block; max-width: 100%; max-height: 420px; margin: 0 auto; }
+.unzip-preview pre { margin: 0; max-height: 420px; overflow: auto; font-size: .8rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 560px) {
+  .unzip-list .file-item { flex-wrap: wrap; }
+  .unzip-list .file-name { min-width: 0; flex-basis: 100%; }
+  .unzip-list .file-ctrl { margin-left: auto; }
+}
 /* Rent receipt preview — a paper-like card mirroring one PDF receipt. */
 .month-pick { display: flex; gap: .5rem; }
 .month-pick .inp { flex: 1; min-width: 0; }
