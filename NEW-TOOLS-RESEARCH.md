@@ -1039,9 +1039,27 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   download hash, text view, truncated / RAR / encrypted / bad-CRC / SFX / zip
   slip messages, extract-all through an OPFS-backed stub of the picker (same
   `FileSystemDirectoryHandle` API) including all 70,000 files, 375px layout,
-  console clean. Still open: a standalone **Zip files** (create) tool —
-  `CompressionStream("deflate-raw")` would give real Deflate for `zip.js`'s
-  writer, which today only stores.
+  console clean. **Zip files (create) SHIPPED 21 Oct 2026** (`/dev/zip-files`) —
+  zero new deps; a separate writer, `components/tools/zipWriter.js`
+  (node-tested; `zip.js` stays the tiny stored-only writer the image tools
+  use). Each file is read in 1 MB `Blob.slice`s through CRC-32 and native
+  `CompressionStream("deflate-raw")`; compressed chunks are kept as Blob
+  parts and the archive is a Blob stitched from headers and parts, so nothing
+  is one big buffer. If Deflate does not shrink a file — and for known
+  precompressed extensions (JPG/PNG/MP4/MP3/zip/docx…) without trying — it is
+  written Stored with **the original File as the data part**, never copied.
+  Made-by Unix with 0644/0755 modes plus the DOS directory bit; UTF-8 flag;
+  DOS time (pre-1980 clamped to 1 Jan 1980) plus the 0x5455 extended
+  timestamp in UTC. Folder intake by drop (`webkitGetAsEntry`, readEntries
+  looped until empty, empty folders kept) or `webkitdirectory`; case-
+  insensitive duplicate paths become `name (2).ext`; `.DS_Store` /
+  `Thumbs.db` / `__MACOSX` / `._*` left out by default. Refuses >4 GB or
+  >65,535 entries up front rather than writing Zip64. Verified: node output
+  passes Python `zipfile.testzip()`, Info-ZIP `unzip -t` and `zipinfo`
+  (modes, methods, dates), byte-exact SHA-256 round-trip through our own
+  `readZip`; on the production build (static server on `out/`) every entry
+  inflated and CRC-checked in-page, dedupe/junk/UTF-8/mtime confirmed,
+  Store-only mode, drop intake, 375px no overflow, console clean.
 - ~~**Color palette extractor**~~ **SHIPPED 11 Oct 2026**
   (`/image/color-palette-from-image`) — zero new deps; `extract-colors` was not
   needed. `components/tools/palette.js` (node-tested) bins pixels at 5 bits per
