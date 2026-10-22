@@ -1095,8 +1095,28 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   (a squeezed landlord column was found and fixed), console clean. Original
   note: ClearTax/NoBroker own the head; winnable tail only (revenue stamp, bulk
   12-month PDF). Fits finance cluster, Jan–Mar seasonal.
-- **Unit converter family** — 4 competitors, pure math, huge long-tail (page per
-  pair) but calculator.net/RapidTables entrenched — programmatic play, medium.
+- ~~**Unit converter family**~~ **SHIPPED 22 Oct 2026** as a single page
+  (`/convert/unit-converter`) — zero new deps; the programmatic page-per-pair
+  play is still open. `components/tools/unitConvert.js` works on **exact BigInt
+  fractions**: every unit is an exact decimal multiple of an SI unit (inch
+  0.0254 m, pound 0.45359237 kg, US gallon 3.785411784 L = 231 in³; °F affine
+  with b = 45967/180 K), so a terminating result is shown in full and marked
+  exact (1 mi = 1.609344 km, 5′7″ = 170.18 cm, 98.6 °F = 37 °C) and only a
+  genuinely repeating one is rounded to a chosen 4–15 significant figures and
+  marked ≈. 8 categories (length, weight, temperature, volume with US and UK
+  kept apart, area incl. cent/guntha — bigha omitted because it varies by
+  state — speed, time, data with kB/MB/GB beside KiB/MiB/GiB). Height angle
+  for India: a Feet + inches row under every length (rounded on total inches
+  first so 152 cm is 5′0″, not 4 ft 12 in), `5'7"` / `5 ft 7 in` input, and a
+  clarifier when the target is feet ("5.577 ft is 5 ft 6.9 in"). Node suite:
+  45 worked values plus every unit pair in every category round-tripped
+  exactly and checked against float to 1e-11. Verified on the production build
+  (static server on `out/`): defaults, height input, 152 cm carry, temperature
+  formula note, below-absolute-zero warning, data tab, error path, no 375px
+  overflow, console clean. **Gotcha found there:** a BigInt rendered as a JSX
+  child prints nothing (React drops it) — stringify before rendering.
+  Original note: 4 competitors, pure math, huge long-tail (page per pair) but
+  calculator.net/RapidTables entrenched — programmatic play, medium.
 - **~~Pixelate/blur-region~~, ~~circle crop~~, ~~border~~, ~~grayscale~~, ~~Instagram grid
   splitter~~** — trivial Canvas one-offs from the TinyWow catalog; batch as filler.
   **All five now shipped.**
