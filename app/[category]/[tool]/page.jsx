@@ -117,6 +117,7 @@ import XmlToJson from "@/components/tools/XmlToJson";
 import JsonToXml from "@/components/tools/JsonToXml";
 import HtmlEntityEncoder from "@/components/tools/HtmlEntityEncoder";
 import RomanNumerals from "@/components/tools/RomanNumerals";
+import UnitConverter from "@/components/tools/UnitConverter";
 import FileChecksum from "@/components/tools/FileChecksum";
 import UnzipFiles from "@/components/tools/UnzipFiles";
 import ZipFiles from "@/components/tools/ZipFiles";
@@ -246,6 +247,7 @@ const REGISTRY = {
   "text-to-binary": TextToBinary,
   "html-entity-encoder": HtmlEntityEncoder,
   "roman-numerals": RomanNumerals,
+  "unit-converter": UnitConverter,
   "file-checksum": FileChecksum,
   "unzip-files": UnzipFiles,
   "zip-files": ZipFiles,
