@@ -122,6 +122,7 @@ import FileChecksum from "@/components/tools/FileChecksum";
 import UnzipFiles from "@/components/tools/UnzipFiles";
 import ZipFiles from "@/components/tools/ZipFiles";
 import SvgToPng from "@/components/tools/SvgToPng";
+import ImageToSvg from "@/components/tools/ImageToSvg";
 import ImageToBase64 from "@/components/tools/ImageToBase64";
 import AgeCalculator from "@/components/tools/AgeCalculator";
 import JsonToTypescript from "@/components/tools/JsonToTypescript";
@@ -252,6 +253,7 @@ const REGISTRY = {
   "unzip-files": UnzipFiles,
   "zip-files": ZipFiles,
   "svg-to-png": SvgToPng,
+  "image-to-svg": ImageToSvg,
   "image-to-base64": ImageToBase64,
   "age-calculator": AgeCalculator,
   "json-to-typescript": JsonToTypescript,

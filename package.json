@@ -21,6 +21,7 @@
     "gifenc": "1.0.3",
     "gpt-tokenizer": "3.4.0",
     "heic-to": "^1.5.2",
+    "imagetracerjs": "^1.2.6",
     "marked": "18.0.14",
     "next": "^14.2.35",
     "pdf-lib": "^1.17.1",
