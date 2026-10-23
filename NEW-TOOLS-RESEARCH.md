@@ -1008,9 +1008,29 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   exact colours, transparent clear, cover fill), no overflow at 375px, console
   clean. Original note: `modern-gif` (MIT) also decodes → bonus GIF-splitter.
   Skip `gif.js` (dead since 2016).
-- **Image to SVG vectorizer** — `imagetracerjs` (Unlicense) is the ONLY
-  permissive option; posterized color tracing, manage quality expectations.
-  Every potrace derivative is GPL — do not ship.
+- ~~**Image to SVG vectorizer**~~ **SHIPPED 23 Oct 2026** (`/image/image-to-svg`)
+  — `imagetracerjs` 1.2.6 (Unlicense; every potrace derivative is GPL, still
+  do not ship) in a module worker (19.6 KB chunk, loaded on first trace), but
+  only for outline-finding and curve fitting. **Its own front end was the
+  weak part:** grid-sampled palette + RGB k-means turned a clean navy/orange
+  logo into one muddy `#6b483f`, and its rectilinear RGB distance sent the
+  blended pixels of a navy/white edge to *orange*, leaving 105 one-to-five-
+  pixel specks (108 shapes for a 4-shape logo). So `components/tools/
+  vectorize.js` builds the palette with the Oklab k-means from `palette.js`,
+  snaps pixels in Oklab, then **despeckles** — merges every 4-connected region
+  under 24/8/3 px (Low/Medium/High) into the label it shares most edge with
+  (blends still land nearest a third colour even in Oklab, so this is the step
+  that matters; 1px lines survive as one long region) — and hands imagetracer
+  exact colours with a fixed palette and one pass. **Own SVG emitter**, since
+  imagetracer's rounds hole paths to whole pixels while outlines keep a
+  decimal, and writes rgb fill+stroke+opacity per path: one hex-filled `<g>`
+  per colour, largest first, alpha<128 dropped, original width/height with the
+  traced grid as viewBox; hairline stroke in colour mode only. Alpha is
+  binarised first. Trace size capped at 500/1000/1600px. Verified on the
+  production build (static server): test logo 108 → 4 shapes, 8.7 → 3.9 KB;
+  SVG redrawn at 800px differs from the source by >48 levels on 0.87% of
+  pixels (edges only), no `<image>`; smoothing cut a grainy 3000×2000 JPG
+  from 263 to 54 shapes in ~0.8s; no 375px overflow; console clean.
 - ~~**Zip / unzip**~~ **Unzip SHIPPED 20 Oct 2026** (`/dev/unzip-files`) —
   zero new deps; `fflate` was not needed. `components/tools/unzip.js` reads the
   archive the way the format intends, from the back: one `Blob.slice` for the
