@@ -1232,8 +1232,27 @@ Cheapest wins first — each completes an existing cluster and cross-links:
     matches the preview. Verified on the production build (static server on
     `out/`): pixel values match the guide's numbers, binary output with alpha
     kept, 12 MP JPG, no 375px overflow, console clean.
-- **Invoice generator (GST)** — strong finance-cluster synergy, but
-  invoice-generator.com/Zoho/Canva own the head; India-GST angle only. M.
+- ~~**Invoice generator (GST)**~~ **SHIPPED 24 Oct 2026** (`/finance/gst-invoice-generator`)
+  — zero new deps; pdf-lib + the rent receipt text helpers (`wrapText`,
+  `normaliseText`, `amountInWords`). Logic in `components/tools/gstInvoice.js`
+  (node-tested). Rule 46 tax invoice on A4: GSTIN check (state code + Luhn
+  mod-36 check character, verified against published GSTINs), state follows the
+  GSTIN's first two digits, place of supply defaults to the buyer's state and is
+  overridable (bill-to-ship-to keeps the buyer's state; B2C goods go where
+  delivery ends — explained in the guide rather than automated). CGST + SGST
+  (UTGST for 04/26/31/35/38) vs IGST; tax is computed **per rate group** on the
+  summed taxable value with each half rounded separately, so CGST always equals
+  SGST and the printed tax summary reconciles — consequence: CGST+SGST can be one
+  paisa above IGST (₹29,999.50 at 18% → 2 × 2,699.96 vs 5,399.91). Paise
+  integers throughout; qty to 3 dp. Invoice no. validated to Rule 46(b) (≤16,
+  letters/digits/-/). Multi-page item table with "continued" header and page
+  numbers; 40-line cap. Ship-to, reverse charge, round-off toggle, notes.
+  Not an e-invoice (no IRN/QR) — said plainly in the UI and guide. Verified on
+  the production build (static server on `out/`): figures match the guide in
+  both intra and inter-state, PDF downloads, GSTIN mistype message, 375px
+  stacked rows with no overflow, console clean. Original note: strong
+  finance-cluster synergy, but invoice-generator.com/Zoho/Canva own the head;
+  India-GST angle only. M.
 - **Audio trim** — native OfflineAudioContext + hand-rolled WAV writer is
   zero-dep; skip MP3 export (lamejs is LGPL + dormant).
 
