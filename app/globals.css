@@ -652,6 +652,28 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .rr-foot > span:first-child { flex: 1 1 12rem; min-width: 0; }
 .rr-stamp { width: 3.4rem; height: 3.4rem; border: 1px dashed var(--muted-2); color: var(--muted); font-size: .62rem; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
 .rr-sign { border-top: 1px solid var(--fg); padding-top: .2rem; min-width: 10rem; color: var(--muted); }
+/* GST invoice: seller/buyer blocks and the line-item grid. Desktop shows one
+   header row; on a phone each row stacks into a 2-column card with its own
+   labels, and every track is minmax(0,1fr) so inputs never push past the edge. */
+.inv-party { border: 1px solid var(--line); border-radius: 8px; padding: .6rem .9rem .3rem; margin: 0 0 1rem; min-width: 0; }
+.inv-party legend { font-size: .8rem; font-weight: 600; color: var(--muted); padding: 0 .35rem; }
+.inv-items { display: flex; flex-direction: column; gap: .4rem; }
+.inv-item {
+  display: grid; gap: .4rem; align-items: center;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1.1fr) minmax(0, .8fr) minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.3fr) 2rem;
+}
+.inv-item label { display: block; min-width: 0; }
+.inv-item .inp { width: 100%; padding: .45rem .5rem; font-size: .9rem; }
+.inv-head { font-size: .78rem; font-weight: 600; color: var(--muted); }
+.inv-amt { text-align: right; font-size: .85rem; overflow-wrap: anywhere; }
+.inv-lab { display: none; }
+@media (max-width: 700px) {
+  .inv-head { display: none; }
+  .inv-item { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 1px solid var(--line-soft); border-radius: 8px; padding: .5rem; }
+  .inv-item .inv-desc { grid-column: 1 / -1; }
+  .inv-lab { display: block; font-size: .72rem; color: var(--muted); margin-bottom: .15rem; }
+  .inv-amt { text-align: left; }
+}
 
 /* ============================================================
    FINANCE LANDING — the redesign

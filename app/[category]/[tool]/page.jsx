@@ -33,6 +33,7 @@ import NpsCalculator from "@/components/tools/NpsCalculator";
 import GratuityCalculator from "@/components/tools/GratuityCalculator";
 import HraCalculator from "@/components/tools/HraCalculator";
 import RentReceiptGenerator from "@/components/tools/RentReceiptGenerator";
+import GstInvoiceGenerator from "@/components/tools/GstInvoiceGenerator";
 import IncomeTaxCalculator from "@/components/tools/IncomeTaxCalculator";
 import InHandSalaryCalculator from "@/components/tools/InHandSalaryCalculator";
 import Base64Encoder from "@/components/tools/Base64Encoder";
@@ -161,6 +162,7 @@ const REGISTRY = {
   "gratuity-calculator": GratuityCalculator,
   "hra-calculator": HraCalculator,
   "rent-receipt-generator": RentReceiptGenerator,
+  "gst-invoice-generator": GstInvoiceGenerator,
   "income-tax-calculator": IncomeTaxCalculator,
   "in-hand-salary-calculator": InHandSalaryCalculator,
   "base64-encoder": Base64Encoder,
