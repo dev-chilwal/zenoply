@@ -1253,8 +1253,26 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   stacked rows with no overflow, console clean. Original note: strong
   finance-cluster synergy, but invoice-generator.com/Zoho/Canva own the head;
   India-GST angle only. M.
-- **Audio trim** — native OfflineAudioContext + hand-rolled WAV writer is
-  zero-dep; skip MP3 export (lamejs is LGPL + dormant).
+- ~~**Audio trim**~~ **SHIPPED 25 Oct 2026** (`/audio/audio-cutter`, new Audio
+  category) — zero new deps, and better than planned on the format question:
+  MP3 export needed no encoder at all. An MP3 is a chain of self-describing
+  Layer III frames, so `components/tools/audioCut.js` scans them (ID3v2 skip,
+  two-frame sync confirmation, resync past junk, ID3v1 kept) and copies the
+  frames covering the selection byte-for-byte — a **lossless** cut, snapped
+  outward to 26 ms frame boundaries. The source's Xing/Info/VBRI frame is
+  dropped (its counts describe the whole file) and a fresh silent Xing frame
+  with the cut's frame/byte counts is written only when kept frames vary in
+  bitrate. Everything else (and MP3 with fades) decodes via
+  `OfflineAudioContext` **at the file's own rate** (read from the MP3/WAV
+  header — `decodeAudioData` otherwise resamples to the context rate) and
+  saves 16-bit WAV with linear fades. Verified: node tests vs ffmpeg fixtures
+  (CBR+ID3, VBR+Xing, MPEG-2 mono; ffprobe durations match frame maths, no
+  decode errors, VBR cut reports 6.5045 s via the new Xing frame), and on the
+  production build in the Browser pane (same 66,647-byte VBR cut, 48 kHz WAV
+  kept at 48 kHz, fades ramp from 0, M4A decodes, 375px no overflow, console
+  clean). Gotcha: synthetic `left_click_drag` in the Browser pane did not land
+  on the canvas (coordinate-frame mapping); dispatching real `PointerEvent`s
+  via javascript_tool verified the drag logic instead.
 
 ## Skip list (with reasons)
 
