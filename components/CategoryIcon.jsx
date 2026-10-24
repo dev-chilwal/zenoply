@@ -42,6 +42,11 @@ const ICONS = {
       <path d="M21 16l-5-5L5 20" />
     </>
   ),
+  audio: (
+    <>
+      <path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2" />
+    </>
+  ),
 };
 
 export default function CategoryIcon({ name, className = "cat-icon" }) {

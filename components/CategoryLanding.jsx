@@ -37,6 +37,11 @@ const HERO = {
     lead: "Resize, convert and compress images or make passport photos. Processed locally — your images are never uploaded.",
     noun: "tools",
   },
+  audio: {
+    pre: "Audio tools, ", accent: "no upload", post: ".",
+    lead: "Cut and trim MP3, WAV and M4A files on a waveform. Decoded and saved by your own browser — your recordings never leave your device.",
+    noun: "tools",
+  },
 };
 
 // One landing layout for every category: hero → tool grid → coming soon.
@@ -59,7 +64,7 @@ export default function CategoryLanding({ category, live, soon }) {
           </h1>
           <p className="fin-sub">{h.lead}</p>
           <div className="fin-pills">
-            <span className="pill pill-live"><span className="dot" />{live.length} live tools</span>
+            <span className="pill pill-live"><span className="dot" />{live.length} live {live.length === 1 ? "tool" : "tools"}</span>
             {soon.length > 0 && <span className="pill">{soon.length} coming soon</span>}
             <span className="pill">Updated weekly</span>
           </div>

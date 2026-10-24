@@ -127,6 +127,7 @@ import ImageToSvg from "@/components/tools/ImageToSvg";
 import ImageToBase64 from "@/components/tools/ImageToBase64";
 import AgeCalculator from "@/components/tools/AgeCalculator";
 import JsonToTypescript from "@/components/tools/JsonToTypescript";
+import AudioCutter from "@/components/tools/AudioCutter";
 import RemoveHtmlTags from "@/components/tools/RemoveHtmlTags";
 import MarkdownToHtml from "@/components/tools/MarkdownToHtml";
 import HtmlToMarkdown from "@/components/tools/HtmlToMarkdown";
@@ -259,6 +260,7 @@ const REGISTRY = {
   "image-to-base64": ImageToBase64,
   "age-calculator": AgeCalculator,
   "json-to-typescript": JsonToTypescript,
+  "audio-cutter": AudioCutter,
 };
 
 export function generateStaticParams() {
