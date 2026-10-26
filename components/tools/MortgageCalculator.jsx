@@ -170,7 +170,10 @@ export default function MortgageCalculator() {
           <SumRow label="All-in cost of the home" value={fmt(r.allIn)} />
         </SumRows>
 
-        <ScheduleTable rows={scheduleRows} caption="Year-by-year amortization schedule" />
+        <ScheduleTable
+          rows={scheduleRows} caption="Year-by-year amortization schedule"
+          csv={{ yearly: r.plan.yearly, currency: reg.currency, filename: "mortgage-schedule.csv" }}
+        />
 
         {pmiNote && (
           <p className="calc-disclaimer">

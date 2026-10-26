@@ -97,7 +97,10 @@ export default function EmiCalculator() {
           {extra > 0 && r.monthsSaved > 0 && <SumRow label="Time saved" value={monthsToLabel(r.monthsSaved)} />}
         </SumRows>
 
-        <ScheduleTable rows={scheduleRows} caption="Year-by-year amortization schedule" />
+        <ScheduleTable
+          rows={scheduleRows} caption="Year-by-year amortization schedule"
+          csv={{ yearly: r.plan.yearly, currency: reg.currency, filename: "emi-schedule.csv" }}
+        />
       </CalcMain>
 
       <CalcRail>

@@ -165,7 +165,10 @@ export default function LoanPrepaymentCalculator() {
           {view === "emi" && active && <SumRow label={repeat === "yearly" ? "EMI after first prepayment" : "EMI after prepayment"} value={fmt(plan.emiAfterFirst)} />}
         </SumRows>
 
-        <ScheduleTable rows={scheduleRows} caption="Year-by-year schedule (principal includes prepayments)" />
+        <ScheduleTable
+          rows={scheduleRows} caption="Year-by-year schedule (principal includes prepayments)"
+          csv={{ yearly: plan.yearly, currency: reg.currency, filename: "loan-prepayment-schedule.csv" }}
+        />
       </CalcMain>
 
       <CalcRail>

@@ -1,6 +1,7 @@
 "use client";
 // Shared building blocks so every calculator/tool matches the "SIP demo" card.
 // Presentation only — all math/state stays in the individual tool components.
+import { scheduleCsv } from "@/lib/scheduleCsv";
 
 /** Labelled range slider with a live value read-out (the SIP-demo field). */
 export function Slider({ label, display, value, min, max, step, onChange }) {
@@ -229,10 +230,30 @@ export function RailFormula({ label, formula, note }) {
  * Year-by-year amortization schedule table. rows: pre-formatted
  * { year, principal, interest, balance } strings. Scrolls when long.
  */
-export function ScheduleTable({ rows, caption }) {
+export function ScheduleTable({ rows, caption, csv }) {
+  // csv: optional { yearly, currency, filename } — the unformatted schedule
+  // behind `rows`, offered as a spreadsheet download.
+  const download = () => {
+    const blob = new Blob([scheduleCsv(csv.yearly, csv.currency)], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = csv.filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
   return (
     <div className="sched-block">
-      {caption && <p className="chart-caption">{caption}</p>}
+      {(caption || csv) && (
+        <div className="sched-head">
+          {caption && <p className="chart-caption">{caption}</p>}
+          {csv && rows.length > 0 && (
+            <button type="button" className="btn-sm" onClick={download}>Download CSV</button>
+          )}
+        </div>
+      )}
       <div className="sched-wrap">
         <table className="sched">
           <thead>
