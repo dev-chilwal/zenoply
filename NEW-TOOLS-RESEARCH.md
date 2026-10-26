@@ -1351,6 +1351,11 @@ run at all:
    one whose body holds `1732584193`), since the minifier renames them on every
    build. Stub the require with a Proxy so React imports do not have to resolve.
    This covers the real built bytes end to end, including the async paths.
+**Status 26 Oct 2026:** Tier D is now fully shipped too (Audio trim closed it on
+25 Oct) and PDF-IMAGE-ROADMAP Tiers 1–5 are complete, so this backlog is empty.
+The daily feature slot moved to ROADMAP.md finance UX (CSV export of loan
+schedules shipped 26 Oct; shareable result URLs remain deferred — see there).
+Next research run should refill this file from GSC query data.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.

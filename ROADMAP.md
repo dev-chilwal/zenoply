@@ -101,5 +101,10 @@ depletion all confirmed against a worked example).
       would clobber URL-hydrated inputs — needs a `ready` flag in the context (or
       a `region` param) first. Too large to finish and verify in one run.
 - [ ] PDF / CSV / print export (jsPDF / html2pdf, fully client-side) ✓
+      — CSV half shipped 26 Oct 2026: "Download CSV" on the year-by-year
+      schedule in EMI, Mortgage and Loan Prepayment (`lib/scheduleCsv.js`;
+      plain 2-dp numbers, currency code in the header, Total row; rows are
+      differences of rounded running totals so they sum exactly). PDF/print
+      export still open.
 - [x] `SoftwareApplication` JSON-LD on every tool page ✓ — already live in
       `lib/seo.js` (SoftwareApplication + BreadcrumbList + FAQPage)
