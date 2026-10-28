@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
@@ -28,6 +29,13 @@ export default function CagrCalculator() {
     setInitialValue(initRange.default);
     setFinalValue(finalRange.default);
   }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    initialValue: { value: initialValue, set: setInitialValue, min: 0, max: 1e15 },
+    finalValue: { value: finalValue, set: setFinalValue, min: 0, max: 1e15 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+  });
 
   const r = useMemo(() => {
     const cagr = initialValue > 0 ? (Math.pow(finalValue / initialValue, 1 / years) - 1) * 100 : 0;
@@ -93,6 +101,7 @@ export default function CagrCalculator() {
           formula={<>CAGR = (FV / PV)<sup>1/n</sup> − 1</>}
           note="rate = (final ÷ initial) ^ (1 / years) − 1"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

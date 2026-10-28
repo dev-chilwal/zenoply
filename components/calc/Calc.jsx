@@ -227,6 +227,19 @@ export function RailFormula({ label, formula, note }) {
   );
 }
 
+/** Rail button for useShareLink(): copies a link that reopens this result. */
+export function ShareLink({ share }) {
+  const label = share.status === "copied" ? "Link copied"
+    : share.status === "address" ? "Link is in the address bar"
+    : "Copy link to this result";
+  return (
+    <div className="rail-block">
+      <button type="button" className="btn-sm" onClick={share.copy} aria-live="polite">{label}</button>
+      <div className="rail-sub">Your inputs are saved in the link itself, not on a server.</div>
+    </div>
+  );
+}
+
 /**
  * Year-by-year amortization schedule table. rows: pre-formatted
  * { year, principal, interest, balance } strings. Scrolls when long.

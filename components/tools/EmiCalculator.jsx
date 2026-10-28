@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, ScheduleTable, SplitBar, Legend, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
 import { amortize, monthsToLabel } from "@/lib/amortization";
@@ -26,6 +27,14 @@ export default function EmiCalculator() {
   const [extra, setExtra] = useState(0);
 
   useEffect(() => { setPrincipal(range.default); setExtra(0); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    principal: { value: principal, set: setPrincipal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+    extra: { value: extra, set: setExtra, min: 0, max: 1e15 },
+  });
 
   const r = useMemo(() => {
     const n = years * 12;
@@ -136,6 +145,7 @@ export default function EmiCalculator() {
           formula={<>EMI = P · i · (1 + i)<sup>n</sup> / ((1 + i)<sup>n</sup> − 1)</>}
           note="P = principal, i = monthly rate, n = number of months"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

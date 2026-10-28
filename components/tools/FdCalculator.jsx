@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SplitBar, Legend, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE, COMPOUND_LABEL } from "@/lib/locales";
 import { depositAfterTax } from "@/lib/depositTax";
@@ -25,6 +26,15 @@ export default function FdCalculator() {
   const [inflPct, setInflPct] = useState(0);
 
   useEffect(() => { setPrincipal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    principal: { value: principal, set: setPrincipal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+    taxPct: { value: taxPct, set: setTaxPct, min: 0, max: 100 },
+    inflPct: { value: inflPct, set: setInflPct, min: 0, max: 100 },
+  });
 
   const r = useMemo(() => {
     // Compounding frequency varies by country/bank convention (see lib/locales).
@@ -154,6 +164,7 @@ export default function FdCalculator() {
             ? "Maturity = principal × (1 + rate/freq) ^ (freq × years); after tax = principal + interest × (1 − tax rate)"
             : "Maturity = principal × (1 + rate/freq) ^ (freq × years)"}
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

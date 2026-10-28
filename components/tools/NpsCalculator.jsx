@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
@@ -26,6 +27,16 @@ export default function NpsCalculator() {
   const [annuityRate, setAnnuityRate] = useState(6);
 
   useEffect(() => { setContribution(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    contribution: { value: contribution, set: setContribution, min: 0, max: 1e15 },
+    currentAge: { value: currentAge, set: setCurrentAge, min: 18, max: 100 },
+    retirementAge: { value: retirementAge, set: setRetirementAge, min: 18, max: 100 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    annuityPct: { value: annuityPct, set: setAnnuityPct, min: 0, max: 100 },
+    annuityRate: { value: annuityRate, set: setAnnuityRate, min: 0, max: 100 },
+  });
 
   const r = useMemo(() => {
     // Contributions compound monthly until retirement (annuity-due).
@@ -126,6 +137,7 @@ export default function NpsCalculator() {
           formula={<>FV = P × ((1 + i)<sup>n</sup> − 1) ÷ i × (1 + i)</>}
           note="Monthly contributions compound to retirement (annuity-due)."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

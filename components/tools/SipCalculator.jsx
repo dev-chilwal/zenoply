@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SplitBar, Legend, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
 import { realTerms } from "@/lib/realReturn";
@@ -27,6 +28,15 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
 
   // Reset the currency-denominated amount when the region/currency changes.
   useEffect(() => { setAmount(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    amount: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+    stepUp: { value: stepUp, set: setStepUp, min: 0, max: 100 },
+    inflPct: { value: inflPct, set: setInflPct, min: 0, max: 100 },
+  });
 
   const r = useMemo(() => {
     const i = rate / 12 / 100;
@@ -162,6 +172,7 @@ export default function SipCalculator({ defaultStepUp = 0 } = {}) {
             : "P = monthly amount, i = monthly rate, n = number of months")
             + (inflPct > 0 ? " · Today's money = FV ÷ (1 + inflation)^years; real rate = (1 + annual return) ÷ (1 + inflation) − 1" : "")}
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

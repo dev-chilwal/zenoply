@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 import { compare } from "./lumpsumSip";
@@ -26,6 +27,14 @@ export default function LumpsumVsSipCalculator() {
   const [park, setPark] = useState(3);
 
   useEffect(() => { setTotal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    total: { value: total, set: setTotal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+    park: { value: park, set: setPark, min: 0, max: 100 },
+  });
 
   const yrs = Math.max(1, Math.round(years));
   const c = useMemo(() => compare(total, rate, yrs, park), [total, rate, yrs, park]);
@@ -119,6 +128,7 @@ export default function LumpsumVsSipCalculator() {
           formula={<>Lumpsum = P × (1 + r)<sup>n</sup></>}
           note="The SIP invests P ÷ 12n at the start of each month, compounding at (1 + r)^(1/12) − 1 a month — the same yearly rate, so neither route gets a head start. Uninvested cash earns the waiting rate."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

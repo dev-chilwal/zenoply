@@ -4,9 +4,10 @@ import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   Field, Segmented, SplitBar, Legend,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoneyPrecise, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
 
@@ -34,6 +35,14 @@ export default function GstCalculator() {
     setMode(reg.taxInclusiveDefault ? "remove" : "add");
     setSupply("intra");
   }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    amount: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    rate: { value: rate, set: (v) => setRate(Number(v)), options: reg.taxRates.map(String) },
+    mode: { value: mode, set: setMode, options: ["add", "remove"] },
+    supply: { value: supply, set: setSupply, options: ["intra", "inter"] },
+  });
 
   const r = useMemo(() => {
     const taxRate = rate / 100;
@@ -128,6 +137,7 @@ export default function GstCalculator() {
             ? `${tax} = amount × rate; total = amount + ${tax}`
             : `base = amount ÷ (1 + rate); ${tax} = amount − base`}
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

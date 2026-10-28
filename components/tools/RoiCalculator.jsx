@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
@@ -27,6 +28,13 @@ export default function RoiCalculator() {
     setInvested(investRange.default);
     setFinalValue(finalRange.default);
   }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    invested: { value: invested, set: setInvested, min: 0, max: 1e15 },
+    finalValue: { value: finalValue, set: setFinalValue, min: 0, max: 1e15 },
+    years: { value: years, set: setYears, min: 0, max: 100 },
+  });
 
   const r = useMemo(() => {
     const netGain = finalValue - invested;
@@ -90,6 +98,7 @@ export default function RoiCalculator() {
           formula={<>ROI = (V<sub>final</sub> − V<sub>invested</sub>) ÷ V<sub>invested</sub></>}
           note="ROI = (final − invested) / invested × 100"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow, SplitBar, Legend,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
@@ -23,6 +24,13 @@ export default function LumpsumCalculator() {
   const [years, setYears] = useState(10);
 
   useEffect(() => { setPrincipal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    principal: { value: principal, set: setPrincipal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+  });
 
   const r = useMemo(() => {
     const total = principal * Math.pow(1 + rate / 100, years);
@@ -93,6 +101,7 @@ export default function LumpsumCalculator() {
           formula={<>FV = PV × (1 + r)<sup>n</sup></>}
           note="Future value = investment × (1 + rate) ^ years"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

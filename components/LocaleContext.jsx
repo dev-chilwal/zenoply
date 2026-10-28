@@ -8,7 +8,7 @@ const LocaleContext = createContext(null);
 export function useRegion() {
   const ctx = useContext(LocaleContext);
   // Fallback keeps tools usable even if a consumer renders outside the provider.
-  if (!ctx) return { ...REGIONS[DEFAULT_REGION], code: DEFAULT_REGION, choose: () => {} };
+  if (!ctx) return { ...REGIONS[DEFAULT_REGION], code: DEFAULT_REGION, ready: true, choose: () => {} };
   return ctx;
 }
 
@@ -16,11 +16,24 @@ export function LocaleProvider({ children }) {
   // Start from the default so server-render and first client paint agree
   // (no hydration mismatch). Detection runs after mount and may switch it.
   const [code, setCode] = useState(DEFAULT_REGION);
+  // `ready` flips true in the same render as the detected region, so a tool
+  // can apply inputs from a shared link after its own region-reset effect has
+  // run (see components/calc/useShareLink.js) instead of being clobbered by it.
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    setReady(true);
     // Detection fallback chain (browser-only — navigator/localStorage are
     // unavailable during static prerender):
+    //   0. ?region= in a shared result link (applied, not saved)
     //   1. saved choice  →  2. browser language  →  3. default
+    try {
+      const linked = new URLSearchParams(window.location.search).get("region");
+      if (linked && REGIONS[linked]) {
+        setCode(linked);
+        return;
+      }
+    } catch {}
     // IP geolocation is intentionally NOT auto-called: a language-based guess
     // needs no network and sidesteps the ePrivacy/GDPR consent trigger. To add
     // it, fetch https://get.geojs.io/v1/ip/country.json here as an opt-in step.
@@ -50,6 +63,6 @@ export function LocaleProvider({ children }) {
     } catch {}
   };
 
-  const value = { ...REGIONS[code], code, choose };
+  const value = { ...REGIONS[code], code, ready, choose };
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }

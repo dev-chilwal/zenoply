@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail, Segmented,
   ResultStatement, MiniChart, ScheduleTable, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
 import { monthsToLabel } from "@/lib/amortization";
@@ -38,6 +39,17 @@ export default function LoanPrepaymentCalculator() {
   const [view, setView] = useState("tenure");
 
   useEffect(() => { setPrincipal(range.default); setPrepay(prepayRange.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    principal: { value: principal, set: setPrincipal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+    prepay: { value: prepay, set: setPrepay, min: 0, max: 1e15 },
+    after: { value: after, set: setAfter, min: 1, max: 1200 },
+    repeat: { value: repeat, set: setRepeat, options: ["once", "yearly"] },
+    view: { value: view, set: setView, options: ["tenure", "emi"] },
+  });
 
   const n = Math.max(1, Math.round(years)) * 12;
   const afterMonth = Math.min(Math.max(1, Math.round(after)), n - 1);
@@ -205,6 +217,7 @@ export default function LoanPrepaymentCalculator() {
           formula={<>EMI′ = B · i / (1 − (1 + i)<sup>−m</sup>)</>}
           note="B = balance after the prepayment, i = monthly rate, m = EMIs left"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

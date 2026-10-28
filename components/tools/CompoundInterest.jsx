@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow,
-  RailNote, RailStat, RailFormula, Field, SplitBar, Legend,
+  RailNote, RailStat, RailFormula, Field, SplitBar, Legend, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
 import { realTerms } from "@/lib/realReturn";
@@ -26,6 +27,15 @@ export default function CompoundInterest() {
   const [inflPct, setInflPct] = useState(0);
 
   useEffect(() => { setPrincipal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    principal: { value: principal, set: setPrincipal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+    freq: { value: freq, set: setFreq, options: Object.keys(FREQ) },
+    inflPct: { value: inflPct, set: setInflPct, min: 0, max: 100 },
+  });
 
   const r = useMemo(() => {
     const nfreq = FREQ[freq];
@@ -121,6 +131,7 @@ export default function CompoundInterest() {
           note={"Amount = principal × (1 + rate/freq) ^ (freq × years)"
             + (inflPct > 0 ? " · Today's money = amount ÷ (1 + inflation)^years" : "")}
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

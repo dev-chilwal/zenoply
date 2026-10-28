@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SplitBar, Legend,
-  SumRows, SumRow, RailNote, RailStat, RailFormula,
+  SumRows, SumRow, RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
@@ -23,6 +24,13 @@ export default function SimpleInterestCalculator() {
   const [years, setYears] = useState(5);
 
   useEffect(() => { setPrincipal(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    principal: { value: principal, set: setPrincipal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+  });
 
   const r = useMemo(() => {
     const interest = (principal * rate * years) / 100;
@@ -92,6 +100,7 @@ export default function SimpleInterestCalculator() {
           formula={<>SI = (P × R × T) ÷ 100</>}
           note="Interest = principal × rate × years ÷ 100"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, ScheduleTable, SplitBar, Legend, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoneyPrecise, formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange, MONEY_BASE } from "@/lib/locales";
 import { monthsToLabel } from "@/lib/amortization";
@@ -42,6 +43,20 @@ export default function MortgageCalculator() {
   useEffect(() => {
     setPrice(range.default); setExtra(0); setInsurance(0); setHoa(0);
   }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    price: { value: price, set: setPrice, min: 0, max: 1e15 },
+    downPct: { value: downPct, set: setDownPct, min: 0, max: 100 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+    extra: { value: extra, set: setExtra, min: 0, max: 1e15 },
+    taxPct: { value: taxPct, set: setTaxPct, min: 0, max: 100 },
+    insurance: { value: insurance, set: setInsurance, min: 0, max: 1e15 },
+    pmiPct: { value: pmiPct, set: setPmiPct, min: 0, max: 100 },
+    hoa: { value: hoa, set: setHoa, min: 0, max: 1e15 },
+    oneTimePct: { value: oneTimePct, set: setOneTimePct, min: 0, max: 100 },
+  });
 
   const r = useMemo(() => {
     const c = mortgageCost({
@@ -230,6 +245,7 @@ export default function MortgageCalculator() {
           formula={<>EMI = P × i × (1 + i)<sup>n</sup> ÷ ((1 + i)<sup>n</sup> − 1)</>}
           note="P = price − down payment, i = monthly rate, n = number of months"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
@@ -23,6 +24,13 @@ export default function InflationCalculator() {
   const [years, setYears] = useState(10);
 
   useEffect(() => { setAmount(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    amount: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    inflation: { value: inflation, set: setInflation, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+  });
 
   const r = useMemo(() => {
     const yrs = Math.max(1, Math.round(years));
@@ -90,6 +98,7 @@ export default function InflationCalculator() {
           formula={<>FV = PV × (1 + r)<sup>n</sup></>}
           note="Future cost = amount × (1 + rate) ^ years"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 
@@ -29,6 +30,14 @@ export default function SwpCalculator() {
     setInvestment(investRange.default);
     setWithdrawal(withdrawRange.default);
   }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    investment: { value: investment, set: setInvestment, min: 0, max: 1e15 },
+    withdrawal: { value: withdrawal, set: setWithdrawal, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    years: { value: years, set: setYears, min: 1, max: 100 },
+  });
 
   const r = useMemo(() => {
     // Withdrawals at the end of each month; balance compounds monthly.
@@ -122,6 +131,7 @@ export default function SwpCalculator() {
           formula={<>B<sub>m</sub> = B<sub>m-1</sub> × (1 + r) − W</>}
           note="Each month: balance grows by the monthly rate, then the withdrawal is taken out."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

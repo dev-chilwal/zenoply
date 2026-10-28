@@ -3,9 +3,10 @@ import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, MiniChart, SumRows, SumRow, SplitBar, Legend,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { moneyRange } from "@/lib/locales";
 import { depositAfterTax } from "@/lib/depositTax";
@@ -25,6 +26,14 @@ export default function RdCalculator() {
   const [taxPct, setTaxPct] = useState(0);
 
   useEffect(() => { setDeposit(range.default); }, [reg.code]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Inputs round-trip through the URL (Copy link). Must follow the reset above.
+  const share = useShareLink({
+    deposit: { value: deposit, set: setDeposit, min: 0, max: 1e15 },
+    rate: { value: rate, set: setRate, min: 0, max: 100 },
+    months: { value: months, set: setMonths, min: 1, max: 1200 },
+    taxPct: { value: taxPct, set: setTaxPct, min: 0, max: 100 },
+  });
 
   const r = useMemo(() => {
     // Indian banks compound RD interest quarterly: each monthly instalment
@@ -135,6 +144,7 @@ export default function RdCalculator() {
           formula={<>M = P × [(1 + i)<sup>n</sup> − 1] ÷ (1 − (1 + i)<sup>−1/3</sup>)</>}
           note="i = rate ÷ 400 (quarterly), n = months ÷ 3 (quarters)"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );
