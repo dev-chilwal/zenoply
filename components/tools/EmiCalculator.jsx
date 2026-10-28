@@ -100,6 +100,19 @@ export default function EmiCalculator() {
         <ScheduleTable
           rows={scheduleRows} caption="Year-by-year amortization schedule"
           csv={{ yearly: r.plan.yearly, currency: reg.currency, filename: "emi-schedule.csv" }}
+          pdf={{
+            locale: reg.locale, title: "EMI schedule", filename: "emi-schedule.pdf",
+            summary: [
+              ["Loan amount", principal],
+              ["Interest rate", `${rate}% p.a.`],
+              ["Loan tenure", yearsLabel],
+              ...(extra > 0 ? [["Extra payment / month", extra]] : []),
+              ["Monthly EMI", r.emi],
+              ...(extra > 0 && r.monthsSaved > 0 ? [["Paid off in", monthsToLabel(r.plan.payoffMonths)]] : []),
+              ["Total payment", r.total],
+              ["Total interest", r.interest],
+            ],
+          }}
         />
       </CalcMain>
 

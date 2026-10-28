@@ -1,6 +1,7 @@
 "use client";
 // Shared building blocks so every calculator/tool matches the "SIP demo" card.
 // Presentation only — all math/state stays in the individual tool components.
+import { useState } from "react";
 import { scheduleCsv } from "@/lib/scheduleCsv";
 
 /** Labelled range slider with a live value read-out (the SIP-demo field). */
@@ -230,19 +231,34 @@ export function RailFormula({ label, formula, note }) {
  * Year-by-year amortization schedule table. rows: pre-formatted
  * { year, principal, interest, balance } strings. Scrolls when long.
  */
-export function ScheduleTable({ rows, caption, csv }) {
+export function ScheduleTable({ rows, caption, csv, pdf }) {
   // csv: optional { yearly, currency, filename } — the unformatted schedule
   // behind `rows`, offered as a spreadsheet download.
-  const download = () => {
-    const blob = new Blob([scheduleCsv(csv.yearly, csv.currency)], { type: "text/csv" });
+  // pdf: optional { locale, title, summary, filename } — the same schedule as a
+  // printable PDF (data from `csv`); pdf-lib loads only when it is clicked.
+  const [busy, setBusy] = useState(false);
+  const save = (blob, filename) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = csv.filename;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  const download = () => {
+    save(new Blob([scheduleCsv(csv.yearly, csv.currency)], { type: "text/csv" }), csv.filename);
+  };
+  const downloadPdf = async () => {
+    setBusy(true);
+    try {
+      const { schedulePdf } = await import("@/lib/schedulePdf");
+      const bytes = await schedulePdf({ yearly: csv.yearly, currency: csv.currency, ...pdf });
+      save(new Blob([bytes], { type: "application/pdf" }), pdf.filename);
+    } finally {
+      setBusy(false);
+    }
   };
   return (
     <div className="sched-block">
@@ -250,7 +266,14 @@ export function ScheduleTable({ rows, caption, csv }) {
         <div className="sched-head">
           {caption && <p className="chart-caption">{caption}</p>}
           {csv && rows.length > 0 && (
-            <button type="button" className="btn-sm" onClick={download}>Download CSV</button>
+            <span className="sched-actions">
+              <button type="button" className="btn-sm" onClick={download}>Download CSV</button>
+              {pdf && (
+                <button type="button" className="btn-sm" onClick={downloadPdf} disabled={busy}>
+                  {busy ? "Preparing…" : "Download PDF"}
+                </button>
+              )}
+            </span>
           )}
         </div>
       )}

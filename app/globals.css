@@ -1003,6 +1003,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .sched-block { margin-top: 1.3rem; }
 .sched-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: .3rem .8rem; margin-bottom: .4rem; }
 .sched-head .chart-caption { margin: 0; }
+.sched-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
 .sched-wrap { max-height: 340px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
 /* table-layout: fixed sizes columns from the container, not the content, so the
    table never forces its flex/grid ancestors to balloon past the viewport. */

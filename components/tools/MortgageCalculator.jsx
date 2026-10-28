@@ -173,6 +173,21 @@ export default function MortgageCalculator() {
         <ScheduleTable
           rows={scheduleRows} caption="Year-by-year amortization schedule"
           csv={{ yearly: r.plan.yearly, currency: reg.currency, filename: "mortgage-schedule.csv" }}
+          pdf={{
+            locale: reg.locale, title: "Mortgage schedule", filename: "mortgage-schedule.pdf",
+            summary: [
+              ["Home price", price],
+              ["Down payment", `${downPct}%`],
+              ["Loan amount", r.loan],
+              ["Interest rate", `${rate}% p.a.`],
+              ["Loan term", yearsLabel],
+              ...(extra > 0 ? [["Extra payment / month", extra]] : []),
+              ["Monthly principal & interest", r.plan.payment],
+              ...(r.hasCosts ? [["Monthly total (all-in)", r.monthly]] : []),
+              ["Total paid on the loan", r.total],
+              ["Total interest", r.interest],
+            ],
+          }}
         />
 
         {pmiNote && (

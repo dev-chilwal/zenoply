@@ -168,6 +168,20 @@ export default function LoanPrepaymentCalculator() {
         <ScheduleTable
           rows={scheduleRows} caption="Year-by-year schedule (principal includes prepayments)"
           csv={{ yearly: plan.yearly, currency: reg.currency, filename: "loan-prepayment-schedule.csv" }}
+          pdf={{
+            locale: reg.locale, title: "Loan prepayment schedule", filename: "loan-prepayment-schedule.pdf",
+            summary: [
+              ["Loan amount", principal],
+              ["Interest rate", `${rate}% p.a.`],
+              ["Loan tenure", `${years} ${years === 1 ? "year" : "years"}`],
+              [repeat === "yearly" ? `Prepayment every year from EMI ${afterMonth}` : `One-time prepayment after EMI ${afterMonth}`, prepay],
+              ["Strategy", view === "tenure" ? "Reduce tenure" : "Reduce EMI"],
+              ["Total prepaid", plan.totalPrepaid],
+              ["Total interest", plan.totalInterest],
+              ["Interest saved", plan.interestSaved],
+              ...(plan.monthsSaved > 0 ? [["Time saved", monthsToLabel(plan.monthsSaved)]] : []),
+            ],
+          }}
         />
       </CalcMain>
 
