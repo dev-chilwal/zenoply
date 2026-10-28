@@ -93,13 +93,17 @@ depletion all confirmed against a worked example).
       and SplitBar two-part breakdowns on 11; only a literal donut is missing.
 - [ ] Internal-linking calculator clusters (strongest verified SEO pattern) ✓
       — partly automatic via same-category related tools
-- [ ] Shareable result URLs (encode inputs in query params via
-      `encodeURIComponent`, rehydrate on load) ✓
-      — Deferred 5 Oct 2026 (daily run picked Sign PDF instead): needs a
-      shared hook across ~20 calcs, AND every calc's `[reg.code]` reset effect
-      fires again when LocaleProvider applies the saved region after mount, which
-      would clobber URL-hydrated inputs — needs a `ready` flag in the context (or
-      a `region` param) first. Too large to finish and verify in one run.
+- [x] Shareable result URLs ✓ — 28 Oct 2026: "Copy link to this result" in
+      the rail of all 17 currency calculators (SIP/step-up, EMI, prepayment,
+      mortgage, FD, RD, PPF, CI, SI, lumpsum, lumpsum-vs-SIP, SWP, NPS, CAGR,
+      ROI, inflation, GST). `components/calc/useShareLink.js`; link carries
+      every input + `?region=`. LocaleProvider gained a `ready` flag (set in the
+      same render as the detected region) and applies `?region=` without saving
+      it; the hook hydrates on `ready` and is called after each calc's
+      `[reg.code]` reset, so effect order puts linked values on top of the
+      reset. Numbers clamped (money 0–1e15, % 0–100, years 1–100), toggles
+      whitelisted. Not yet on HRA / Gratuity / Income Tax / In-Hand Salary /
+      Percentage (no region reset; same hook would drop straight in).
 - [x] PDF / CSV / print export (fully client-side) ✓
       — CSV half shipped 26 Oct 2026: "Download CSV" on the year-by-year
       schedule in EMI, Mortgage and Loan Prepayment (`lib/scheduleCsv.js`;

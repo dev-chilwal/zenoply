@@ -1356,6 +1356,10 @@ run at all:
 The daily feature slot moved to ROADMAP.md finance UX (CSV export of loan
 schedules shipped 26 Oct; shareable result URLs remain deferred — see there).
 Next research run should refill this file from GSC query data.
+**28 Oct 2026:** ROADMAP.md shareable result URLs shipped, so the finance UX
+list is also empty bar the literal donut chart; the next feature slot is the
+same hook on the five non-currency calcs, then Phase 4 SEO polish, until a
+research run refills this file.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
