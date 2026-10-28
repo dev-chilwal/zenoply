@@ -100,11 +100,17 @@ depletion all confirmed against a worked example).
       fires again when LocaleProvider applies the saved region after mount, which
       would clobber URL-hydrated inputs — needs a `ready` flag in the context (or
       a `region` param) first. Too large to finish and verify in one run.
-- [ ] PDF / CSV / print export (jsPDF / html2pdf, fully client-side) ✓
+- [x] PDF / CSV / print export (fully client-side) ✓
       — CSV half shipped 26 Oct 2026: "Download CSV" on the year-by-year
       schedule in EMI, Mortgage and Loan Prepayment (`lib/scheduleCsv.js`;
       plain 2-dp numbers, currency code in the header, Total row; rows are
-      differences of rounded running totals so they sum exactly). PDF/print
-      export still open.
+      differences of rounded running totals so they sum exactly).
+      PDF half shipped 28 Oct 2026: "Download PDF" beside it
+      (`lib/schedulePdf.js`, existing pdf-lib — no jsPDF — loaded with
+      import() on click). A4: title, inputs + headline results summary,
+      table with header repeated per page, Total row, page numbers. Shares
+      `scheduleCents` with the CSV so both agree to the cent. Helvetica is
+      WinAnsi-only: amounts use the ISO code (no ₹), and U+202F (fr-FR
+      grouping) is normalised to a space or pdf-lib throws.
 - [x] `SoftwareApplication` JSON-LD on every tool page ✓ — already live in
       `lib/seo.js` (SoftwareApplication + BreadcrumbList + FAQPage)
