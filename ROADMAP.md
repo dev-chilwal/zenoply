@@ -102,8 +102,10 @@ depletion all confirmed against a worked example).
       it; the hook hydrates on `ready` and is called after each calc's
       `[reg.code]` reset, so effect order puts linked values on top of the
       reset. Numbers clamped (money 0–1e15, % 0–100, years 1–100), toggles
-      whitelisted. Not yet on HRA / Gratuity / Income Tax / In-Hand Salary /
-      Percentage (no region reset; same hook would drop straight in).
+      whitelisted. 29 Oct 2026: added to HRA, Gratuity and Percentage, with
+      a new `{ region: false }` option (pinned / currency-free calcs leave
+      ?region= out) and an `int` flag for years/months. Still not on Income
+      Tax / In-Hand Salary — each dispatches to ~10 per-country components.
 - [x] PDF / CSV / print export (fully client-side) ✓
       — CSV half shipped 26 Oct 2026: "Download CSV" on the year-by-year
       schedule in EMI, Mortgage and Loan Prepayment (`lib/scheduleCsv.js`;

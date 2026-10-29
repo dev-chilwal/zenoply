@@ -1360,6 +1360,9 @@ Next research run should refill this file from GSC query data.
 list is also empty bar the literal donut chart; the next feature slot is the
 same hook on the five non-currency calcs, then Phase 4 SEO polish, until a
 research run refills this file.
+**29 Oct 2026:** the hook shipped on HRA, Gratuity and Percentage. Income Tax
+and In-Hand Salary remain (per-country subcomponents, larger job); after
+that, Phase 4 SEO polish until a research run refills this file.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
