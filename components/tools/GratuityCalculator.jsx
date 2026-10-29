@@ -3,8 +3,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { RegionPinned } from "@/components/calc/RegionNotice";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
@@ -24,6 +25,13 @@ export default function GratuityCalculator() {
   const [salary, setSalary] = useState(range.default);
   const [years, setYears] = useState(10);
   const [months, setMonths] = useState(7);
+
+  // Inputs round-trip through the URL (Copy link). No ?region=: always rupees.
+  const share = useShareLink({
+    salary: { value: salary, set: setSalary, min: range.min, max: range.max },
+    years: { value: years, set: setYears, min: 0, max: 40, int: true },
+    months: { value: months, set: setMonths, min: 0, max: 11, int: true },
+  }, { region: false });
 
   const r = useMemo(() => {
     // Round up only when the final part-year exceeds 6 months (the Act counts
@@ -96,6 +104,7 @@ export default function GratuityCalculator() {
           formula={<>G = 15 × S × N ÷ 26</>}
           note="Gratuity = 15 × last salary × years ÷ 26"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

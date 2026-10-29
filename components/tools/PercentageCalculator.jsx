@@ -2,8 +2,9 @@
 import { useState, useMemo } from "react";
 import {
   Segmented, NumberInput, CalcGrid, CalcMain, CalcRail,
-  ResultStatement, RailNote, RailStat, RailFormula,
+  ResultStatement, RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 
 const round = (n) => Math.round(n * 10000) / 10000;
 const show = (n) =>
@@ -21,6 +22,17 @@ export default function PercentageCalculator() {
   // mode "change": from V1 to V2
   const [v1, setV1] = useState(100);
   const [v2, setV2] = useState(125);
+
+  // Inputs round-trip through the URL (Copy link). All three pairs go in, so
+  // switching mode on a linked result keeps the other answers too; no
+  // ?region=, since nothing here is a currency.
+  const num = (value, set) => ({ value, set, min: -1e15, max: 1e15 });
+  const share = useShareLink({
+    mode: { value: mode, set: setMode, options: ["of", "isWhat", "change"] },
+    a: num(a, setA), b: num(b, setB),
+    x: num(x, setX), y: num(y, setY),
+    v1: num(v1, setV1), v2: num(v2, setV2),
+  }, { region: false });
 
   const result = useMemo(() => {
     if (mode === "of") {
@@ -119,6 +131,7 @@ export default function PercentageCalculator() {
               : "Percent increase or decrease"
           }
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );

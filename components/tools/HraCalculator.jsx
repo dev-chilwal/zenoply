@@ -3,8 +3,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow, Segmented, SplitBar, Legend,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { RegionPinned } from "@/components/calc/RegionNotice";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
@@ -24,6 +25,14 @@ export default function HraCalculator() {
   const [hra, setHra] = useState(hraRange.default);
   const [rent, setRent] = useState(rentRange.default);
   const [city, setCity] = useState("metro");
+
+  // Inputs round-trip through the URL (Copy link). No ?region=: always rupees.
+  const share = useShareLink({
+    basic: { value: basic, set: setBasic, min: basicRange.min, max: basicRange.max },
+    hra: { value: hra, set: setHra, min: hraRange.min, max: hraRange.max },
+    rent: { value: rent, set: setRent, min: rentRange.min, max: rentRange.max },
+    city: { value: city, set: setCity, options: ["metro", "non"] },
+  }, { region: false });
 
   const r = useMemo(() => {
     // Exempt HRA = least of the three statutory limits (Section 10(13A)).
@@ -104,6 +113,7 @@ export default function HraCalculator() {
           formula={<>Exempt = min(HRA, {city === "metro" ? "50%" : "40%"}×Basic, Rent − 10%×Basic)</>}
           note="Exempt HRA = least of the three limits"
         />
+        <ShareLink share={share} />
       </CalcRail>
     </CalcGrid>
   );
