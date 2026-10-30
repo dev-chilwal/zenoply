@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { AE_TAX_YEAR, computeAeTakeHome } from "@/lib/tax/ae";
@@ -19,6 +20,13 @@ export default function InHandSalaryAE() {
   const [amount, setAmount] = useState(300000);
   const [national, setNational] = useState(false);
   const [regime, setRegime] = useState("law57");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    nationality: { value: national ? "national" : "expat", set: (v) => setNational(v === "national"), options: ["national", "expat"] },
+    pension: { value: regime, set: setRegime, options: ["law57", "law7"] },
+  });
 
   const r = useMemo(
     () => computeAeTakeHome({ amount, national, regime }),
@@ -92,6 +100,7 @@ export default function InHandSalaryAE() {
           formula={<>Net = Gross − pension − ILOE</>}
           note="No tax line; pension applies to UAE nationals only."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

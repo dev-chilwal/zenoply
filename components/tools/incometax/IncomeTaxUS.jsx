@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { US_TAX_YEAR, computeUsTakeHome } from "@/lib/tax/us";
@@ -25,6 +26,13 @@ export default function IncomeTaxUS() {
   const [gross, setGross] = useState(80000);
   const [status, setStatus] = useState("single");
   const [children, setChildren] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+    status: { value: status, set: setStatus, options: ["single", "mfj", "hoh"] },
+    children: { value: children, set: setChildren, min: 0, max: 6, int: true },
+  });
 
   const r = useMemo(
     () => computeUsTakeHome({ amount: gross, status, children }),
@@ -90,6 +98,7 @@ export default function IncomeTaxUS() {
           formula={<>tax = brackets × (income − std deduction)</>}
           note="Federal brackets on taxable income, less the Child Tax Credit."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

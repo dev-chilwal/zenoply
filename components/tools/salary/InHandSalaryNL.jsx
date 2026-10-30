@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { NL_TAX_YEAR, computeNlTakeHome } from "@/lib/tax/nl";
@@ -18,6 +19,12 @@ const sym = currencySymbol(REGIONS.NL);
 export default function InHandSalaryNL() {
   const [amount, setAmount] = useState(48000);
   const [pensionPct, setPensionPct] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    pension: { value: pensionPct, set: setPensionPct, min: 0, max: 30 },
+  });
 
   const r = useMemo(() => computeNlTakeHome({ amount, pensionPct }), [amount, pensionPct]);
 
@@ -74,6 +81,7 @@ export default function InHandSalaryNL() {
           formula={<>Net = Gross − (Box 1 tax − credits)</>}
           note="Bracket tax on the wage, less the general and employment credits (floored at zero)."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

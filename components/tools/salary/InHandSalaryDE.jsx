@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { DE_TAX_YEAR, DE_CHURCH, computeDeTakeHome } from "@/lib/tax/de";
@@ -19,6 +20,13 @@ export default function InHandSalaryDE() {
   const [amount, setAmount] = useState(60000);
   const [married, setMarried] = useState(false);
   const [church, setChurch] = useState("none");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    status: { value: married ? "married" : "single", set: (v) => setMarried(v === "married"), options: ["married", "single"] },
+    church: { value: church, set: setChurch, options: ["none", "other", "by"] },
+  });
 
   const r = useMemo(() => computeDeTakeHome({
     amount,
@@ -97,6 +105,7 @@ export default function InHandSalaryDE() {
           formula={<>Net = Gross − tax − Soli − social insurance</>}
           note="§32a income tax on the wage after the Vorsorgepauschale; social insurance at the 2026 rates."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

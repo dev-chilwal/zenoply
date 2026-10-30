@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { GB_TAX_YEAR, computeGbTakeHome } from "@/lib/tax/gb";
@@ -28,6 +29,14 @@ export default function InHandSalaryGB() {
   const [region, setRegion] = useState("ruk");
   const [studentPlan, setStudentPlan] = useState("none");
   const [pensionPct, setPensionPct] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    nation: { value: region, set: setRegion, options: ["ruk", "scotland"] },
+    loan: { value: studentPlan, set: setStudentPlan, options: ["none", "plan1", "plan2", "plan4", "plan5"] },
+    pension: { value: pensionPct, set: setPensionPct, min: 0, max: 40 },
+  });
 
   const r = useMemo(
     () => computeGbTakeHome({ amount, region, studentPlan, pensionPct }),
@@ -103,6 +112,7 @@ export default function InHandSalaryGB() {
           formula={<>Net = Gross − Tax − NI − Student loan</>}
           note="Tax on income above the Personal Allowance; NI at 8% (PT→UEL) then 2%."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import {
@@ -32,6 +33,13 @@ export default function IncomeTaxAU() {
   const [gross, setGross] = useState(120000);
   const [deductions, setDeductions] = useState(0);
   const [studyLoan, setStudyLoan] = useState("no");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+    deductions: { value: deductions, set: setDeductions, min: 0, max: 1e15 },
+    loan: { value: studyLoan, set: setStudyLoan, options: ["no", "yes"] },
+  });
 
   const r = useMemo(() => {
     const taxable = Math.max(0, gross - deductions);
@@ -112,6 +120,7 @@ export default function IncomeTaxAU() {
           formula={<>tax = bracket(TI) − LITO + Medicare</>}
           note="Progressive brackets on taxable income, less the offset (floored at zero), plus the 2% levy."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

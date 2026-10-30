@@ -4,8 +4,9 @@
 
 import {
   NumberInput, CalcMain, CalcRail,
-  ResultStatement, RailNote, RailStat, RailFormula,
+  ResultStatement, RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { useState } from "react";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
@@ -16,6 +17,11 @@ const sym = currencySymbol(REGIONS.AE);
 
 export default function IncomeTaxAE() {
   const [income, setIncome] = useState(300000);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    income: { value: income, set: setIncome, min: 0, max: 1e15 },
+  });
 
   return (
     <>
@@ -50,6 +56,7 @@ export default function IncomeTaxAE() {
           formula={<>income tax = 0</>}
           note="Corporate Tax (9%) and the DMTT (15%) never apply to wages."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

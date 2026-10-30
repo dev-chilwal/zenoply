@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { SG_TAX_YEAR, computeSgTakeHome } from "@/lib/tax/sg";
@@ -19,6 +20,13 @@ export default function IncomeTaxSG() {
   const [gross, setGross] = useState(72000);
   const [age, setAge] = useState(40);
   const [isCitizenOrPR, setIsCitizenOrPR] = useState(true);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+    age: { value: age, set: setAge, min: 20, max: 75, int: true },
+    residency: { value: isCitizenOrPR ? "cpr" : "foreigner", set: (v) => setIsCitizenOrPR(v === "cpr"), options: ["cpr", "foreigner"] },
+  });
 
   const r = useMemo(
     () => computeSgTakeHome({ amount: gross, age, isCitizenOrPR }),
@@ -85,6 +93,7 @@ export default function IncomeTaxSG() {
           formula={<>tax = bands × chargeable income</>}
           note="Chargeable income = salary − CPF Relief − Earned Income Relief."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

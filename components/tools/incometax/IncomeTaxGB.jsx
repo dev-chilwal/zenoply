@@ -5,8 +5,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { GB_TAX_YEAR, computeGbTakeHome } from "@/lib/tax/gb";
@@ -17,6 +18,12 @@ const sym = currencySymbol(REGIONS.GB);
 export default function IncomeTaxGB() {
   const [gross, setGross] = useState(45000);
   const [region, setRegion] = useState("ruk");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+    nation: { value: region, set: setRegion, options: ["ruk", "scotland"] },
+  });
 
   const r = useMemo(() => computeGbTakeHome({ amount: gross, region }), [gross, region]);
   const taxPlusNi = useMemo(() => r.incomeTax + r.ni, [r]);
@@ -76,6 +83,7 @@ export default function IncomeTaxGB() {
           formula={<>tax = bands × (income − allowance)</>}
           note="Personal Allowance first, then the income tax bands; NI added on gross."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

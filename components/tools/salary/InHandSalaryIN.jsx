@@ -7,8 +7,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { NEW_REGIME, OLD_REGIME, TAX_YEAR, computeTax } from "@/lib/incometax";
@@ -21,6 +22,14 @@ export default function InHandSalaryIN() {
   const [basicPct, setBasicPct] = useState(50);
   const [pt, setPt] = useState(200); // monthly professional tax
   const [regime, setRegime] = useState("new");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    ctc: { value: ctc, set: setCtc, min: 0, max: 1e15 },
+    basic: { value: basicPct, set: setBasicPct, min: 30, max: 60 },
+    pt: { value: pt, set: setPt, min: 0, max: 300 },
+    regime: { value: regime, set: setRegime, options: ["new", "old"] },
+  });
 
   const r = useMemo(() => {
     const basic = ctc * (basicPct / 100);
@@ -97,6 +106,7 @@ export default function InHandSalaryIN() {
           formula={<>In-hand = Gross − PF − PT − Tax</>}
           note="Gross = CTC − employer PF − gratuity; tax on (gross − standard deduction)."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

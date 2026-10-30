@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { FR_TAX_YEAR, computeFrTakeHome } from "@/lib/tax/fr";
@@ -19,6 +20,13 @@ export default function InHandSalaryFR() {
   const [amount, setAmount] = useState(40000);
   const [married, setMarried] = useState(false);
   const [children, setChildren] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    status: { value: married ? "married" : "single", set: (v) => setMarried(v === "married"), options: ["married", "single"] },
+    children: { value: children, set: setChildren, min: 0, max: 6, int: true },
+  });
 
   const r = useMemo(
     () => computeFrTakeHome({ amount, married, children }),
@@ -87,6 +95,7 @@ export default function InHandSalaryFR() {
           formula={<>Net = Gross − contributions − tax</>}
           note="Income tax on (net imposable − 10%) via the barème and quotient familial."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

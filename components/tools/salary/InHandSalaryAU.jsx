@@ -7,8 +7,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import {
@@ -23,6 +24,13 @@ export default function InHandSalaryAU() {
   const [amount, setAmount] = useState(100000);
   const [basis, setBasis] = useState("excl"); // salary excl. super, or total package
   const [studyLoan, setStudyLoan] = useState("no");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    basis: { value: basis, set: setBasis, options: ["excl", "incl"] },
+    loan: { value: studyLoan, set: setStudyLoan, options: ["no", "yes"] },
+  });
 
   const r = useMemo(
     () => computeAuTakeHome({
@@ -110,6 +118,7 @@ export default function InHandSalaryAU() {
           formula={<>Take-home = Salary − Tax − Medicare − HELP</>}
           note="Tax is reduced by the low income tax offset (never below zero); the offset doesn't reduce the Medicare levy."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

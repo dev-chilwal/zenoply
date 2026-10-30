@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { US_TAX_YEAR, computeUsTakeHome } from "@/lib/tax/us";
@@ -26,6 +27,14 @@ export default function InHandSalaryUS() {
   const [status, setStatus] = useState("single");
   const [children, setChildren] = useState(0);
   const [pretax401k, setPretax401k] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    status: { value: status, set: setStatus, options: ["single", "mfj", "hoh"] },
+    children: { value: children, set: setChildren, min: 0, max: 6, int: true },
+    k401: { value: pretax401k, set: setPretax401k, min: 0, max: 1e15 },
+  });
 
   const r = useMemo(
     () => computeUsTakeHome({ amount, status, children, pretax401k }),
@@ -97,6 +106,7 @@ export default function InHandSalaryUS() {
           formula={<>Net = Wages − federal tax − FICA</>}
           note="Tax on (wages − standard deduction), less the Child Tax Credit; FICA on gross."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

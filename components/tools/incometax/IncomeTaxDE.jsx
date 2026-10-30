@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import {
@@ -21,6 +22,13 @@ export default function IncomeTaxDE() {
   const [zve, setZve] = useState(45000);
   const [married, setMarried] = useState(false);
   const [church, setChurch] = useState("none");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    income: { value: zve, set: setZve, min: 0, max: 1e15 },
+    status: { value: married ? "married" : "single", set: (v) => setMarried(v === "married"), options: ["married", "single"] },
+    church: { value: church, set: setChurch, options: ["none", "other", "by"] },
+  });
 
   const r = useMemo(() => {
     const incomeTax = married ? deIncomeTaxSplitting(zve) : deIncomeTax(zve);
@@ -97,6 +105,7 @@ export default function IncomeTaxDE() {
           formula={<>tax = §32a(zvE) + Soli + church</>}
           note="Continuous formula on taxable income, plus 5.5% Soli and optional church tax."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

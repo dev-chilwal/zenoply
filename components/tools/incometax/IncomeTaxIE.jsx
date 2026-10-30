@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { IE_TAX_YEAR, computeIeTakeHome } from "@/lib/tax/ie";
@@ -24,6 +25,12 @@ const STATUS = [
 export default function IncomeTaxIE() {
   const [gross, setGross] = useState(50000);
   const [status, setStatus] = useState("single");
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+    status: { value: status, set: setStatus, options: ["single", "marriedSingle", "oneParent"] },
+  });
 
   const r = useMemo(() => computeIeTakeHome({ amount: gross, status }), [gross, status]);
   const totalTax = useMemo(() => r.incomeTax + r.usc + r.prsi, [r]);
@@ -83,6 +90,7 @@ export default function IncomeTaxIE() {
           formula={<>tax = 20%/40% band split − credits</>}
           note="Credits reduce income tax only; USC and PRSI are added on gross."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

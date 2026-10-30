@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { CA_TAX_YEAR, computeCaTakeHome } from "@/lib/tax/ca";
@@ -18,6 +19,12 @@ const sym = currencySymbol(REGIONS.CA);
 export default function InHandSalaryCA() {
   const [amount, setAmount] = useState(75000);
   const [rrsp, setRrsp] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    salary: { value: amount, set: setAmount, min: 0, max: 1e15 },
+    rrsp: { value: rrsp, set: setRrsp, min: 0, max: 1e15 },
+  });
 
   const r = useMemo(() => computeCaTakeHome({ amount, rrsp }), [amount, rrsp]);
 
@@ -75,6 +82,7 @@ export default function InHandSalaryCA() {
           formula={<>Net = Salary − federal tax − CPP − EI</>}
           note="Federal tax after the basic personal amount and employment credits."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { FR_TAX_YEAR, computeFrTakeHome } from "@/lib/tax/fr";
@@ -19,6 +20,13 @@ export default function IncomeTaxFR() {
   const [gross, setGross] = useState(40000);
   const [married, setMarried] = useState(false);
   const [children, setChildren] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+    status: { value: married ? "married" : "single", set: (v) => setMarried(v === "married"), options: ["married", "single"] },
+    children: { value: children, set: setChildren, min: 0, max: 6, int: true },
+  });
 
   const r = useMemo(
     () => computeFrTakeHome({ amount: gross, married, children }),
@@ -85,6 +93,7 @@ export default function IncomeTaxFR() {
           formula={<>tax = barème(R ÷ parts) × parts</>}
           note="Progressive barème on income per part, then plafonnement and décote."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

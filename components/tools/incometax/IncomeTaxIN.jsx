@@ -3,8 +3,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { NEW_REGIME, OLD_REGIME, DEDUCTION_CAPS, TAX_YEAR, computeTax } from "@/lib/incometax";
@@ -20,6 +21,16 @@ export default function IncomeTaxIN() {
   const [nps, setNps] = useState(0);
   const [homeLoan, setHomeLoan] = useState(0);
   const [hraOther, setHraOther] = useState(0);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+    c80: { value: c80, set: setC80, min: 0, max: 1e15 },
+    d80: { value: d80, set: setD80, min: 0, max: 1e15 },
+    nps: { value: nps, set: setNps, min: 0, max: 1e15 },
+    homeLoan: { value: homeLoan, set: setHomeLoan, min: 0, max: 1e15 },
+    hra: { value: hraOther, set: setHraOther, min: 0, max: 1e15 },
+  });
 
   const r = useMemo(() => {
     const newTaxable = Math.max(0, gross - NEW_REGIME.standardDeduction);
@@ -106,6 +117,7 @@ export default function IncomeTaxIN() {
           formula={<>tax = slab(TI) − 87A, ×1.04 cess</>}
           note="Tax on taxable income, less rebate, plus 4% cess; lower of the two regimes wins."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );

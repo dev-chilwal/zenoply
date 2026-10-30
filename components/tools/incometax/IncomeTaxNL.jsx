@@ -6,8 +6,9 @@ import { useState, useMemo } from "react";
 import {
   NumberInput, CalcMain, CalcRail,
   ResultStatement, SumRows, SumRow,
-  RailNote, RailStat, RailFormula,
+  RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
+import { useShareLink } from "@/components/calc/useShareLink";
 import { formatMoney, currencySymbol } from "@/lib/formatters";
 import { REGIONS } from "@/lib/locales";
 import { NL_TAX_YEAR, computeNlTakeHome } from "@/lib/tax/nl";
@@ -17,6 +18,11 @@ const sym = currencySymbol(REGIONS.NL);
 
 export default function IncomeTaxNL() {
   const [gross, setGross] = useState(48000);
+
+  // Inputs and ?region= round-trip through the URL (Copy link).
+  const share = useShareLink({
+    gross: { value: gross, set: setGross, min: 0, max: 1e15 },
+  });
 
   const r = useMemo(() => computeNlTakeHome({ amount: gross }), [gross]);
 
@@ -67,6 +73,7 @@ export default function IncomeTaxNL() {
           formula={<>tax = bracket tax − AHK − ARK</>}
           note="Floored per bracket, less the general (AHK) and employment (ARK) credits."
         />
+        <ShareLink share={share} />
       </CalcRail>
     </>
   );
