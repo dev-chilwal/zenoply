@@ -9,6 +9,9 @@ export default function ToolPage({ tool, children, howTo }) {
   const category = getCategory(tool.category);
   const related = relatedTools(tool);
   const jsonLd = toolJsonLd(tool, category);
+  // tool.guide is the tool's own explainer; moreGuides are comparison guides
+  // that also feature it (e.g. PPF vs FD on both calculators).
+  const guides = [tool.guide, ...(tool.moreGuides || [])].filter(Boolean);
 
   // Finance calculators get the editorial layout: sidebar nav + serif title +
   // FAQ accordion + related list. The calculator itself (children) provides the
@@ -94,12 +97,12 @@ export default function ToolPage({ tool, children, howTo }) {
                       <span className="arr" aria-hidden="true">&rarr;</span>
                     </Link>
                   </div>
-                  {tool.guide && (
-                    <p className="calc-disclaimer" style={{ marginTop: "1rem" }}>
-                      Read the guide:{" "}
-                      <Link href={`/guides/${tool.guide.slug}`}>{tool.guide.title}</Link>
+                  {guides.map((g, i) => (
+                    <p key={g.slug} className="calc-disclaimer" style={i === 0 ? { marginTop: "1rem" } : undefined}>
+                      {i === 0 ? "Read the guide" : "Compare"}:{" "}
+                      <Link href={`/guides/${g.slug}`}>{g.title}</Link>
                     </p>
-                  )}
+                  ))}
                   <p className="calc-disclaimer">
                     Results are estimates for illustration only and not financial advice.
                   </p>
@@ -154,14 +157,16 @@ export default function ToolPage({ tool, children, howTo }) {
           </section>
         )}
 
-        {tool.guide && (
+        {guides.length > 0 && (
           <section className="related">
             <h2>Learn more</h2>
             <div className="card-grid">
-              <Link href={`/guides/${tool.guide.slug}`} className="card">
-                <strong>{tool.guide.title}</strong>
-                <span className="muted small">Read the guide</span>
-              </Link>
+              {guides.map((g) => (
+                <Link key={g.slug} href={`/guides/${g.slug}`} className="card">
+                  <strong>{g.title}</strong>
+                  <span className="muted small">Read the guide</span>
+                </Link>
+              ))}
             </div>
           </section>
         )}
