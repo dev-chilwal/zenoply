@@ -1366,6 +1366,7 @@ that, Phase 4 SEO polish until a research run refills this file.
 **31 Oct 2026:** Income Tax and In-Hand Salary links shipped (all 22
 per-country models), so shareable URLs are on every calculator. Next feature
 slot: Phase 4 SEO polish until a research run refills this file.
+**31 Oct 2026 (later run):** Phase 4 first pass shipped (homepage title/H1/intro, category meta descriptions + OpenGraph, 24 over-long tool descriptions rewritten keyword-first). Further Phase 4 work should be GSC-driven; this file still needs a research refill.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
