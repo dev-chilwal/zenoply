@@ -3,11 +3,20 @@ import { useState, useMemo } from "react";
 import OutputBox from "@/components/OutputBox";
 import { Segmented } from "@/components/calc/Calc";
 
+// Split into user-perceived characters (grapheme clusters), so a flag, a
+// ZWJ emoji family or a letter + combining accent reverses as one unit
+// rather than as its code points (🇮🇳 would otherwise become 🇳🇮).
+const segmenter = typeof Intl !== "undefined" && Intl.Segmenter
+  ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
+  : null;
+const graphemes = (line) =>
+  segmenter ? Array.from(segmenter.segment(line), (s) => s.segment) : Array.from(line);
+
 // Reverse the order of characters in each line, preserving line breaks.
 function reverseCharacters(text) {
   return text
     .split("\n")
-    .map((line) => Array.from(line).reverse().join(""))
+    .map((line) => graphemes(line).reverse().join(""))
     .join("\n");
 }
 
