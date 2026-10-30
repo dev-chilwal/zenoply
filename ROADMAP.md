@@ -104,8 +104,9 @@ depletion all confirmed against a worked example).
       reset. Numbers clamped (money 0–1e15, % 0–100, years 1–100), toggles
       whitelisted. 29 Oct 2026: added to HRA, Gratuity and Percentage, with
       a new `{ region: false }` option (pinned / currency-free calcs leave
-      ?region= out) and an `int` flag for years/months. Still not on Income
-      Tax / In-Hand Salary — each dispatches to ~10 per-country components.
+      ?region= out) and an `int` flag for years/months. 31 Oct 2026: added to
+      Income Tax and In-Hand Salary — all 22 per-country models, keeping
+      ?region= so a link opens the right country. Every calculator now has it.
 - [x] PDF / CSV / print export (fully client-side) ✓
       — CSV half shipped 26 Oct 2026: "Download CSV" on the year-by-year
       schedule in EMI, Mortgage and Loan Prepayment (`lib/scheduleCsv.js`;
