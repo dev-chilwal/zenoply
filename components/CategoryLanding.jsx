@@ -8,38 +8,38 @@ function shortName(name) {
 // Per-category hero copy. Falls back to the category's own name/blurb.
 const HERO = {
   finance: {
-    pre: "Finance calculators that ", accent: "just work", post: ".",
-    lead: "SIP, EMI, GST, FD, tax and loan calculators. Results the moment you type — and your salary and income figures never leave your browser.",
+    pre: "Free ", accent: "finance calculators", post: " for SIP, EMI, tax and loans.",
+    lead: "SIP, EMI, FD, PPF, GST, income tax and in-hand salary calculators. Results the moment you type, shareable result links, and your salary and income figures never leave your browser.",
     noun: "calculators",
   },
   pdf: {
-    pre: "Every ", accent: "PDF tool", post: " you need.",
-    lead: "Merge, split, compress, convert, rotate and unlock PDFs — entirely in your browser. Your files are never uploaded.",
+    pre: "Free online ", accent: "PDF tools", post: " that never upload your files.",
+    lead: "Merge, split, compress, convert, crop, sign, protect and unlock PDFs, or OCR a scan into searchable text. Every page is processed in your own browser.",
     noun: "tools",
   },
   text: {
-    pre: "Text tools, ", accent: "fast and clean", post: ".",
-    lead: "Count, convert, clean and reformat text instantly. No signup, no clutter — everything runs locally in your browser.",
+    pre: "Free online ", accent: "text tools", post: " to count, convert and clean.",
+    lead: "Word and character counts, case conversion, line-break and duplicate-line removal, sorting and find and replace. No signup, no clutter, and nothing leaves your browser.",
     noun: "tools",
   },
   dev: {
-    pre: "Developer tools, ", accent: "no clutter", post: ".",
-    lead: "JSON, Base64, hashing, JWT, encoders and formatters. Instant, exact, and private — nothing leaves your browser.",
+    pre: "Free online ", accent: "developer tools", post: " for JSON, encoding and hashes.",
+    lead: "Format JSON, SQL and XML, encode Base64 and URLs, hash and HMAC, decode JWTs, explain cron expressions and count LLM tokens. Exact, instant and private.",
     noun: "tools",
   },
   convert: {
-    pre: "Converters that ", accent: "just work", post: ".",
-    lead: "Color, time, number and data-format converters. Fast, accurate and free — no signup, and every conversion runs locally in your browser.",
+    pre: "Free online ", accent: "converters", post: " for data, numbers and colors.",
+    lead: "JSON to CSV, YAML and XML, HEX to RGB, Unix timestamps, number to words, Roman numerals, units and CGPA to percentage. Every conversion runs locally in your browser.",
     noun: "converters",
   },
   image: {
-    pre: "Image tools, ", accent: "right in your browser", post: ".",
-    lead: "Resize, convert and compress images or make passport photos. Processed locally — your images are never uploaded.",
+    pre: "Free online ", accent: "image tools", post: " to resize, compress and convert.",
+    lead: "Compress to a target size, resize, crop and convert images, turn HEIC into JPG, make passport and exam photos, and strip EXIF data. Your images are never uploaded.",
     noun: "tools",
   },
   audio: {
-    pre: "Audio tools, ", accent: "no upload", post: ".",
-    lead: "Cut and trim MP3, WAV and M4A files on a waveform. Decoded and saved by your own browser — your recordings never leave your device.",
+    pre: "Free online ", accent: "audio cutter", post: " for MP3, WAV and M4A.",
+    lead: "Cut and trim audio on a waveform, with lossless cuts for MP3. Decoded and saved by your own browser, so your recordings never leave your device.",
     noun: "tools",
   },
 };
