@@ -1370,3 +1370,4 @@ slot: Phase 4 SEO polish until a research run refills this file.
 Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heavy
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
+**1 Nov 2026:** feature slot took the named Phase 4 remainder — keyword-led category hub H1s + current-tool intros. Further Phase 4 work should be GSC-driven; this file still needs a research refill.
