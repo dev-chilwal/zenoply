@@ -45,10 +45,14 @@ export default function NpsCalculator() {
     const corpus = months === 0 ? 0
       : i === 0 ? contribution * months
       : contribution * ((Math.pow(1 + i, months) - 1) / i) * (1 + i);
-    // At least 40% of the corpus must buy an annuity; up to 60% is a lump sum.
-    const share = Math.min(100, Math.max(40, annuityPct)) / 100;
+    // Since PFRDA's Dec 2025 exit amendment, non-government subscribers must
+    // annuitise at least 20% (government subscribers still 40%). Section 10(12A)
+    // still exempts only 60% of the corpus, so any lump sum beyond that is taxed.
+    const share = Math.min(100, Math.max(20, annuityPct)) / 100;
     const annuitised = corpus * share;
     const lumpSum = corpus - annuitised;
+    const taxFreeLump = Math.min(lumpSum, corpus * 0.6);
+    const taxableLump = lumpSum - taxFreeLump;
     const pension = annuitised * (annuityRate / 1200);
     const invested = contribution * months;
     // Corpus accumulated at the end of each whole year (presentation only).
@@ -59,7 +63,7 @@ export default function NpsCalculator() {
         : i === 0 ? contribution * m
         : contribution * ((Math.pow(1 + i, m) - 1) / i) * (1 + i);
     });
-    return { corpus, annuitised, lumpSum, pension, invested, series };
+    return { corpus, annuitised, lumpSum, taxFreeLump, taxableLump, pension, invested, series };
   }, [contribution, currentAge, retirementAge, rate, annuityPct, annuityRate]);
 
   return (
@@ -86,9 +90,9 @@ export default function NpsCalculator() {
           min={1} max={15} step={0.5}
         />
         <NumberInput
-          label="Corpus to annuitise" hint="At least 40% must buy an annuity."
+          label="Corpus to annuitise" hint="At least 20% (40% for government employees)."
           suffix="%" value={annuityPct} onChange={setAnnuityPct}
-          min={40} max={100} step={1}
+          min={20} max={100} step={1}
         />
         <NumberInput
           label="Expected annuity rate (p.a.)" hint="Rate the annuity provider pays."
@@ -108,19 +112,22 @@ export default function NpsCalculator() {
 
         <SumRows>
           <SumRow label="Invested" value={fmt(r.invested)} />
-          <SumRow label="Tax-free lump-sum (up to 60%)" value={fmt(r.lumpSum)} />
+          <SumRow label="Lump sum" value={fmt(r.lumpSum)} />
+          {r.taxableLump > 0 && (
+            <SumRow label="of which taxable (above 60%)" value={fmt(r.taxableLump)} />
+          )}
           <SumRow label="Amount annuitised" value={fmt(r.annuitised)} />
           <SumRow label="Estimated monthly pension" value={fmt(r.pension)} />
         </SumRows>
 
         <p className="calc-disclaimer">
-          Estimates only, assuming monthly compounding and constant rates. At least 40% of the corpus must buy an annuity; the lump-sum (up to 60%) is tax-free under Section 10(12A), but the annuity pension is taxable as income. Returns and annuity rates are not guaranteed.
+          Estimates only, assuming monthly compounding and constant rates. Non-government subscribers must annuitise at least 20% of the corpus (government employees 40%); a corpus up to 8 lakh can be withdrawn in full. Only 60% of the corpus is tax-free under Section 10(12A), so a lump sum above that is taxed at your slab rate, as is the annuity pension. Returns and annuity rates are not guaranteed.
         </p>
       </CalcMain>
 
       <CalcRail>
         <RailNote title="What you retire with">
-          NPS splits into a tax-free lump-sum and an annuity that pays a monthly pension.
+          NPS splits into a lump sum, tax-free up to 60% of the corpus, and an annuity that pays a monthly pension.
         </RailNote>
         <RailStat
           label="Estimated monthly pension" tone="data"
@@ -128,9 +135,9 @@ export default function NpsCalculator() {
           sub={`from ${fmt(r.annuitised)} annuitised`}
         />
         <RailStat
-          label="Tax-free lump-sum" tone="data"
-          value={fmt(r.lumpSum)}
-          sub="up to 60% of the corpus"
+          label="Tax-free lump sum" tone="data"
+          value={fmt(r.taxFreeLump)}
+          sub={r.taxableLump > 0 ? `plus ${fmt(r.taxableLump)} taxable` : "up to 60% of the corpus"}
         />
         <RailFormula
           label="The calculation"
