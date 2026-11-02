@@ -37,6 +37,15 @@ export const metadata = {
   metadataBase: new URL(SITE.domain),
   title: { default: `${SITE.name} — ${SITE.tagline}`, template: `%s` },
   description: SITE.description,
+  // Sources: public/icon.svg; rasters from scripts/build-icons.mjs. The .ico is
+  // listed first with sizes="any" so browsers that cannot use SVG still pick it.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,

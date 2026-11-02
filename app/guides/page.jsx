@@ -3,11 +3,14 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import CategoryIcon from "@/components/CategoryIcon";
 import { allGuides, guidesByCategory, readingTime } from "@/lib/guides";
 import { SITE } from "@/lib/site";
+import { hubJsonLd, jsonLdScript } from "@/lib/seo";
+
+const DESCRIPTION =
+  "Free, plain-English guides explaining how popular calculators work — EMI, percentages, mortgages and more. Learn the formulas, then use the tools.";
 
 export const metadata = {
   title: `Guides — How-To Articles for Calculators & Tools | ${SITE.name}`,
-  description:
-    "Free, plain-English guides explaining how popular calculators work — EMI, percentages, mortgages and more. Learn the formulas, then use the tools.",
+  description: DESCRIPTION,
   alternates: { canonical: `${SITE.domain}/guides/` },
 };
 
@@ -17,6 +20,10 @@ export default function GuidesHub() {
 
   return (
     <div className="cat">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(hubJsonLd({ name: "Guides", path: "guides", description: DESCRIPTION })) }}
+      />
       <section className="cat-hero">
         <span className="glow glow-1" aria-hidden />
         <span className="glow glow-2" aria-hidden />

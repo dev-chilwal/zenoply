@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CATEGORIES, liveTools, SITE } from "@/lib/site";
 import CategoryIcon from "@/components/CategoryIcon";
+import { siteJsonLd, jsonLdScript } from "@/lib/seo";
 
 // Keyword-led homepage copy: the root layout's title/description are the
 // brand defaults, which say nothing about what the site actually does.
@@ -23,6 +24,10 @@ export default function Home() {
   const live = liveTools();
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(siteJsonLd()) }}
+      />
       <section className="hero">
         <div className="container">
           <h1>Free online tools for PDFs, images, text, code and money</h1>

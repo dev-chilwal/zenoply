@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import CategoryLanding from "@/components/CategoryLanding";
 import { CATEGORIES, getCategory, toolsInCategory, SITE } from "@/lib/site";
+import { hubJsonLd, jsonLdScript } from "@/lib/seo";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ category: c.slug }));
@@ -34,5 +35,19 @@ export default function CategoryHub({ params }) {
   const live = allTools.filter((t) => t.live);
   const soon = allTools.filter((t) => !t.live);
 
-  return <CategoryLanding category={category} live={live} soon={soon} />;
+  const jsonLd = hubJsonLd({
+    name: category.name,
+    path: category.slug,
+    description: category.metaDesc || category.blurb,
+  });
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+      />
+      <CategoryLanding category={category} live={live} soon={soon} />
+    </>
+  );
 }

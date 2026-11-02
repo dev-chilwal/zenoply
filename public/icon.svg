@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .mark { fill: #211d18; }
+    .glyph { stroke: #f7f4ec; }
+    @media (prefers-color-scheme: dark) {
+      .mark { fill: #f6af38; }
+      .glyph { stroke: #030001; }
+    }
+  </style>
+  <rect class="mark" width="32" height="32" rx="9"/>
+  <path class="glyph" d="M10 10.5h12L10 21.5h12" fill="none" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>
