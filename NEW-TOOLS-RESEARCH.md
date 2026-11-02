@@ -1371,3 +1371,4 @@ Tier D and the PDF-IMAGE-ROADMAP Tier 3–5 remainder sit behind it. Before heav
 investment in any single bet (e.g. per-exam programmatic pages), sanity-check
 with 2–3 weeks of GSC data once the first pages index.
 **1 Nov 2026:** feature slot took the named Phase 4 remainder — keyword-led category hub H1s + current-tool intros. Further Phase 4 work should be GSC-driven; this file still needs a research refill.
+**2 Nov 2026:** backlog still empty; feature slot took a Phase 4 gap found by checking the live site: no favicon existed, and no site-level JSON-LD. Shipped the favicon set + WebSite/Organization/CollectionPage schema. Also corrected the NPS Calculator for PFRDA's Dec 2025 exit rules (20% minimum annuity). This file still needs a GSC-driven research refill.
