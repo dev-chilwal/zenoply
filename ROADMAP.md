@@ -88,9 +88,14 @@ depletion all confirmed against a worked example).
 
 - [x] Year-by-year breakdown tables (Groww-standard) — `ScheduleTable`
       component, live in EMI & mortgage
-- [ ] Charts: growth line + donut breakdown (dwell-time boost)
-      — Mostly covered (checked 5 Oct 2026): MiniChart growth lines on 14 calcs
-      and SplitBar two-part breakdowns on 11; only a literal donut is missing.
+- [x] Charts: growth line + donut breakdown (dwell-time boost)
+      — MiniChart growth lines on 14 calcs and SplitBar two-part breakdowns on
+      11 (checked 5 Oct 2026). Donut shipped 4 Nov 2026: `Donut` in
+      `components/calc/Calc.jsx`, used only where a result has 3+ parts — the
+      Mortgage all-in monthly payment (P&I, property tax, insurance, PMI, HOA)
+      and the India In-Hand Salary CTC split (in-hand, income tax, PF,
+      gratuity, PT). Two-part results keep the SplitBar. Other countries'
+      salary/tax models could adopt it later.
 - [ ] Internal-linking calculator clusters (strongest verified SEO pattern) ✓
       — partly automatic via same-category related tools
 - [x] Shareable result URLs ✓ — 28 Oct 2026: "Copy link to this result" in
