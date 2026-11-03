@@ -6,7 +6,7 @@
 import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
-  ResultStatement, SumRows, SumRow,
+  ResultStatement, SumRows, SumRow, Donut,
   RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useShareLink } from "@/components/calc/useShareLink";
@@ -42,7 +42,7 @@ export default function InHandSalaryIN() {
     const annualTax = computeTax(taxable, cfg).total;
     const annualPT = pt * 12;
     const netAnnual = Math.max(0, gross - employeePF - annualPT - annualTax);
-    return { gross, employeePF, annualPT, annualTax, netAnnual, monthly: netAnnual / 12 };
+    return { gross, employerPF, gratuity, employeePF, annualPT, annualTax, netAnnual, monthly: netAnnual / 12 };
   }, [ctc, basicPct, pt, regime]);
 
   return (
@@ -73,6 +73,20 @@ export default function InHandSalaryIN() {
         <ResultStatement>
           Your monthly in-hand salary is <span className="pop">{fmt(r.monthly)}</span>.
         </ResultStatement>
+
+        <Donut
+          caption="Where your CTC goes each year"
+          format={fmt}
+          parts={[
+            { label: "In-hand pay", value: r.netAnnual },
+            { label: "Income tax", value: r.annualTax },
+            { label: "PF (yours + employer's)", value: r.employeePF + r.employerPF },
+            { label: "Gratuity (paid on leaving)", value: r.gratuity },
+            { label: "Professional tax", value: r.annualPT },
+          ]}
+          center={ctc > 0 ? { value: `${Math.round((r.netAnnual / ctc) * 100)}%`, label: "reaches you" } : null}
+          total={{ label: "Annual CTC", value: fmt(ctc) }}
+        />
 
         <SumRows>
           <SumRow label="Annual in-hand" value={fmt(r.netAnnual)} />

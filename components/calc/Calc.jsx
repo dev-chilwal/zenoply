@@ -357,3 +357,72 @@ export function MiniChart({ series, series2, format = (n) => n, caption }) {
     </>
   );
 }
+
+/**
+ * Donut breakdown for results with three or more parts, where a SplitBar
+ * cannot show the shares. parts: [{ label, value }] — the first is the hero
+ * part (accent), the rest step down in ink. Zero parts are dropped; shares
+ * are of the parts' own sum. center: { value, label } short text inside the
+ * ring; total: { label, value } closing legend row.
+ */
+export function Donut({ parts, format = (n) => n, caption, center, total }) {
+  const shown = parts.filter((p) => p.value > 0);
+  const sum = shown.reduce((s, p) => s + p.value, 0);
+  if (shown.length < 2 || !(sum > 0)) return null;
+
+  // pathLength=100 makes the dash units percentages of the ring.
+  const gap = 0.6;
+  let start = 0;
+  const arcs = shown.map((p, i) => {
+    const pct = (p.value / sum) * 100;
+    const len = Math.max(pct - gap, 0.2);
+    const arc = (
+      <circle
+        key={i} className={`donut-seg s${Math.min(i, 5)}`}
+        cx="60" cy="60" r="48" pathLength="100"
+        strokeDasharray={`${len} ${100 - len}`} strokeDashoffset={-start}
+      />
+    );
+    start += pct;
+    return arc;
+  });
+  const share = (v) => {
+    const pct = (v / sum) * 100;
+    return pct > 0 && pct < 1 ? "<1%" : `${Math.round(pct)}%`;
+  };
+  const label = shown.map((p) => `${p.label} ${share(p.value)}`).join(", ");
+
+  return (
+    <div className="donut-block">
+      {caption && <p className="chart-caption">{caption}</p>}
+      <div className="donut-wrap">
+        <svg className="donut" viewBox="0 0 120 120" role="img" aria-label={`${caption || "Breakdown"}: ${label}`}>
+          <circle className="donut-track" cx="60" cy="60" r="48" />
+          <g transform="rotate(-90 60 60)">{arcs}</g>
+          {center && (
+            <>
+              <text className="donut-num" x="60" y="60" textAnchor="middle">{center.value}</text>
+              <text className="donut-sub" x="60" y="76" textAnchor="middle">{center.label}</text>
+            </>
+          )}
+        </svg>
+        <ul className="donut-key">
+          {shown.map((p, i) => (
+            <li key={i}>
+              <span className={`sw s${Math.min(i, 5)}`} aria-hidden="true" />
+              <span className="lbl">{p.label}</span>
+              <span className="pct">{share(p.value)}</span>
+              <span className="v">{format(p.value)}</span>
+            </li>
+          ))}
+          {total && (
+            <li className="tot">
+              <span className="lbl">{total.label}</span>
+              <span className="v">{total.value}</span>
+            </li>
+          )}
+        </ul>
+      </div>
+    </div>
+  );
+}

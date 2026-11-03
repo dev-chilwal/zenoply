@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from "react";
 import {
   NumberInput, CalcGrid, CalcMain, CalcRail,
-  ResultStatement, MiniChart, ScheduleTable, SplitBar, Legend, SumRows, SumRow,
+  ResultStatement, MiniChart, ScheduleTable, SplitBar, Legend, SumRows, SumRow, Donut,
   RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useRegion } from "@/components/LocaleContext";
@@ -152,14 +152,19 @@ export default function MortgageCalculator() {
         </ResultStatement>
 
         {r.hasCosts && (
-          <SumRows>
-            <SumRow label={extra > 0 ? "Principal, interest & extra" : "Principal & interest"} value={fmt(r.plan.payment)} />
-            {r.tax > 0 && <SumRow label="Property tax" value={fmt(r.tax)} />}
-            {r.ins > 0 && <SumRow label="Home insurance" value={fmt(r.ins)} />}
-            {r.pmi > 0 && <SumRow label={`PMI (first ${monthsToLabel(r.pmiMonths)})`} value={fmt(r.pmi)} />}
-            {r.hoa > 0 && <SumRow label={isIN ? "Maintenance" : "HOA / maintenance"} value={fmt(r.hoa)} />}
-            <SumRow label="Monthly total" value={fmt(r.monthly)} />
-          </SumRows>
+          <Donut
+            caption="Where each monthly payment goes"
+            format={fmt}
+            parts={[
+              { label: extra > 0 ? "Principal, interest & extra" : "Principal & interest", value: r.plan.payment },
+              { label: "Property tax", value: r.tax },
+              { label: "Home insurance", value: r.ins },
+              { label: `PMI (first ${monthsToLabel(r.pmiMonths)})`, value: r.pmi },
+              { label: isIN ? "Maintenance" : "HOA / maintenance", value: r.hoa },
+            ]}
+            center={r.monthly > 0 ? { value: `${Math.round((r.plan.payment / r.monthly) * 100)}%`, label: "is the loan" } : null}
+            total={{ label: "Monthly total", value: fmt(r.monthly) }}
+          />
         )}
 
         <MiniChart
