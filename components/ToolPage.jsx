@@ -3,6 +3,7 @@ import Breadcrumbs from "./Breadcrumbs";
 import TrustStrip from "./TrustStrip";
 import { toolJsonLd, jsonLdScript } from "@/lib/seo";
 import { relatedTools, getCategory, TOOLS } from "@/lib/site";
+import { guidesMentioningTool } from "@/lib/guides";
 
 // Reusable shell for every tool page: schema + breadcrumbs + UI slot + how-to + FAQ + related.
 export default function ToolPage({ tool, children, howTo }) {
@@ -12,6 +13,8 @@ export default function ToolPage({ tool, children, howTo }) {
   // tool.guide is the tool's own explainer; moreGuides are comparison guides
   // that also feature it (e.g. PPF vs FD on both calculators).
   const guides = [tool.guide, ...(tool.moreGuides || [])].filter(Boolean);
+  // Other guides whose body links here, so those links run both ways.
+  const mentions = guidesMentioningTool(tool, { exclude: guides.map((g) => g.slug) });
 
   // Finance calculators get the editorial layout: sidebar nav + serif title +
   // FAQ accordion + related list. The calculator itself (children) provides the
@@ -103,6 +106,11 @@ export default function ToolPage({ tool, children, howTo }) {
                       <Link href={`/guides/${g.slug}`}>{g.title}</Link>
                     </p>
                   ))}
+                  {mentions.map((g) => (
+                    <p key={g.slug} className="calc-disclaimer">
+                      Related guide: <Link href={`/guides/${g.slug}`}>{g.title}</Link>
+                    </p>
+                  ))}
                   <p className="calc-disclaimer">
                     Results are estimates for illustration only and not financial advice.
                   </p>
@@ -157,7 +165,7 @@ export default function ToolPage({ tool, children, howTo }) {
           </section>
         )}
 
-        {guides.length > 0 && (
+        {guides.length + mentions.length > 0 && (
           <section className="related">
             <h2>Learn more</h2>
             <div className="card-grid">
@@ -165,6 +173,12 @@ export default function ToolPage({ tool, children, howTo }) {
                 <Link key={g.slug} href={`/guides/${g.slug}`} className="card">
                   <strong>{g.title}</strong>
                   <span className="muted small">Read the guide</span>
+                </Link>
+              ))}
+              {mentions.map((g) => (
+                <Link key={g.slug} href={`/guides/${g.slug}`} className="card">
+                  <strong>{g.title}</strong>
+                  <span className="muted small">Related guide</span>
                 </Link>
               ))}
             </div>
