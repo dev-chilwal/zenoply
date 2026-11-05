@@ -6,7 +6,7 @@
 import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
-  ResultStatement, SumRows, SumRow,
+  ResultStatement, SumRows, SumRow, Donut,
   RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useShareLink } from "@/components/calc/useShareLink";
@@ -74,6 +74,20 @@ export default function InHandSalaryAU() {
         <ResultStatement>
           Your monthly take-home pay is <span className="pop">{fmt(r.monthly)}</span>.
         </ResultStatement>
+
+        <Donut
+          caption="Where your total package goes each year"
+          format={fmt}
+          parts={[
+            { label: "Take-home pay", value: r.netAnnual },
+            { label: "Income tax (after offset)", value: r.taxAfterOffset },
+            { label: "Medicare levy", value: r.medicare },
+            { label: "Study loan repayment", value: r.help },
+            { label: "Employer super (yours, locked in)", value: r.superAmount },
+          ]}
+          center={r.packageTotal > 0 ? { value: `${Math.round((r.netAnnual / r.packageTotal) * 100)}%`, label: "reaches you" } : null}
+          total={{ label: "Total package (salary + super)", value: fmt(r.packageTotal) }}
+        />
 
         <SumRows>
           <SumRow label="Annual take-home" value={fmt(r.netAnnual)} />

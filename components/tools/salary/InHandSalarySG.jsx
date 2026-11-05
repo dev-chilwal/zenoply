@@ -5,7 +5,7 @@
 import { useState, useMemo } from "react";
 import {
   NumberInput, Segmented, CalcMain, CalcRail,
-  ResultStatement, SumRows, SumRow,
+  ResultStatement, SumRows, SumRow, Donut,
   RailNote, RailStat, RailFormula, ShareLink,
 } from "@/components/calc/Calc";
 import { useShareLink } from "@/components/calc/useShareLink";
@@ -59,6 +59,18 @@ export default function InHandSalarySG() {
         <ResultStatement>
           Your monthly take-home pay is <span className="pop">{fmt(r.monthly)}</span>.
         </ResultStatement>
+
+        <Donut
+          caption="Where your gross pay goes each year"
+          format={fmt}
+          parts={[
+            { label: "Take-home pay", value: r.netAnnual },
+            { label: "Employee CPF (yours, saved)", value: r.cpfEmployee },
+            { label: "Income tax", value: r.incomeTax },
+          ]}
+          center={r.gross > 0 ? { value: `${Math.round((r.netAnnual / r.gross) * 100)}%`, label: "reaches you" } : null}
+          total={{ label: "Annual gross salary", value: fmt(r.gross) }}
+        />
 
         <SumRows>
           <SumRow label="Annual take-home" value={fmt(r.netAnnual)} />
