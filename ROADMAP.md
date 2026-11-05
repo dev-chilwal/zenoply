@@ -98,8 +98,11 @@ depletion all confirmed against a worked example).
       In-Hand Salary models for US, UK, IE, NL, DE (dormant until DE is
       enabled), FR, CA, AU (of the total package incl. super) and SG — parts
       checked to sum exactly to gross. UAE skipped (no income tax).
-- [ ] Internal-linking calculator clusters (strongest verified SEO pattern) ✓
-      — partly automatic via same-category related tools
+- [x] Internal-linking calculator clusters (strongest verified SEO pattern) ✓
+      — partly automatic via same-category related tools. 5 Nov 2026: every
+      tool page also links back to up to three guides whose body links it
+      (`guidesMentioningTool` in `lib/guides.js`, rendered by ToolPage as
+      "Related guide"), closing 248 one-way guide→tool links site-wide.
 - [x] Shareable result URLs ✓ — 28 Oct 2026: "Copy link to this result" in
       the rail of all 17 currency calculators (SIP/step-up, EMI, prepayment,
       mortgage, FD, RD, PPF, CI, SI, lumpsum, lumpsum-vs-SIP, SWP, NPS, CAGR,
