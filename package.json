@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "verify-tax": "node scripts/verify-tax.mjs"
+    "verify-tax": "node scripts/verify-tax.mjs",
+    "check-meta": "node scripts/check-meta.mjs"
   },
   "dependencies": {
     "@jsquash/avif": "2.1.1",
