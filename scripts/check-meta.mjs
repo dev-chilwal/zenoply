@@ -5,9 +5,12 @@
 //   itself can run longer because it is also the on-page lead.
 // - metaDesc, when present, must be <= 155 and must be shorter than desc.
 // - Live tool descriptions must be <= 170 (the 31 Oct 2026 Phase 4 limit).
+// - Search titles (<title>) must be <= 60 characters; a guide whose title is
+//   longer needs a metaTitle, which must be shorter than title.
 // - No two pages may share a search description.
 import { TOOLS } from "../lib/site.js";
 import { GUIDES } from "../lib/guides.js";
+import { toolTitle, guideTitle } from "../lib/seo.js";
 
 const errors = [];
 const seen = new Map();
@@ -27,6 +30,9 @@ for (const g of GUIDES) {
     if (g.metaDesc.length >= g.desc.length) errors.push(`${who}: metaDesc is not shorter than desc - drop it`);
   }
   if (meta) claim(meta, who);
+  const title = guideTitle(g);
+  if (title.length > 60) errors.push(`${who}: search title is ${title.length} chars (> 60) - add a metaTitle`);
+  if (g.metaTitle && g.metaTitle.length >= g.title.length) errors.push(`${who}: metaTitle is not shorter than title - drop it`);
 }
 for (const t of TOOLS.filter((t) => t.live)) {
   const who = `tool ${t.category}/${t.slug}`;
@@ -35,6 +41,8 @@ for (const t of TOOLS.filter((t) => t.live)) {
     if (t.desc.length > 170) errors.push(`${who}: desc is ${t.desc.length} chars (> 170)`);
     claim(t.desc, who);
   }
+  const title = toolTitle(t);
+  if (title.length > 60) errors.push(`${who}: search title is ${title.length} chars (> 60) - shorten the tool title`);
 }
 
 if (errors.length) {
@@ -42,4 +50,4 @@ if (errors.length) {
   console.error(`\n${errors.length} meta description problem(s).`);
   process.exit(1);
 }
-console.log(`Meta descriptions OK: ${GUIDES.length} guides (${GUIDES.filter((g) => g.metaDesc).length} with metaDesc), ${TOOLS.filter((t) => t.live).length} live tools.`);
+console.log(`Meta titles + descriptions OK: ${GUIDES.length} guides (${GUIDES.filter((g) => g.metaDesc).length} with metaDesc), ${TOOLS.filter((t) => t.live).length} live tools.`);
