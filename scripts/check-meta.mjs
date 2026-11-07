@@ -4,7 +4,9 @@
 //   <= 160 characters so Google shows it without cutting mid-sentence; desc
 //   itself can run longer because it is also the on-page lead.
 // - metaDesc, when present, must be <= 155 and must be shorter than desc.
-// - Live tool descriptions must be <= 170 (the 31 Oct 2026 Phase 4 limit).
+// - Live tool descriptions must be <= 170 (the 31 Oct 2026 Phase 4 limit)
+//   and >= 120: shorter ones leave most of the snippet unused and read as
+//   generic (the 8 Nov 2026 pass lifted the last ten, all 98-124 chars).
 // - Search titles (<title>) must be <= 60 characters; a guide whose title is
 //   longer needs a metaTitle, which must be shorter than title.
 // - No two pages may share a search description.
@@ -39,6 +41,7 @@ for (const t of TOOLS.filter((t) => t.live)) {
   if (!t.desc) errors.push(`${who}: no desc`);
   else {
     if (t.desc.length > 170) errors.push(`${who}: desc is ${t.desc.length} chars (> 170)`);
+    if (t.desc.length < 120) errors.push(`${who}: desc is ${t.desc.length} chars (< 120) - say what the tool does`);
     claim(t.desc, who);
   }
   const title = toolTitle(t);
