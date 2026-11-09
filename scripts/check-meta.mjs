@@ -10,6 +10,8 @@
 // - Search titles (<title>) must be <= 60 characters; a guide whose title is
 //   longer needs a metaTitle, which must be shorter than title.
 // - No two pages may share a search description.
+// - Guide dates are YYYY-MM-DD; an optional `published` (original launch date
+//   of a guide revised later) must be earlier than `updated`.
 import { TOOLS } from "../lib/site.js";
 import { GUIDES } from "../lib/guides.js";
 import { toolTitle, guideTitle } from "../lib/seo.js";
@@ -35,6 +37,13 @@ for (const g of GUIDES) {
   const title = guideTitle(g);
   if (title.length > 60) errors.push(`${who}: search title is ${title.length} chars (> 60) - add a metaTitle`);
   if (g.metaTitle && g.metaTitle.length >= g.title.length) errors.push(`${who}: metaTitle is not shorter than title - drop it`);
+  // Dates feed Article datePublished/dateModified and og:article times.
+  const isDate = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(Date.parse(d));
+  if (!g.updated || !isDate(g.updated)) errors.push(`${who}: updated must be a YYYY-MM-DD date`);
+  if (g.published !== undefined) {
+    if (!isDate(g.published)) errors.push(`${who}: published must be a YYYY-MM-DD date`);
+    else if (g.published >= g.updated) errors.push(`${who}: published is not before updated - drop it`);
+  }
 }
 for (const t of TOOLS.filter((t) => t.live)) {
   const who = `tool ${t.category}/${t.slug}`;

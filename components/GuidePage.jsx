@@ -92,7 +92,7 @@ export default function GuidePage({ guide }) {
             {updated && (
               <>
                 <span className="guide-meta-dot" aria-hidden />
-                <span>Updated {updated}</span>
+                <span>Updated <time dateTime={guide.updated}>{updated}</time></span>
               </>
             )}
           </div>
