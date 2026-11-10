@@ -2,7 +2,7 @@ import Link from "next/link";
 import Breadcrumbs from "./Breadcrumbs";
 import { guideJsonLd, jsonLdScript } from "@/lib/seo";
 import { getTool } from "@/lib/site";
-import { headingId, readingTime, guideToc, GUIDE_CATEGORIES } from "@/lib/guides";
+import { headingId, readingTime, guideToc, relatedGuides, GUIDE_CATEGORIES } from "@/lib/guides";
 
 // Parse a tiny [label](href) inline-link syntax into React nodes so guide
 // body text can link to tools without raw HTML. Plain text passes through.
@@ -67,6 +67,7 @@ export default function GuidePage({ guide }) {
   const minutes = readingTime(guide);
   const updated = formatDate(guide.updated);
   const cat = GUIDE_CATEGORIES.find((c) => c.slug === guide.category);
+  const related = relatedGuides(guide);
 
   return (
     <>
@@ -153,6 +154,20 @@ export default function GuidePage({ guide }) {
             )}
           </aside>
         </div>
+
+        {related.length > 0 && (
+          <section className="related guide-related">
+            <h2>Related guides</h2>
+            <div className="card-grid">
+              {related.map((g) => (
+                <Link key={g.slug} href={`/guides/${g.slug}`} className="card">
+                  <strong>{g.title}</strong>
+                  <span className="muted small">Read the guide</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </>
   );
