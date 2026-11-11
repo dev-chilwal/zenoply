@@ -971,6 +971,7 @@ Cheapest wins first — each completes an existing cluster and cross-links:
   phrase. A 29 February birth is aged on 28 February with 1 March named as the
   alternative convention rather than hidden.
 
+**11 Nov 2026:** backlog still empty; feature slot closed the 10 Nov Phase 4 remainder — Related guides are now assigned site-wide so no guide is left without an inbound guide link (10 of 11 orphans rescued; the lone Audio guide has no peer). Guide slot: "SIP vs FD: Which Is Better After Tax?" comparison. Still needs a GSC-driven research refill.
 ## Tier D — viable with caveats
 
 - ~~**Favicon generator**~~ **SHIPPED 7 Oct 2026** (`/image/favicon-generator`) —
