@@ -903,6 +903,21 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .guide-tool-desc { font-size: .84rem; line-height: 1.5; color: var(--muted); }
 .guide-tool-cta { margin-top: .4rem; font-size: .85rem; font-weight: 600; color: var(--accent-soft-fg); }
 
+/* Category hub: compact list of that category's guides */
+.hub-guide-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2rem;
+}
+.hub-guide-list li {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding: .7rem 0; border-bottom: 1px solid var(--line-soft); min-width: 0;
+}
+.hub-guide-list a { color: var(--fg); font-weight: 500; line-height: 1.4; overflow-wrap: anywhere; }
+.hub-guide-list a:hover { color: var(--accent); }
+.hub-guide-read {
+  flex-shrink: 0; font-family: var(--font-mono), monospace; font-size: .72rem; color: var(--muted-2);
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 980px) {
   .guide-shell { grid-template-columns: 1fr; gap: 1.5rem; }
@@ -917,6 +932,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   .header-cta { display: none; }
   .nav { font-size: .82rem; gap: 1rem; }
   .tool-grid, .soon-grid, .guide-grid { grid-template-columns: 1fr; }
+  .hub-guide-list { grid-template-columns: minmax(0, 1fr); }
   .footer-cols { gap: 2.5rem; }
 }
 

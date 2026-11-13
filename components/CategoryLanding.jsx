@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { tagFor } from "@/lib/toolTags";
+import { readingTime } from "@/lib/guides";
 
 function shortName(name) {
   return name.replace(" Calculators", "").replace(" Tools", "");
@@ -44,8 +45,8 @@ const HERO = {
   },
 };
 
-// One landing layout for every category: hero → tool grid → coming soon.
-export default function CategoryLanding({ category, live, soon }) {
+// One landing layout for every category: hero → tool grid → guides → coming soon.
+export default function CategoryLanding({ category, live, soon, guides = [] }) {
   const h = HERO[category.slug] || {
     pre: category.name, accent: "", post: "", lead: category.blurb, noun: "tools",
   };
@@ -90,6 +91,26 @@ export default function CategoryLanding({ category, live, soon }) {
             ))}
           </div>
         </section>
+
+        {guides.length > 0 && (
+          <section className="fin-section hub-guides">
+            <div className="fin-section-head">
+              <h2>{guides.length === 1 ? "Guide" : "Guides"}</h2>
+              <span className="fin-section-note">
+                {guides.length} plain-English {guides.length === 1 ? "explainer" : "explainers"} ·{" "}
+                <Link href="/guides">all guides</Link>
+              </span>
+            </div>
+            <ul className="hub-guide-list">
+              {guides.map((g) => (
+                <li key={g.slug}>
+                  <Link href={`/guides/${g.slug}`}>{g.title}</Link>
+                  <span className="hub-guide-read">{readingTime(g)} min</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {soon.length > 0 && (
           <section className="fin-soon">
