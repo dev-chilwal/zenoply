@@ -3,16 +3,17 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import CategoryIcon from "@/components/CategoryIcon";
 import { allGuides, guidesByCategory, readingTime } from "@/lib/guides";
 import { SITE } from "@/lib/site";
-import { hubJsonLd, jsonLdScript } from "@/lib/seo";
+import { hubJsonLd, jsonLdScript, pageMetadata } from "@/lib/seo";
 
-const DESCRIPTION =
-  "Free, plain-English guides explaining how popular calculators work — EMI, percentages, mortgages and more. Learn the formulas, then use the tools.";
+// The guides now span every category, not just the calculators the original
+// copy described, so the description leads with the live count and topics.
+const DESCRIPTION = `${allGuides().length} free how-to guides for PDFs, images, text, code and money: how each tool works, with worked examples and comparisons such as SIP vs FD and PPF vs FD.`;
 
-export const metadata = {
-  title: `Guides — How-To Articles for Calculators & Tools | ${SITE.name}`,
+export const metadata = pageMetadata({
+  title: `How-To Guides: PDFs, Images, Code & Money | ${SITE.name}`,
   description: DESCRIPTION,
-  alternates: { canonical: `${SITE.domain}/guides/` },
-};
+  path: "guides",
+});
 
 export default function GuidesHub() {
   const groups = guidesByCategory();

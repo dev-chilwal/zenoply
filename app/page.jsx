@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CATEGORIES, liveTools, SITE } from "@/lib/site";
 import CategoryIcon from "@/components/CategoryIcon";
-import { siteJsonLd, jsonLdScript } from "@/lib/seo";
+import { siteJsonLd, jsonLdScript, pageMetadata } from "@/lib/seo";
 
 // Keyword-led homepage copy: the root layout's title/description are the
 // brand defaults, which say nothing about what the site actually does.
@@ -9,16 +9,7 @@ const TOOL_COUNT = liveTools().length;
 const TITLE = `Free Online Tools for PDF, Images, Text, Code & Finance | ${SITE.name}`;
 const DESCRIPTION = `${TOOL_COUNT} free online tools: merge and compress PDFs, resize and convert images, SIP, EMI and tax calculators, JSON and text utilities. Nothing uploaded, no signup.`;
 
-export const metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: `${SITE.domain}/` },
-  openGraph: {
-    title: TITLE, description: DESCRIPTION, url: `${SITE.domain}/`, siteName: SITE.name, type: "website",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: SITE.name }],
-  },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: ["/og.png"] },
-};
+export const metadata = pageMetadata({ title: TITLE, description: DESCRIPTION, path: "" });
 
 export default function Home() {
   const live = liveTools();

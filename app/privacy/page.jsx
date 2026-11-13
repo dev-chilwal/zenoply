@@ -1,13 +1,14 @@
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { SITE } from "@/lib/site";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: `Privacy — Nothing Uploaded, No Signup | ${SITE.name}`,
   description:
     "Every Zenoply tool runs entirely in your browser. Your files and figures are never uploaded, there is no account, and there are no tracking scripts.",
-  alternates: { canonical: `${SITE.domain}/privacy/` },
-};
+  path: "privacy",
+});
 
 export default function Privacy() {
   return (
