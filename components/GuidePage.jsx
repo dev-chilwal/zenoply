@@ -6,6 +6,11 @@ import { headingId, readingTime, guideToc, relatedGuides, GUIDE_CATEGORIES } fro
 
 // Parse a tiny [label](href) inline-link syntax into React nodes so guide
 // body text can link to tools without raw HTML. Plain text passes through.
+// Only same-site paths ("/pdf/merge-pdf", "/guides/x") become links: guides
+// also quote link syntax as prose (e.g. "[click](javascript:alert(1))" in the
+// Markdown guide), which must stay literal text, never a live href.
+// `npm run check-meta` fails the build-time lint on any path that 404s.
+const INTERNAL_HREF = /^\/(?!\/)/;
 function renderInline(text, keyBase) {
   const parts = [];
   const re = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -13,6 +18,7 @@ function renderInline(text, keyBase) {
   let m;
   let i = 0;
   while ((m = re.exec(text)) !== null) {
+    if (!INTERNAL_HREF.test(m[2])) continue;
     if (m.index > last) parts.push(text.slice(last, m.index));
     parts.push(
       <Link key={`${keyBase}-${i++}`} href={m[2]}>

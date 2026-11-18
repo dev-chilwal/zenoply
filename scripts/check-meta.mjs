@@ -12,7 +12,9 @@
 // - No two pages may share a search description.
 // - Guide dates are YYYY-MM-DD; an optional `published` (original launch date
 //   of a guide revised later) must be earlier than `updated`.
-import { TOOLS } from "../lib/site.js";
+// - Every same-site [label](/path) link in a guide body must resolve to a
+//   live page, and every guide/tool cross-reference must exist.
+import { TOOLS, CATEGORIES } from "../lib/site.js";
 import { GUIDES } from "../lib/guides.js";
 import { toolTitle, guideTitle } from "../lib/seo.js";
 
@@ -57,9 +59,44 @@ for (const t of TOOLS.filter((t) => t.live)) {
   if (title.length > 60) errors.push(`${who}: search title is ${title.length} chars (> 60) - shorten the tool title`);
 }
 
+// Internal links. GuidePage renders [label](/path) as a link only when the
+// href is a same-site path; anything else (e.g. quoted javascript: syntax in
+// the Markdown guide) stays literal text. Every same-site path must resolve,
+// and every guide/tool cross-reference must point at a real page.
+const PAGES = new Set(["/", "/guides", "/privacy"]);
+for (const c of CATEGORIES) PAGES.add(`/${c.slug}`);
+for (const t of TOOLS.filter((t) => t.live)) PAGES.add(`/${t.category}/${t.slug}`);
+for (const g of GUIDES) PAGES.add(`/guides/${g.slug}`);
+const guideSlugs = new Set(GUIDES.map((g) => g.slug));
+let linkCount = 0;
+for (const g of GUIDES) {
+  const who = `guide ${g.slug}`;
+  const texts = [];
+  for (const b of g.body) {
+    if (b.s) texts.push(b.s);
+    if (b.items) texts.push(...b.items);
+  }
+  for (const text of texts) {
+    for (const m of text.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)) {
+      const href = m[2];
+      if (!/^\/(?!\/)/.test(href)) continue; // rendered as plain text
+      linkCount++;
+      const path = href.split("#")[0].replace(/\/$/, "") || "/";
+      if (!PAGES.has(path)) errors.push(`${who}: link to ${href} does not resolve to a page`);
+    }
+  }
+  if (!PAGES.has(`/${g.category}/${g.tool.slug}`)) errors.push(`${who}: tool ${g.category}/${g.tool.slug} is not a live tool in that category`);
+}
+for (const t of TOOLS.filter((t) => t.live)) {
+  for (const ref of [t.guide, ...(t.moreGuides || [])].filter(Boolean)) {
+    if (!guideSlugs.has(ref.slug)) errors.push(`tool ${t.category}/${t.slug}: guide ${ref.slug} does not exist`);
+  }
+}
+
 if (errors.length) {
   console.error(errors.join("\n"));
   console.error(`\n${errors.length} meta description problem(s).`);
   process.exit(1);
 }
+console.log(`Internal links OK: ${linkCount} guide links resolve.`);
 console.log(`Meta titles + descriptions OK: ${GUIDES.length} guides (${GUIDES.filter((g) => g.metaDesc).length} with metaDesc), ${TOOLS.filter((t) => t.live).length} live tools.`);
