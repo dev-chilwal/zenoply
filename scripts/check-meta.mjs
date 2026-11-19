@@ -14,6 +14,9 @@
 //   of a guide revised later) must be earlier than `updated`.
 // - Every same-site [label](/path) link in a guide body must resolve to a
 //   live page, and every guide/tool cross-reference must exist.
+// - Every live tool carries at least 3 FAQs (they feed FAQPage JSON-LD and
+//   answer question-shaped queries); question text must not repeat within a
+//   tool. The 19 Nov 2026 pass lifted the last ten tools, all at 2.
 import { TOOLS, CATEGORIES } from "../lib/site.js";
 import { GUIDES } from "../lib/guides.js";
 import { toolTitle, guideTitle } from "../lib/seo.js";
@@ -57,6 +60,14 @@ for (const t of TOOLS.filter((t) => t.live)) {
   }
   const title = toolTitle(t);
   if (title.length > 60) errors.push(`${who}: search title is ${title.length} chars (> 60) - shorten the tool title`);
+  const faqs = t.faqs || [];
+  if (faqs.length < 3) errors.push(`${who}: has ${faqs.length} FAQs (< 3)`);
+  const qs = new Set();
+  for (const f of faqs) {
+    if (!f.q || !f.a) errors.push(`${who}: FAQ missing q or a`);
+    else if (qs.has(f.q.toLowerCase())) errors.push(`${who}: duplicate FAQ "${f.q}"`);
+    else qs.add(f.q.toLowerCase());
+  }
 }
 
 // Internal links. GuidePage renders [label](/path) as a link only when the
@@ -99,4 +110,4 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`Internal links OK: ${linkCount} guide links resolve.`);
-console.log(`Meta titles + descriptions OK: ${GUIDES.length} guides (${GUIDES.filter((g) => g.metaDesc).length} with metaDesc), ${TOOLS.filter((t) => t.live).length} live tools.`);
+console.log(`Meta titles + descriptions OK: ${GUIDES.length} guides (${GUIDES.filter((g) => g.metaDesc).length} with metaDesc), ${TOOLS.filter((t) => t.live).length} live tools (${TOOLS.filter((t) => t.live).reduce((n, t) => n + t.faqs.length, 0)} FAQs).`);
