@@ -870,6 +870,40 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .guide-body { max-width: none; }
 .guide-body h2 { scroll-margin-top: 88px; }
 .guide-faq { margin-top: 1rem; }
+
+/* Comparison table inside a guide. min-width: 0 + overflow-x keeps a wide
+   table scrolling inside its own box instead of widening the page. */
+.guide-table-wrap {
+  min-width: 0; max-width: 100%; overflow-x: auto; margin: 1.1rem 0;
+  border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card);
+}
+.guide-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.guide-table caption {
+  caption-side: top; text-align: left; padding: .7rem .9rem .55rem;
+  font-size: .82rem; font-weight: 600; color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.guide-table th, .guide-table td {
+  padding: .55rem .9rem; text-align: right; white-space: nowrap;
+  border-bottom: 1px solid var(--line-soft); font-variant-numeric: tabular-nums;
+}
+.guide-table th:first-child { text-align: left; }
+.guide-table thead th {
+  font-size: .76rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .04em; color: var(--muted-2);
+}
+.guide-table tbody th { font-weight: 600; color: var(--fg); }
+.guide-table tbody tr:last-child th, .guide-table tbody tr:last-child td { border-bottom: 0; }
+/* Phones: tighter cells and wrapping column heads, so a four-column table of
+   lakh/crore figures fits a 375px screen without scrolling. */
+@media (max-width: 480px) {
+  .guide-table { font-size: .8rem; }
+  .guide-table th, .guide-table td { padding: .5rem .45rem; }
+  .guide-table th:first-child { padding-left: .7rem; }
+  .guide-table td:last-child, .guide-table thead th:last-child { padding-right: .7rem; }
+  .guide-table thead th { white-space: normal; font-size: .68rem; letter-spacing: .02em; vertical-align: bottom; }
+  .guide-table caption { padding: .6rem .7rem .5rem; }
+}
 .guide-faq h2 { scroll-margin-top: 88px; }
 
 /* Article: sticky aside (TOC + tool CTA) */
@@ -920,7 +954,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 980px) {
-  .guide-shell { grid-template-columns: 1fr; gap: 1.5rem; }
+  .guide-shell { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
   .guide-aside { position: static; }
   .guide-toc { display: none; }
 }

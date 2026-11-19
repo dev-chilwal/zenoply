@@ -52,6 +52,36 @@ function Block({ block, idx }) {
         ))}
       </ol>
     );
+  // Figures compared across rows. The wrapper scrolls sideways on a narrow
+  // screen so a wide table never pushes the page past the viewport.
+  if (block.t === "table")
+    return (
+      <div className="guide-table-wrap">
+        <table className="guide-table">
+          {block.caption && <caption>{block.caption}</caption>}
+          <thead>
+            <tr>
+              {block.head.map((h, j) => (
+                <th key={j} scope="col">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {block.rows.map((row, r) => (
+              <tr key={r}>
+                {row.map((cell, j) =>
+                  j === 0 ? (
+                    <th key={j} scope="row">{cell}</th>
+                  ) : (
+                    <td key={j}>{cell}</td>
+                  )
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   return null;
 }
 

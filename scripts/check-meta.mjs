@@ -17,6 +17,8 @@
 // - Every live tool carries at least 3 FAQs (they feed FAQPage JSON-LD and
 //   answer question-shaped queries); question text must not repeat within a
 //   tool. The 19 Nov 2026 pass lifted the last ten tools, all at 2.
+// - A guide table block needs a head of 2+ columns, at least 2 rows, every
+//   row as wide as the head, and plain-text cells (links are not rendered).
 import { TOOLS, CATEGORIES } from "../lib/site.js";
 import { GUIDES } from "../lib/guides.js";
 import { toolTitle, guideTitle } from "../lib/seo.js";
@@ -80,12 +82,30 @@ for (const t of TOOLS.filter((t) => t.live)) PAGES.add(`/${t.category}/${t.slug}
 for (const g of GUIDES) PAGES.add(`/guides/${g.slug}`);
 const guideSlugs = new Set(GUIDES.map((g) => g.slug));
 let linkCount = 0;
+let tableCount = 0;
 for (const g of GUIDES) {
   const who = `guide ${g.slug}`;
   const texts = [];
   for (const b of g.body) {
     if (b.s) texts.push(b.s);
     if (b.items) texts.push(...b.items);
+    if (b.t === "table") {
+      tableCount++;
+      const head = Array.isArray(b.head) ? b.head : [];
+      const rows = Array.isArray(b.rows) ? b.rows : [];
+      if (head.length < 2) errors.push(`${who}: table needs a head of 2+ columns`);
+      if (rows.length < 2) errors.push(`${who}: table "${head[0]}" needs 2+ rows`);
+      rows.forEach((row, i) => {
+        if (!Array.isArray(row) || row.length !== head.length) errors.push(`${who}: table "${head[0]}" row ${i + 1} has ${row?.length} cells, head has ${head.length}`);
+      });
+      if (b.caption !== undefined && (typeof b.caption !== "string" || !b.caption.trim())) errors.push(`${who}: table "${head[0]}" has an empty caption - drop it`);
+      for (const cell of [...head, ...rows.flat()]) {
+        if (typeof cell !== "string" || !cell.trim()) errors.push(`${who}: table "${head[0]}" has an empty or non-text cell`);
+        else if (/\]\(/.test(cell)) errors.push(`${who}: table "${head[0]}" cell contains link syntax, which is not rendered`);
+      }
+    } else if (!["p", "h2", "h3", "ul", "ol"].includes(b.t)) {
+      errors.push(`${who}: unknown block type "${b.t}"`);
+    }
   }
   for (const text of texts) {
     for (const m of text.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)) {
@@ -109,5 +129,5 @@ if (errors.length) {
   console.error(`\n${errors.length} meta description problem(s).`);
   process.exit(1);
 }
-console.log(`Internal links OK: ${linkCount} guide links resolve.`);
+console.log(`Internal links OK: ${linkCount} guide links resolve; ${tableCount} guide tables well-formed.`);
 console.log(`Meta titles + descriptions OK: ${GUIDES.length} guides (${GUIDES.filter((g) => g.metaDesc).length} with metaDesc), ${TOOLS.filter((t) => t.live).length} live tools (${TOOLS.filter((t) => t.live).reduce((n, t) => n + t.faqs.length, 0)} FAQs).`);
