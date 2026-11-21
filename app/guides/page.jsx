@@ -23,7 +23,13 @@ export default function GuidesHub() {
     <div className="cat">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(hubJsonLd({ name: "Guides", path: "guides", description: DESCRIPTION })) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(hubJsonLd({
+          name: "Guides",
+          path: "guides",
+          description: DESCRIPTION,
+          // Every guide, in the grouped order the page shows them.
+          items: groups.flatMap((g) => g.guides.map((x) => ({ name: x.title, path: `guides/${x.slug}` }))),
+        })) }}
       />
       <section className="cat-hero">
         <span className="glow glow-1" aria-hidden />

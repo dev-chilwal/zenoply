@@ -33,6 +33,8 @@ export default function CategoryHub({ params }) {
     name: category.name,
     path: category.slug,
     description: category.metaDesc || category.blurb,
+    // The hub's main content is its live tools, listed in on-page order.
+    items: live.map((t) => ({ name: t.title, path: `${t.category}/${t.slug}` })),
   });
 
   return (
